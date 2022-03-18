@@ -4,21 +4,30 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SandCoreCSharp
 {
-    public class Game1 : Game
+    public class SandCore : Game
     {
+        public const int WIDTH = 1280;
+        public const int HEIGHT = 720;
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        public Game1()
+        // singleton
+        static public Game game;
+
+        public SandCore()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            _graphics.PreferredBackBufferWidth = WIDTH;
+            _graphics.PreferredBackBufferHeight = HEIGHT;
         }
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            game = this;
 
             base.Initialize();
         }
@@ -42,7 +51,7 @@ namespace SandCoreCSharp
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
 
