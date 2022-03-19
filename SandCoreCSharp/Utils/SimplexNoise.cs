@@ -135,10 +135,10 @@ namespace SandCoreCSharp.Utils
         // возваращет высоты
         public static int[,] GetNoise(int w, int h, float s)
         {
-            var values = new int[w, h];
-            for (var i = 0; i < w; i++)
-                for (var j = 0; j < h; j++)
-                    values[i, j] = (int)(Math.Abs(SNoise(i * s, j * s)) * 20);
+            var values = new int[16, 16];
+            for (var i = w; i < w + 16; i++)
+                for (var j = h; j < h + 16; j++)
+                    values[i - w, j - h] = (int)(Math.Abs(SNoise(i * s,j * s) * 16));
             return values;
         }
     }

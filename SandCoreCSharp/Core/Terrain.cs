@@ -101,7 +101,7 @@ namespace SandCoreCSharp.Core
             {
                 for (int j = ofy - 1; j < ofy + 3; j++)
                 {
-                    Generate(i * 512, j * 512);
+                    Generate(i * 512, j * 512, i + 1, j + 1);
                 }
             }
 
@@ -122,14 +122,14 @@ namespace SandCoreCSharp.Core
         }
 
         // generate chunk
-        public void Generate(float _x, float _y)
+        public void Generate(float _x, float _y, int px, int py)
         {
             if (chunks.Any(obj => obj.Pos.X == _x && obj.Pos.Y == _y)) // проверяем если такой чанк есть, то не создаем такой же
                 return;
 
             Chunk @new = new Chunk(_x, _y);
 
-            var heights = SimplexNoise.GetNoise(16, 16, 0.01f); // находим высоты
+            var heights = SimplexNoise.GetNoise(px * 16, py * 16, 0.01f); // находим высоты
             for (int x = 0; x < 16; x++)
             {
                 for (int y = 0; y < 16; y++)

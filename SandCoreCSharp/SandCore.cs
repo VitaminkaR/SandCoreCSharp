@@ -48,8 +48,6 @@ namespace SandCoreCSharp
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            terrain.Generate(0, 0);
         }
 
         protected override void Update(GameTime gameTime)
