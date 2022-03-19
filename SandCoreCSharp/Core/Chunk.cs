@@ -19,7 +19,10 @@ namespace SandCoreCSharp.Core
         public Vector2 Pos { get; private set; }
 
 
-
         public Chunk(float x, float y) => Pos = new Vector2(x, y);
+
+
+        // возвращает имя чанка
+        public string GetName() => $"Chunk[{(int)(Pos.X / 512)}:{(int)(Pos.Y / 512)}]";
     }
 }

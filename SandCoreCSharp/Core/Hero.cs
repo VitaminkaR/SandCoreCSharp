@@ -9,6 +9,7 @@ namespace SandCoreCSharp.Core
     {
         // позиция игрока
         public Vector2 Pos { get; private set; }
+        public int Height { get; private set; }
 
         // скорость игрока
         private float speed = 0;
@@ -59,7 +60,7 @@ namespace SandCoreCSharp.Core
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.Draw(texture, -camera.Pos + Pos, Color.White); // отрисовываем относительно камеры
+            spriteBatch.Draw(texture, -camera.Pos + Pos, new Color(40 + Height * 13, 40 + Height * 13, 40 + Height * 13)); // отрисовываем относительно камеры
             spriteBatch.End();
 
             base.Draw(gameTime);
@@ -68,6 +69,9 @@ namespace SandCoreCSharp.Core
         // управление игроком
         private void Control()
         {
+            // измерение высоты
+            Height = (Game as SandCore).terrain.GetBlockPlayerPlace()[2];
+
             KeyboardState ks = Keyboard.GetState();
 
             if (ks.GetPressedKeys().Length == 0) // если клавиши не нажаты, то далее не проверяем
@@ -78,6 +82,8 @@ namespace SandCoreCSharp.Core
                 speed = 5;
             else
                 speed = 3;
+
+            PlayerInWater();
 
             //  движение
             if (ks.IsKeyDown(Keys.W))
@@ -94,6 +100,15 @@ namespace SandCoreCSharp.Core
         private void CameraUpdate()
         {
             camera.Pos = Pos - offset;
+        }
+
+        // проверка на воду
+        private void PlayerInWater()
+        {
+            Terrain terrain = (Game as SandCore).terrain;
+            byte id = terrain.GetBlockIdPlayerPlace();
+            if (id == 4)
+                speed -= 2;
         }
     }
 }

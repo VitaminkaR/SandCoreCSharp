@@ -148,6 +148,12 @@ namespace SandCoreCSharp.Core
                 }
             }
 
+            // FOR DEBUG
+            @new.Tiles[0, 0, 0] = 3;
+            @new.Tiles[15, 0, 0] = 3;
+            @new.Tiles[0, 15, 0] = 3;
+            @new.Tiles[15, 15, 0] = 3;
+
             // добавляем в рисуемые чанки (потому все с камерой будет связано)
             chunks.Add(@new);
         }
@@ -155,11 +161,76 @@ namespace SandCoreCSharp.Core
         // возвращает чанк в котором игрок
         public Chunk GetChunkExistPlayer()
         {
+            Hero hero = (Game as SandCore).hero; // получаем игрока
+            Vector2 pos = hero.Pos; // находим его позицию (для удобства) 
+            int ox = (int)(pos.X / 512); // чанк по x
+            int oy = (int)(pos.Y / 512); // чанк по y
+
+            // для правильного вычисления отрицательных чанков
+            if (pos.X < 0) 
+                ox -= 1;
+            if (pos.Y < 0)
+                oy -= 1;
+
+            // находим этот чанк и возвращаем
             for (int i = 0; i < chunks.Count; i++)
             {
-
+                if (chunks[i].Pos.X == ox * 512 && chunks[i].Pos.Y == oy * 512)
+                    return chunks[i];
             }
-            return new Chunk(3, 3);
+            return null;
+        }
+
+        // возвращает блок на котором стоит игрок
+        public int[] GetBlockPlayerPlace()
+        {
+            Chunk chunk = GetChunkExistPlayer();
+            Hero hero = (Game as SandCore).hero; // получаем игрока
+            Vector2 pos = hero.Pos; // находим его позицию (для удобства) 
+            int ox = (int)((pos.X - chunk.Pos.X) / 32); // блок по x
+            int oy = (int)((pos.Y - chunk.Pos.Y) / 32); // блок по y
+
+            int oz = 0;
+
+            if(ox > 15 || oy > 15) // для фильтра ошибок
+                return new int[] { 0, 0, 0 };
+
+            for (int i = 15; i > -1; i--)
+            {
+                if(chunk.Tiles[ox, oy, i] != 0)
+                {
+                    oz = i;
+                    break;
+                }
+            }
+
+            return new int[] { ox, oy, oz };
+        }
+
+        // возвращает блок на котором стоит игрок
+        public byte GetBlockIdPlayerPlace()
+        {
+            Chunk chunk = GetChunkExistPlayer();
+            Hero hero = (Game as SandCore).hero; // получаем игрока
+            Vector2 pos = hero.Pos; // находим его позицию (для удобства) 
+            int ox = (int)((pos.X - chunk.Pos.X) / 32); // блок по x
+            int oy = (int)((pos.Y - chunk.Pos.Y) / 32); // блок по y
+
+            int oz = 0;
+
+            if (ox > 15 || oy > 15) // для фильтра ошибок
+                return 0;
+
+            for (int i = 15; i > -1; i--)
+            {
+                if (chunk.Tiles[ox, oy, i] != 0)
+                {
+                    oz = i;
+                    break;
+                }
+            }
+
+            return chunk.Tiles[ox, oy, oz];
         }
     }
 }
