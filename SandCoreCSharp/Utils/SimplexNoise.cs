@@ -138,7 +138,7 @@ namespace SandCoreCSharp.Utils
             var values = new int[16, 16];
             for (var i = w; i < w + 16; i++)
                 for (var j = h; j < h + 16; j++)
-                    values[i - w, j - h] = (int)(Math.Abs(SNoise(i * s,j * s) * 16));
+                    values[i - w, j - h] = (int)(Math.Abs(SNoise(i * s,j * s) * 18));
             return values;
         }
     }

@@ -14,6 +14,8 @@ namespace SandCoreCSharp
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        static public SpriteFont font;
+
         // singleton
         static public Game game;
 
@@ -48,6 +50,8 @@ namespace SandCoreCSharp
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            font = Content.Load<SpriteFont>("font");
         }
 
         protected override void Update(GameTime gameTime)
@@ -64,9 +68,13 @@ namespace SandCoreCSharp
         {
             GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here
+            string info = $"[Debug]\nPlayer Position: [{hero.Pos.X};{hero.Pos.Y}]\nCamera Position: [{camera.Pos.X};{camera.Pos.Y}]";
 
             base.Draw(gameTime);
+
+            _spriteBatch.Begin();
+            _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
+            _spriteBatch.End();
         }
     }
 }

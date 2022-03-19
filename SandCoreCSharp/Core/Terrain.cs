@@ -32,7 +32,6 @@ namespace SandCoreCSharp.Core
         }
 
 
-
         // init
         public override void Initialize()
         {
@@ -151,6 +150,16 @@ namespace SandCoreCSharp.Core
 
             // добавляем в рисуемые чанки (потому все с камерой будет связано)
             chunks.Add(@new);
+        }
+
+        // возвращает чанк в котором игрок
+        public Chunk GetChunkExistPlayer()
+        {
+            for (int i = 0; i < chunks.Count; i++)
+            {
+
+            }
+            return new Chunk(3, 3);
         }
     }
 }
