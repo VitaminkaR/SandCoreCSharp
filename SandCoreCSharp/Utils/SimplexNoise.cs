@@ -4,11 +4,10 @@ using System.Text;
 
 namespace SandCoreCSharp.Utils
 {
-    public static class SimplexNoise
+    public static class SimplexNoise // created on base https://weber.itn.liu.se/~stegu/aqsis/aqsis-newnoise/
     {
         const float F2 = 0.366025403f;
         const float G2 = 0.211324865f;
-
 
 
         private static byte[] perm;
