@@ -22,6 +22,14 @@ namespace SandCoreCSharp.Core
         // офсет для камеры
         Vector2 offset;
 
+        // мировые параметры
+        // блок на котором стоит персонаж
+        public byte BlockId { get; private set; }
+        // позиция в чанке
+        public int[] ChunkPos { get; private set; }
+        // сам чанк
+        public Chunk Chunk { get; private set; }
+
         private ContentManager content;
         private SpriteBatch spriteBatch;
 
@@ -54,6 +62,11 @@ namespace SandCoreCSharp.Core
             Control();
             CameraUpdate();
 
+            Terrain terrain = (Game as SandCore).terrain;
+            Chunk = terrain.GetChunkExistPlayer();
+            ChunkPos = terrain.GetChunkPosPlayer(Chunk);
+            BlockId = terrain.GetBlockIdPlayerPlace(Chunk, ChunkPos);
+
             base.Update(gameTime);
         }
 
@@ -70,7 +83,8 @@ namespace SandCoreCSharp.Core
         private void Control()
         {
             // измерение высоты
-            Height = (Game as SandCore).terrain.GetBlockPlayerPlace()[2];
+            if(ChunkPos != null)
+                Height = ChunkPos[2];
 
             KeyboardState ks = Keyboard.GetState();
 
@@ -105,9 +119,7 @@ namespace SandCoreCSharp.Core
         // проверка на воду
         private void PlayerInWater()
         {
-            Terrain terrain = (Game as SandCore).terrain;
-            byte id = terrain.GetBlockIdPlayerPlace();
-            if (id == 4)
+            if (BlockId == 4)
                 speed -= 2;
         }
     }

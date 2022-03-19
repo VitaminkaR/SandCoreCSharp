@@ -68,14 +68,12 @@ namespace SandCoreCSharp
         {
             GraphicsDevice.Clear(Color.Black);
 
-            int[] playerChunkPos = terrain.GetBlockPlayerPlace();
-
             string info = $"[Debug]\n" +
                 $"Player Position: [{hero.Pos.X};{hero.Pos.Y};{hero.Height}]\n" +
                 $"Camera Position: [{camera.Pos.X};{camera.Pos.Y}]\n" +
                 $"Player Chunk: {terrain.GetChunkExistPlayer().GetName()}\n" +
-                $"Player Position In Chunk: [{playerChunkPos[0]};{playerChunkPos[1]};{playerChunkPos[2]}]\n" +
-                $"Player Block Place: {terrain.GetBlockIdPlayerPlace()}";
+                $"Player Position In Chunk: [{hero.ChunkPos[0]};{hero.ChunkPos[1]};{hero.ChunkPos[2]}]\n" +
+                $"Player Block Place: {hero.BlockId}";
 
             base.Draw(gameTime);
 
