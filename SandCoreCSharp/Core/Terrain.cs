@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SandCoreCSharp.Core
 {
@@ -84,18 +85,28 @@ namespace SandCoreCSharp.Core
             Vector2 camPos = (Game as SandCore).camera.Pos; // берем позицию камеры
             Vector2 camBor = (Game as SandCore).camera.Borders; // получаем края камеры
 
+            // генерация
+            int ofx = (int)(camPos.X / 512);
+            int ofy = (int)(camPos.Y / 512);
+            for (int i = ofx - 1; i < ofx + 4; i++)
+            {
+                for (int j = ofy - 1; j < ofy + 3; j++)
+                {
+                    Generate(i * 512, j * 512);
+                }
+            }
+
             // проверка на видимость 
             for (int i = 0; i < chunks.Count; i++)
             {
                 Chunk chunk = chunks[i]; // получаем чанк
                 // проверяем входит ли чанк в границы камеры, если нет, то удаляем его из отрисовываемых
                 // и генерируем новый чанк
-                if (chunk.Pos.X > camBor.X || chunk.Pos.Y > camBor.Y || 
-                    (chunk.Pos.X + Chunk.chunkSize) < camPos.X || (chunk.Pos.Y + Chunk.chunkSize) < camPos.Y)
+                if (chunk.Pos.X > camBor.X + 600 || chunk.Pos.Y > camBor.Y + 600 || 
+                    (chunk.Pos.X + 512) < camPos.X - 600 || (chunk.Pos.Y + 512) < camPos.Y - 600)
                 {
                     chunks.Remove(chunk);
                 }
-                    
             }
 
             base.Update(gameTime);
@@ -104,6 +115,9 @@ namespace SandCoreCSharp.Core
         // generate chunk (debug method)
         public void Generate(float _x, float _y)
         {
+            if (chunks.Any(obj => obj.Pos.X == _x && obj.Pos.Y == _y)) // проверяем если такой чанк есть, то не создаем такой же
+                return;
+
             Chunk @new = new Chunk(_x, _y);
             // заполняем воздухом
             for (int x = 0; x < 16; x++)
@@ -125,6 +139,11 @@ namespace SandCoreCSharp.Core
                     @new.Tiles[x, y, 8] = 1;
                 }
             }
+
+            @new.Tiles[0, 0, 8] = 2;
+            @new.Tiles[0, 15, 8] = 2;
+            @new.Tiles[15, 0, 8] = 2;
+            @new.Tiles[15, 15, 8] = 2;
 
             // добавляем в рисуемые чанки (потому все с камерой будет связано)
             chunks.Add(@new);
