@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using System.Collections.Generic;
 using System.Linq;
+using SandCoreCSharp.Utils;
 
 namespace SandCoreCSharp.Core
 {
@@ -13,11 +14,15 @@ namespace SandCoreCSharp.Core
         private SpriteBatch spriteBatch;
 
         // sprites tiles
-        // 0 - tile
+        // 0 - mud
+        // 1 - grass
+        // 2 - stone
+        // 3 - water
         private Texture2D[] sprites;
 
         // view chunks
         private List<Chunk> chunks;
+
 
         public Terrain(Game game) : base(game)
         {
@@ -25,6 +30,8 @@ namespace SandCoreCSharp.Core
             content = game.Content;
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
         }
+
+
 
         // init
         public override void Initialize()
@@ -40,6 +47,8 @@ namespace SandCoreCSharp.Core
         {
             sprites[0] = content.Load<Texture2D>("Mud");
             sprites[1] = content.Load<Texture2D>("Grass");
+            sprites[2] = content.Load<Texture2D>("Stone");
+            sprites[3] = content.Load<Texture2D>("Water");
 
             base.LoadContent();
         }
@@ -68,7 +77,7 @@ namespace SandCoreCSharp.Core
                             // отрисовываем блок в позиции относительно камеры и относительно координат чанка
                             // с текстурой для его id
                             // делаем более темным в зависимости от его высоты
-                            spriteBatch.Draw(sprites[id - 1], new Vector2(-camPos.X + x * 32 + chunkPos.X, -camPos.Y + y * 32 + chunkPos.Y), new Color(255 - z * 8, 255 - z * 8, 255 - z * 8));
+                            spriteBatch.Draw(sprites[id - 1], new Vector2(-camPos.X + x * 32 + chunkPos.X, -camPos.Y + y * 32 + chunkPos.Y), new Color(40 + z * 13, 40 + z * 13, 40 + z * 13));
                             break; // если блок отрисован, то нет смысла рисовать ниже (оптимизация)
                         }
                     }
@@ -112,38 +121,33 @@ namespace SandCoreCSharp.Core
             base.Update(gameTime);
         }
 
-        // generate chunk (debug method)
+        // generate chunk
         public void Generate(float _x, float _y)
         {
             if (chunks.Any(obj => obj.Pos.X == _x && obj.Pos.Y == _y)) // проверяем если такой чанк есть, то не создаем такой же
                 return;
 
             Chunk @new = new Chunk(_x, _y);
-            // заполняем воздухом
-            for (int x = 0; x < 16; x++)
-            {
-                for (int y = 0; y < 16; y++)
-                {
-                    for (int z = 0; z < 16; z++)
-                    {
-                        @new.Tiles[x, y, z] = 0;
-                    }
-                }
-            }
-            
-             // генерируем землю на высоте 8 
-            for (int x = 0; x < 16; x++)
-            {
-                for (int y = 0; y < 16; y++)
-                {
-                    @new.Tiles[x, y, 8] = 1;
-                }
-            }
 
-            @new.Tiles[0, 0, 8] = 2;
-            @new.Tiles[0, 15, 8] = 2;
-            @new.Tiles[15, 0, 8] = 2;
-            @new.Tiles[15, 15, 8] = 2;
+            var heights = SimplexNoise.GetNoise(16, 16, 0.01f); // находим высоты
+            for (int x = 0; x < 16; x++)
+            {
+                for (int y = 0; y < 16; y++)
+                {
+                    // изменение блоков от высоты
+                    if (heights[x, y] > 14)
+                    {
+                        @new.Tiles[x, y, heights[x, y]] = 3;
+                        continue;
+                    }  // горы
+                    if (heights[x, y] < 4)
+                    {
+                        @new.Tiles[x, y, heights[x, y]] = 4;
+                        continue;
+                    } // вода
+                    @new.Tiles[x, y, heights[x, y]] = 2; // земля
+                }
+            }
 
             // добавляем в рисуемые чанки (потому все с камерой будет связано)
             chunks.Add(@new);

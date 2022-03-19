@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SandCoreCSharp.Core;
+using SandCoreCSharp.Utils;
 
 namespace SandCoreCSharp
 {
@@ -39,6 +40,8 @@ namespace SandCoreCSharp
             camera = new Camera(this);
             hero = new Hero(this, WIDTH / 2 - 16, HEIGHT / 2 - 16, camera);
 
+            SimplexNoise.CreateSeed(30112004);
+
             base.Initialize();
         }
 
@@ -47,11 +50,6 @@ namespace SandCoreCSharp
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             terrain.Generate(0, 0);
-            terrain.Generate(512, 0);
-            terrain.Generate(0, 512);
-            terrain.Generate(512, 512);
-            terrain.Generate(1024, 0);
-            terrain.Generate(1024, 512);
         }
 
         protected override void Update(GameTime gameTime)
