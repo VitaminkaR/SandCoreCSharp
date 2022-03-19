@@ -48,6 +48,7 @@ namespace SandCoreCSharp.Core
         {
             spriteBatch.Begin();
 
+            // проходим пов сем чанкам
             for (int i = 0; i < chunks.Count; i++)
             {
                 for (int x = 0; x < 16; x++)
@@ -60,8 +61,13 @@ namespace SandCoreCSharp.Core
                             if (id == 0) // если воздух то идем далее
                                 continue;
 
-                            // отрисовываем блок с текстурой для его id и делаем более темным в зависимости от его высоты
-                            spriteBatch.Draw(sprites[id - 1], new Vector2(x * 32, y * 32), new Color(255 - z * 8, 255 - z * 8, 255 - z * 8));
+                            Vector2 camPos = (Game as SandCore).camera.Pos; // берем позицию камеры
+                            Vector2 chunkPos = chunks[i].Pos;
+
+                            // отрисовываем блок в позиции относительно камеры и относительно координат чанка
+                            // с текстурой для его id
+                            // делаем более темным в зависимости от его высоты
+                            spriteBatch.Draw(sprites[id - 1], new Vector2(-camPos.X + x * 32 + chunkPos.X, -camPos.Y + y * 32 + chunkPos.Y), new Color(255 - z * 8, 255 - z * 8, 255 - z * 8));
                             break; // если блок отрисован, то нет смысла рисовать ниже (оптимизация)
                         }
                     }
@@ -73,10 +79,32 @@ namespace SandCoreCSharp.Core
             base.Draw(gameTime);
         }
 
-        // generate chunk (debug method)
-        public void Generate()
+        public override void Update(GameTime gameTime)
         {
-            Chunk @new = new Chunk(0, 0);
+            Vector2 camPos = (Game as SandCore).camera.Pos; // берем позицию камеры
+            Vector2 camBor = (Game as SandCore).camera.Borders; // получаем края камеры
+
+            // проверка на видимость 
+            for (int i = 0; i < chunks.Count; i++)
+            {
+                Chunk chunk = chunks[i]; // получаем чанк
+                // проверяем входит ли чанк в границы камеры, если нет, то удаляем его из отрисовываемых
+                // и генерируем новый чанк
+                if (chunk.Pos.X > camBor.X || chunk.Pos.Y > camBor.Y || 
+                    (chunk.Pos.X + Chunk.chunkSize) < camPos.X || (chunk.Pos.Y + Chunk.chunkSize) < camPos.Y)
+                {
+                    chunks.Remove(chunk);
+                }
+                    
+            }
+
+            base.Update(gameTime);
+        }
+
+        // generate chunk (debug method)
+        public void Generate(float _x, float _y)
+        {
+            Chunk @new = new Chunk(_x, _y);
             // заполняем воздухом
             for (int x = 0; x < 16; x++)
             {

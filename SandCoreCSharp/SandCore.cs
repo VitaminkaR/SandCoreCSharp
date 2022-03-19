@@ -17,7 +17,8 @@ namespace SandCoreCSharp
         static public Game game;
 
         // main objects
-        private Terrain terrain;
+        internal Terrain terrain;
+        internal Camera camera;
 
         public SandCore()
         {
@@ -34,6 +35,7 @@ namespace SandCoreCSharp
             game = this;
 
             terrain = new Terrain(this);
+            camera = new Camera(this);
 
             base.Initialize();
         }
@@ -42,7 +44,12 @@ namespace SandCoreCSharp
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            terrain.Generate();
+            terrain.Generate(0, 0);
+            terrain.Generate(512, 0);
+            terrain.Generate(0, 512);
+            terrain.Generate(512, 512);
+            terrain.Generate(1024, 0);
+            terrain.Generate(1024, 512);
         }
 
         protected override void Update(GameTime gameTime)
