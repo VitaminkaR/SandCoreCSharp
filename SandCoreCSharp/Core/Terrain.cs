@@ -64,7 +64,7 @@ namespace SandCoreCSharp.Core
                 {
                     for (int y = 0; y < 16; y++)
                     {
-                        for (int z = 0; z < 16; z++)
+                        for (int z = 15; z > -1; z--)
                         {
                             byte id = chunks[i].Tiles[x, y, z]; // получаем id
                             if (id == 0) // если воздух то идем далее
@@ -145,6 +145,12 @@ namespace SandCoreCSharp.Core
                         continue;
                     } // вода
                     @new.Tiles[x, y, heights[x, y]] = 2; // земля
+
+                    // под землей должны быть камушки
+                    for (int i = 0; i < heights[x, y]; i++)
+                    {
+                        @new.Tiles[x, y, i] = 3;
+                    }
                 }
             }
 
