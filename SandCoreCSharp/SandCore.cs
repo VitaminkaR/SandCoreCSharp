@@ -19,6 +19,7 @@ namespace SandCoreCSharp
         // main objects
         internal Terrain terrain;
         internal Camera camera;
+        internal Hero hero;
 
         public SandCore()
         {
@@ -36,6 +37,7 @@ namespace SandCoreCSharp
 
             terrain = new Terrain(this);
             camera = new Camera(this);
+            hero = new Hero(this, WIDTH / 2 - 16, HEIGHT / 2 - 16, camera);
 
             base.Initialize();
         }
