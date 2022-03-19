@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SandCoreCSharp.Core;
 
 namespace SandCoreCSharp
 {
@@ -14,6 +15,9 @@ namespace SandCoreCSharp
 
         // singleton
         static public Game game;
+
+        // main objects
+        private Terrain terrain;
 
         public SandCore()
         {
@@ -29,6 +33,8 @@ namespace SandCoreCSharp
         {
             game = this;
 
+            terrain = new Terrain(this);
+
             base.Initialize();
         }
 
@@ -36,7 +42,7 @@ namespace SandCoreCSharp
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            terrain.Generate();
         }
 
         protected override void Update(GameTime gameTime)
