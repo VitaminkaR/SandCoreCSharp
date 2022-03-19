@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SandCoreCSharp.Core;
 using SandCoreCSharp.Utils;
+using System;
 
 namespace SandCoreCSharp
 {
@@ -42,7 +43,7 @@ namespace SandCoreCSharp
             camera = new Camera(this);
             hero = new Hero(this, WIDTH / 2 - 16, HEIGHT / 2 - 16, camera);
 
-            SimplexNoise.CreateSeed(30112004);
+            SimplexNoise.CreateSeed(Convert.ToInt32(ConfigReader.ReadParam("seed")));
 
             base.Initialize();
         }
