@@ -30,6 +30,9 @@ namespace SandCoreCSharp.Core
         // сам чанк
         public Chunk Chunk { get; private set; }
 
+        // здоровье
+        public float Health { get; private set; }
+
         private ContentManager content;
         private SpriteBatch spriteBatch;
 
@@ -46,6 +49,7 @@ namespace SandCoreCSharp.Core
         {
             speed = 3;
             offset = Pos;
+            Health = 100;
 
             base.Initialize();
         }
@@ -74,6 +78,9 @@ namespace SandCoreCSharp.Core
         {
             spriteBatch.Begin();
             spriteBatch.Draw(texture, -camera.Pos + Pos, new Color(40 + Height * 13, 40 + Height * 13, 40 + Height * 13)); // отрисовываем относительно камеры
+
+            // ui
+            spriteBatch.DrawString(SandCore.font, Health.ToString(), new Vector2(32, SandCore.HEIGHT - 64), Color.DarkRed, 0, Vector2.Zero, 2, SpriteEffects.None, 0);
             spriteBatch.End();
 
             base.Draw(gameTime);

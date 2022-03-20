@@ -64,13 +64,22 @@ namespace SandCoreCSharp.Core
                 Pos = (blockInChunk + Chunk.Pos) - camera.Pos;
             }
 
+
+
             if(state.LeftButton == ButtonState.Pressed && !mouseBlock && Active)
             {
                 mouseBlock = true;
                 Break();
             }
-            if (state.LeftButton == ButtonState.Released)
+            if (state.RightButton == ButtonState.Pressed && !mouseBlock && Active)
+            {
+                mouseBlock = true;
+                Use();
+            }
+            if (state.RightButton == ButtonState.Released && state.LeftButton == ButtonState.Released)
                 mouseBlock = false;
+
+
 
             // проверка на расстояние от игрока
             Vector2 playerPos = player.Pos;
@@ -114,6 +123,30 @@ namespace SandCoreCSharp.Core
             // ломаем
             if(oz > 0)
                 Chunk.Tiles[Block[0], Block[1], oz] = 0;
+        }
+
+        // нажатие на правую кнопку мыши
+        private void Use()
+        {
+            // находим верхний блок
+            int oz = 0;
+            for (int i = 15; i > -1; i--)
+            {
+                if (this.Chunk.Tiles[Block[0], Block[1], i] != 0)
+                {
+                    oz = i;
+                    break;
+                }
+            }
+
+            oz += 1;
+
+            if (oz >= 15)
+                return;
+
+            // далее дейсвтие ура лять
+            // ставим
+            Chunk.Tiles[Block[0], Block[1], oz] = 3;
         }
     }
 }
