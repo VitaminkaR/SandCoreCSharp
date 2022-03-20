@@ -154,14 +154,21 @@ namespace SandCoreCSharp.Core
                 }
             }
 
-            // FOR DEBUG
-            @new.Tiles[0, 0, 0] = 3;
-            @new.Tiles[15, 0, 0] = 3;
-            @new.Tiles[0, 15, 0] = 3;
-            @new.Tiles[15, 15, 0] = 3;
-
             // добавляем в рисуемые чанки (потому все с камерой будет связано)
             chunks.Add(@new);
+        }
+        
+        // возвращает чанк
+        public Chunk GetChunk(float x, float y)
+        {
+            for (int i = 0; i < chunks.Count; i++)
+            {
+                Vector2 pos = chunks[i].Pos;
+                if (x > pos.X && x < pos.X + 512
+                    && y > pos.Y && y < pos.Y + 512)
+                    return chunks[i];
+            }
+            return null;
         }
 
         // возвращает чанк в котором игрок

@@ -24,6 +24,7 @@ namespace SandCoreCSharp
         internal Terrain terrain;
         internal Camera camera;
         internal Hero hero;
+        internal Cursor cursor;
 
         public SandCore()
         {
@@ -42,6 +43,7 @@ namespace SandCoreCSharp
             terrain = new Terrain(this);
             camera = new Camera(this);
             hero = new Hero(this, WIDTH / 2 - 16, HEIGHT / 2 - 16, camera);
+            cursor = new Cursor(this, hero);
 
             SimplexNoise.CreateSeed(Convert.ToInt32(ConfigReader.ReadParam("seed")));
 
@@ -74,12 +76,15 @@ namespace SandCoreCSharp
                 $"Camera Position: [{camera.Pos.X};{camera.Pos.Y}]\n" +
                 $"Player Chunk: {terrain.GetChunkExistPlayer().GetName()}\n" +
                 $"Player Position In Chunk: [{hero.ChunkPos[0]};{hero.ChunkPos[1]};{hero.ChunkPos[2]}]\n" +
-                $"Player Block Place: {hero.BlockId}";
+                $"Player Block Place: {hero.BlockId}\n" +
+                $"Mouse Chunk: {cursor.Chunk.GetName()}\n" +
+                $"Mouse Block: {cursor.Block[0]}; {cursor.Block[1]}";
 
             base.Draw(gameTime);
 
             _spriteBatch.Begin();
-            _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
+            if(Keyboard.GetState().IsKeyDown(Keys.F3))
+                _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
             _spriteBatch.End();
         }
     }
