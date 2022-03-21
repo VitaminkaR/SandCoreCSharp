@@ -109,13 +109,13 @@ namespace SandCoreCSharp.Core
             PlayerInWater();
 
             //  движение
-            if (ks.IsKeyDown(Keys.W))
+            if (ks.IsKeyDown(Keys.W) && CheckCollison(new Vector2(0, -speed)))
                 Pos += new Vector2(0, -speed);
-            if (ks.IsKeyDown(Keys.S))
+            if (ks.IsKeyDown(Keys.S) && CheckCollison(new Vector2(0, speed)))
                 Pos += new Vector2(0, speed);
-            if (ks.IsKeyDown(Keys.D))
+            if (ks.IsKeyDown(Keys.D) && CheckCollison(new Vector2(speed, 0)))
                 Pos += new Vector2(speed, 0);
-            if (ks.IsKeyDown(Keys.A))
+            if (ks.IsKeyDown(Keys.A) && CheckCollison(new Vector2(-speed, 0)))
                 Pos += new Vector2(-speed, 0);
         }
 
@@ -130,6 +130,19 @@ namespace SandCoreCSharp.Core
         {
             if (BlockId == 4)
                 speed -= 2;
+        }
+
+        // проверка на столкновения true - если столкновений нет
+        private bool CheckCollison(Vector2 direction)
+        {
+            Rectangle collider = new Rectangle((Pos + direction).ToPoint(), new Point(32, 32));
+            for (int i = 0; i < Block.Colliders.Count; i++)
+            {
+                Rectangle blockCollider = Block.Colliders[i];
+                if (blockCollider.Intersects(collider))
+                    return false;
+            }
+            return true;
         }
     }
 }

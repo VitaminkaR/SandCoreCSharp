@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Diagnostics;
+using SandCoreCSharp.Core.Blocks;
 
 namespace SandCoreCSharp.Core
 {
@@ -52,7 +52,7 @@ namespace SandCoreCSharp.Core
 
             // ищем на какой блок навестись
             Chunk chunk = terrain.GetChunk(pos.X, pos.Y);
-            if(chunk != null)
+            if (chunk != null)
             {
                 this.Chunk = chunk;
                 // ищем блок
@@ -61,7 +61,7 @@ namespace SandCoreCSharp.Core
             }
 
 
-            if(state.LeftButton == ButtonState.Pressed && !mouseBlock && Active)
+            if (state.LeftButton == ButtonState.Pressed && !mouseBlock && Active)
             {
                 mouseBlock = true;
                 Break();
@@ -97,51 +97,26 @@ namespace SandCoreCSharp.Core
                 spriteBatch.Draw(texture, Pos, Color.Black);
             spriteBatch.End();
 
-            base.Draw(gameTime); 
+            base.Draw(gameTime);
         }
 
         // нажатие на левую кнопку мыши
         private void Break()
         {
-            // находим верхний блок
-            int oz = 0;
-            for (int i = 15; i > -1; i--)
+            Vector2 positionBlockCursor = new Vector2(Tile.Position[0] * 32, Tile.Position[1] * 32) + Chunk.Pos;
+            for (int i = 0; i < Game.Components.Count; i++) // проход по всем блокам
             {
-                if (this.Chunk.Tiles[Tile.Position[0], Tile.Position[1], i] != 0)
-                {
-                    oz = i;
-                    break;
-                }
+                Block block = (Game.Components[i] as Block);
+                if (block != null)
+                    if (block.GetPosition() == positionBlockCursor)
+                        block.Break();
             }
-
-            // далее дейсвтие ура лять
-            // ломаем
-            if(oz > 0)
-                Chunk.Tiles[Tile.Position[0], Tile.Position[1], oz] = 0;
         }
 
         // нажатие на правую кнопку мыши
         private void Use()
         {
-            // находим верхний блок
-            int oz = 0;
-            for (int i = 15; i > -1; i--)
-            {
-                if (this.Chunk.Tiles[Tile.Position[0], Tile.Position[1], i] != 0)
-                {
-                    oz = i;
-                    break;
-                }
-            }
-
-            oz += 1;
-
-            if (oz >= 15)
-                return;
-
-            // далее дейсвтие ура лять
-            // ставим
-            Chunk.Tiles[Tile.Position[0], Tile.Position[1], oz] = 3;
+            new Wood(Game, Chunk, new Point(Tile.Position[0], Tile.Position[1]));
         }
     }
 }
