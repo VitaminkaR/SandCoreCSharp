@@ -136,11 +136,17 @@ namespace SandCoreCSharp.Core
         private bool CheckCollison(Vector2 direction)
         {
             Rectangle collider = new Rectangle((Pos + direction).ToPoint(), new Point(32, 32));
-            for (int i = 0; i < Block.Colliders.Count; i++)
+            for (int i = 0; i < Game.Components.Count; i++)
             {
-                Rectangle blockCollider = Block.Colliders[i];
-                if (blockCollider.Intersects(collider))
-                    return false;
+                Block block = (Game.Components[i] as Block);
+                if (block != null)
+                {
+                    if(collider.Intersects(block.collider) && block.IsSolid)
+                    {
+                        block.CollidePlayer(this);
+                        return false;
+                    }
+                }        
             }
             return true;
         }

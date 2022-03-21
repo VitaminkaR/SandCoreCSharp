@@ -8,8 +8,6 @@ namespace SandCoreCSharp.Core
 {
     class Block : DrawableGameComponent
     {
-        public static List<Rectangle> Colliders { get; private set; } = new List<Rectangle>();
-
         // чанк в котором блок
         private Chunk chunk;
         // позиция чанка в чанке (у блоков нет высоты, они всегда на максимальной)
@@ -26,9 +24,14 @@ namespace SandCoreCSharp.Core
         protected Camera camera;
         protected Terrain terrain;
 
+        // Коллайдер
+        public Rectangle collider;
+
         // параметры при создании блока
         // прочность блока (сколько секунд будет разрушаться) -параметр-
         public int Hardness { get; protected set; } = 1;
+        // имеет ли блок коллизию
+        public bool IsSolid { get; protected set; } = true;
 
         public Block(Game game, Chunk _chunk, Point _position) : base(game)
         {
@@ -43,6 +46,8 @@ namespace SandCoreCSharp.Core
 
             chunk = _chunk;
             position = _position;
+
+            collider = new Rectangle((int)(chunk.Pos.X + position.X * 32), (int)(chunk.Pos.Y + position.Y * 32), 32, 32);
 
             // проходим и проверяем, если там уже стоит блок, то новый не создаем
             for (int i = 0; i < Game.Components.Count; i++)
@@ -71,20 +76,17 @@ namespace SandCoreCSharp.Core
             base.Draw(gameTime);
         }
 
-        public void Break()
+        // когда блок ломается
+        public virtual void Break()
         {
             Game.Components.Remove(this);
             Rectangle collider = new Rectangle((int)(chunk.Pos.X + position.X * 32), (int)(chunk.Pos.Y + position.Y * 32), 32, 32);
-            if (Colliders.Contains(collider))
-                Colliders.Remove(collider);
         }
 
         public Vector2 GetPosition() => new Vector2(chunk.Pos.X + position.X * 32, chunk.Pos.Y + position.Y * 32);
 
-
-
-        // параметры при создании блока
-        // нужно вызвать, чтобы сделать блок твердым
-        protected void Solid() => Colliders.Add(new Rectangle((int)(chunk.Pos.X + position.X * 32), (int)(chunk.Pos.Y + position.Y * 32), 32, 32));
+        // столкновение с игроком
+        public virtual void CollidePlayer(Hero player)
+        {}
     }
 }

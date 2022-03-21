@@ -7,7 +7,8 @@ namespace SandCoreCSharp.Core.Blocks
     {
         public Wood(Game game, Chunk _chunk, Point _position) : base(game, _chunk, _position)
         {
-            Solid();
+            IsSolid = true;
+            Hardness = 1;
         }
 
         public override void Initialize()
