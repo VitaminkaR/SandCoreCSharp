@@ -26,6 +26,10 @@ namespace SandCoreCSharp.Core
         protected Camera camera;
         protected Terrain terrain;
 
+        // параметры при создании блока
+        // прочность блока (сколько секунд будет разрушаться) -параметр-
+        public int Hardness { get; protected set; } = 1;
+
         public Block(Game game, Chunk _chunk, Point _position) : base(game)
         {
             content = Game.Content;
@@ -75,9 +79,12 @@ namespace SandCoreCSharp.Core
                 Colliders.Remove(collider);
         }
 
+        public Vector2 GetPosition() => new Vector2(chunk.Pos.X + position.X * 32, chunk.Pos.Y + position.Y * 32);
+
+
+
+        // параметры при создании блока
         // нужно вызвать, чтобы сделать блок твердым
         protected void Solid() => Colliders.Add(new Rectangle((int)(chunk.Pos.X + position.X * 32), (int)(chunk.Pos.Y + position.Y * 32), 32, 32));
-
-        public Vector2 GetPosition() => new Vector2(chunk.Pos.X + position.X * 32, chunk.Pos.Y + position.Y * 32);
     }
 }

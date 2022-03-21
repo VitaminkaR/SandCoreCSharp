@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SandCoreCSharp.Core.Blocks;
+using SandCoreCSharp.Utils;
 
 namespace SandCoreCSharp.Core
 {
@@ -20,6 +21,9 @@ namespace SandCoreCSharp.Core
 
         // блок мыши
         private bool mouseBlock;
+
+        // для ломания блока
+        private bool breaking;
 
 
         public Cursor(Game game, Hero hero) : base(game)
@@ -72,7 +76,10 @@ namespace SandCoreCSharp.Core
                 Use();
             }
             if (state.RightButton == ButtonState.Released && state.LeftButton == ButtonState.Released)
+            {
                 mouseBlock = false;
+                breaking = false; // если отжали кнопку, то перестали ломать блок
+            }                
 
 
 
@@ -109,7 +116,10 @@ namespace SandCoreCSharp.Core
                 Block block = (Game.Components[i] as Block);
                 if (block != null)
                     if (block.GetPosition() == positionBlockCursor)
-                        block.Break();
+                    {
+                        SimpleTimer timer = new SimpleTimer(block.Hardness * 1000, Breaking, block); // ломает блок n секунд
+                        breaking = true;
+                    }
             }
         }
 
@@ -117,6 +127,17 @@ namespace SandCoreCSharp.Core
         private void Use()
         {
             new Wood(Game, Chunk, new Point(Tile.Position[0], Tile.Position[1]));
+        }
+
+        // ломание блока
+        private void Breaking(object obj)
+        {
+            if (breaking)
+            {
+                breaking = false;
+                Block block = (obj as Block);
+                block.Break();
+            }
         }
     }
 }
