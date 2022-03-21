@@ -9,5 +9,5 @@ v0.1.2 - added lives to the hero, pressing the right button performs an action
 v0.1.3 - A tile structure has been added, which is a chunk and the position of the tile in it. Added ways to find a chunk and tile by their id for the convenience of adding various functionality in the future.                                    
 v0.1.4 - bug fixes and correction of negative coordinates                                          
 v0.2.0 - block system                                                                                                
-v0.2.1 - blocks do not break instantly
+v0.2.1 - blocks do not break instantly                                                   
 v0.2.2 - improved block system (added virtual methods)
