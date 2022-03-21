@@ -14,7 +14,7 @@ namespace SandCoreCSharp.Core
         public bool Active { get; private set; } // активный ли курсор
 
         // блок на который наведена мышь [x, y, z]
-        public int[] Block { get; private set; }
+        public Tile Tile { get; private set; }
         // чанк в котором мышка
         public Chunk Chunk { get; private set; }
 
@@ -56,14 +56,9 @@ namespace SandCoreCSharp.Core
             {
                 this.Chunk = chunk;
                 // ищем блок
-                Vector2 posInChunk = pos - chunk.Pos;
-                int ox = (int)(posInChunk.X / 32);
-                int oy = (int)(posInChunk.Y / 32);
-                Vector2 blockInChunk = new Vector2(ox * 32, oy * 32);
-                Block = new int[2] { ox, oy };
-                Pos = (blockInChunk + Chunk.Pos) - camera.Pos;
+                Tile = terrain.GetTile(pos);
+                Pos = (new Vector2(Tile.Position[0] * 32, Tile.Position[1] * 32) + Chunk.Pos) - camera.Pos;
             }
-
 
 
             if(state.LeftButton == ButtonState.Pressed && !mouseBlock && Active)
@@ -112,7 +107,7 @@ namespace SandCoreCSharp.Core
             int oz = 0;
             for (int i = 15; i > -1; i--)
             {
-                if (this.Chunk.Tiles[Block[0], Block[1], i] != 0)
+                if (this.Chunk.Tiles[Tile.Position[0], Tile.Position[1], i] != 0)
                 {
                     oz = i;
                     break;
@@ -122,7 +117,7 @@ namespace SandCoreCSharp.Core
             // далее дейсвтие ура лять
             // ломаем
             if(oz > 0)
-                Chunk.Tiles[Block[0], Block[1], oz] = 0;
+                Chunk.Tiles[Tile.Position[0], Tile.Position[1], oz] = 0;
         }
 
         // нажатие на правую кнопку мыши
@@ -132,7 +127,7 @@ namespace SandCoreCSharp.Core
             int oz = 0;
             for (int i = 15; i > -1; i--)
             {
-                if (this.Chunk.Tiles[Block[0], Block[1], i] != 0)
+                if (this.Chunk.Tiles[Tile.Position[0], Tile.Position[1], i] != 0)
                 {
                     oz = i;
                     break;
@@ -146,7 +141,7 @@ namespace SandCoreCSharp.Core
 
             // далее дейсвтие ура лять
             // ставим
-            Chunk.Tiles[Block[0], Block[1], oz] = 3;
+            Chunk.Tiles[Tile.Position[0], Tile.Position[1], oz] = 3;
         }
     }
 }

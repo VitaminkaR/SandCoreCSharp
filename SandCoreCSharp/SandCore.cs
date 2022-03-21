@@ -78,7 +78,7 @@ namespace SandCoreCSharp
                 $"Player Position In Chunk: [{hero.ChunkPos[0]};{hero.ChunkPos[1]};{hero.ChunkPos[2]}]\n" +
                 $"Player Block Place: {hero.BlockId}\n" +
                 $"Mouse Chunk: {cursor.Chunk.GetName()}\n" +
-                $"Mouse Block: {cursor.Block[0]}; {cursor.Block[1]}";
+                $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}";
 
             base.Draw(gameTime);
 

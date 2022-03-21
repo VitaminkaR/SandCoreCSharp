@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using System.Collections.Generic;
 using System.Linq;
 using SandCoreCSharp.Utils;
+using System.Diagnostics;
 
 namespace SandCoreCSharp.Core
 {
@@ -110,7 +111,7 @@ namespace SandCoreCSharp.Core
                 Chunk chunk = chunks[i]; // получаем чанк
                 // проверяем входит ли чанк в границы камеры, если нет, то удаляем его из отрисовываемых
                 // и генерируем новый чанк
-                if (chunk.Pos.X > camBor.X + 600 || chunk.Pos.Y > camBor.Y + 600 || 
+                if (chunk.Pos.X > camBor.X + 600 || chunk.Pos.Y > camBor.Y + 600 ||
                     (chunk.Pos.X + 512) < camPos.X - 600 || (chunk.Pos.Y + 512) < camPos.Y - 600)
                 {
                     chunks.Remove(chunk);
@@ -157,8 +158,8 @@ namespace SandCoreCSharp.Core
             // добавляем в рисуемые чанки (потому все с камерой будет связано)
             chunks.Add(@new);
         }
-        
-        // возвращает чанк
+
+        // возвращает чанк по координате
         public Chunk GetChunk(float x, float y)
         {
             for (int i = 0; i < chunks.Count; i++)
@@ -166,6 +167,19 @@ namespace SandCoreCSharp.Core
                 Vector2 pos = chunks[i].Pos;
                 if (x > pos.X && x < pos.X + 512
                     && y > pos.Y && y < pos.Y + 512)
+                    return chunks[i];
+            }
+            return null;
+        }
+
+        // возвращает чанк по индексу
+        public Chunk GetChunk(int ix, int iy)
+        {
+            float x = ix * 512;
+            float y = iy * 512;
+            for (int i = 0; i < chunks.Count; i++)
+            {
+                if (chunks[i].Pos == new Vector2(x, y))
                     return chunks[i];
             }
             return null;
@@ -180,18 +194,13 @@ namespace SandCoreCSharp.Core
             int oy = (int)(pos.Y / 512); // чанк по y
 
             // для правильного вычисления отрицательных чанков
-            if (pos.X < 0) 
+            if (pos.X < 0)
                 ox -= 1;
             if (pos.Y < 0)
                 oy -= 1;
 
             // находим этот чанк и возвращаем
-            for (int i = 0; i < chunks.Count; i++)
-            {
-                if (chunks[i].Pos.X == ox * 512 && chunks[i].Pos.Y == oy * 512)
-                    return chunks[i];
-            }
-            return null;
+            return GetChunk(ox, oy);
         }
 
         // возвращает блок на котором стоит игрок
@@ -204,12 +213,12 @@ namespace SandCoreCSharp.Core
 
             int oz = 0;
 
-            if(ox > 15 || oy > 15) // для фильтра ошибок
+            if (ox > 15 || oy > 15) // для фильтра ошибок
                 return new int[] { 0, 0, 0 };
 
             for (int i = 15; i > -1; i--)
             {
-                if(chunk.Tiles[ox, oy, i] != 0)
+                if (chunk.Tiles[ox, oy, i] != 0)
                 {
                     oz = i;
                     break;
@@ -221,5 +230,31 @@ namespace SandCoreCSharp.Core
 
         // возвращает блок на котором стоит игрок
         public byte GetBlockIdPlayerPlace(Chunk chunk, int[] pos) => chunk.Tiles[pos[0], pos[1], pos[2]];
+
+        // возвращает блок поределенной позиции
+        public Tile GetTile(Vector2 pos)
+        {
+            // найти координаты чанка
+            int ox = (int)(pos.X / 512);
+            int oy = (int)(pos.Y / 512);
+            if (ox < 0) ox -= 1;
+            if (oy < 0) oy -= 1;
+            Point chunkCoords = new Point(ox * 512, oy * 512);
+
+            //как найти блок
+            Point v1 = pos.ToPoint() - chunkCoords;
+            ox = v1.X / 32;
+            oy = v1.Y / 32;
+            return new Tile(ox, oy, GetChunk(chunkCoords.X, chunkCoords.Y));
+        }
+
+        // возвращает блок по индексу (система для удобного взаимодейсвтия  блоками)
+        public Tile GetTile(int ix, int iy)
+        {
+            int[] chunk = new int[2] { ix / 16, iy / 16 };
+            int x = ix - chunk[0];
+            int y = iy - chunk[1];
+            return new Tile(x, y, GetChunk(chunk[0], chunk[1]));
+        }
     }
 }
