@@ -78,6 +78,10 @@ namespace SandCoreCSharp.Core
                             // с текстурой для его id
                             // делаем более темным в зависимости от его высоты
                             spriteBatch.Draw(sprites[id - 1], new Vector2(-camPos.X + x * 32 + chunkPos.X, -camPos.Y + y * 32 + chunkPos.Y), new Color(40 + z * 13, 40 + z * 13, 40 + z * 13));
+
+                            // для дебага
+                            if(SandCore.debugChunks && (x == 0 || x == 15 || y == 0 || y == 15))
+                                spriteBatch.Draw(sprites[id - 1], new Vector2(-camPos.X + x * 32 + chunkPos.X, -camPos.Y + y * 32 + chunkPos.Y), new Color(255, 0, 0));
                             break; // если блок отрисован, то нет смысла рисовать ниже (оптимизация)
                         }
                     }
@@ -165,11 +169,11 @@ namespace SandCoreCSharp.Core
             for (int i = 0; i < chunks.Count; i++)
             {
                 Vector2 pos = chunks[i].Pos;
-                if (x > pos.X && x < pos.X + 512
-                    && y > pos.Y && y < pos.Y + 512)
+                if (x >= pos.X && x <= pos.X + 512
+                    && y >= pos.Y && y <= pos.Y + 512)
                     return chunks[i];
             }
-            return null;
+            return chunks[0];
         }
 
         // возвращает чанк по индексу
@@ -182,78 +186,54 @@ namespace SandCoreCSharp.Core
                 if (chunks[i].Pos == new Vector2(x, y))
                     return chunks[i];
             }
-            return null;
+            return chunks[0];
         }
 
         // возвращает чанк в котором игрок
-        public Chunk GetChunkExistPlayer()
-        {
-            Hero hero = (Game as SandCore).hero; // получаем игрока
-            Vector2 pos = hero.Pos; // находим его позицию (для удобства) 
-            int ox = (int)(pos.X / 512); // чанк по x
-            int oy = (int)(pos.Y / 512); // чанк по y
-
-            // для правильного вычисления отрицательных чанков
-            if (pos.X < 0)
-                ox -= 1;
-            if (pos.Y < 0)
-                oy -= 1;
-
-            // находим этот чанк и возвращаем
-            return GetChunk(ox, oy);
-        }
+        public Chunk GetChunkExistPlayer() => GetChunk((Game as SandCore).hero.Pos.X, (Game as SandCore).hero.Pos.Y);
 
         // возвращает блок на котором стоит игрок
-        public int[] GetChunkPosPlayer(Chunk chunk)
+        public int[] GetChunkPosPlayer()
         {
-            Hero hero = (Game as SandCore).hero; // получаем игрока
-            Vector2 pos = hero.Pos; // находим его позицию (для удобства) 
-            int ox = (int)((pos.X - chunk.Pos.X) / 32); // блок по x
-            int oy = (int)((pos.Y - chunk.Pos.Y) / 32); // блок по y
+            Tile tile = GetTile((Game as SandCore).hero.Pos);
 
             int oz = 0;
 
-            if (ox > 15 || oy > 15) // для фильтра ошибок
-                return new int[] { 0, 0, 0 };
-
             for (int i = 15; i > -1; i--)
             {
-                if (chunk.Tiles[ox, oy, i] != 0)
+               if (tile.Chunk.Tiles[tile.Position[0], tile.Position[1], i] != 0)
                 {
                     oz = i;
                     break;
                 }
             }
 
-            return new int[] { ox, oy, oz };
+            return new int[] { tile.Position[0], tile.Position[1], oz };
         }
 
-        // возвращает блок на котором стоит игрок
+        // возвращает  id блока на котором стоит игрок
         public byte GetBlockIdPlayerPlace(Chunk chunk, int[] pos) => chunk.Tiles[pos[0], pos[1], pos[2]];
 
-        // возвращает блок поределенной позиции
+        // возвращает блок по позиции
         public Tile GetTile(Vector2 pos)
         {
-            // найти координаты чанка
-            int ox = (int)(pos.X / 512);
-            int oy = (int)(pos.Y / 512);
-            if (ox < 0) ox -= 1;
-            if (oy < 0) oy -= 1;
-            Point chunkCoords = new Point(ox * 512, oy * 512);
-
-            //как найти блок
-            Point v1 = pos.ToPoint() - chunkCoords;
-            ox = v1.X / 32;
-            oy = v1.Y / 32;
-            return new Tile(ox, oy, GetChunk(chunkCoords.X, chunkCoords.Y));
+            int tx = (int)(pos.X / 32);
+            int ty = (int)(pos.Y / 32);
+            return GetTile(tx, ty);
         }
 
         // возвращает блок по индексу (система для удобного взаимодейсвтия  блоками)
         public Tile GetTile(int ix, int iy)
         {
             int[] chunk = new int[2] { ix / 16, iy / 16 };
-            int x = ix - chunk[0];
-            int y = iy - chunk[1];
+            int x = 0;
+            int y = 0;
+            if (ix >= 0) x = ix - chunk[0] * 16;
+            if (iy >= 0) y = iy - chunk[1] * 16;
+            if (ix < 0) x = (ix - 1) - (chunk[0] - 1) * 16;
+            if (iy < 0) y = (iy - 1) - (chunk[1] - 1) * 16;
+            if (x > 15 || y > 15 || x < 0 || y < 0)
+                throw new System.Exception();
             return new Tile(x, y, GetChunk(chunk[0], chunk[1]));
         }
     }

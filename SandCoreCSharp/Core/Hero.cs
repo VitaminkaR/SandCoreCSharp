@@ -51,6 +51,8 @@ namespace SandCoreCSharp.Core
             offset = Pos;
             Health = 100;
 
+            Pos = new Vector2(1024, 1024);
+
             base.Initialize();
         }
 
@@ -68,7 +70,7 @@ namespace SandCoreCSharp.Core
 
             Terrain terrain = (Game as SandCore).terrain;
             Chunk = terrain.GetChunkExistPlayer();
-            ChunkPos = terrain.GetChunkPosPlayer(Chunk);
+            ChunkPos = terrain.GetChunkPosPlayer();
             BlockId = terrain.GetBlockIdPlayerPlace(Chunk, ChunkPos);
 
             base.Update(gameTime);

@@ -4,6 +4,7 @@ using System.Text;
 
 namespace SandCoreCSharp.Core
 {
+    // содержит чанк и свою позиция в этом чанку  0 <= x,y <= 15
     struct Tile
     {
         public Chunk Chunk { get; private set; }

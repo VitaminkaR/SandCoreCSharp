@@ -26,6 +26,11 @@ namespace SandCoreCSharp
         internal Hero hero;
         internal Cursor cursor;
 
+        // controls
+        private bool blocking;
+        private bool debugVars;
+        public static bool debugChunks;
+
         public SandCore()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -62,7 +67,21 @@ namespace SandCoreCSharp
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            // нажатие клавиш
+            KeyboardState ks = Keyboard.GetState();
+            if (ks.IsKeyDown(Keys.F3) && !blocking)
+            {
+                debugVars = !debugVars;
+                blocking = true;
+            }
+            if (ks.IsKeyDown(Keys.F4) && !blocking)
+            {
+                debugChunks = !debugChunks;
+                blocking = true;
+            }
+            if (ks.GetPressedKeyCount() == 0)
+                blocking = false;
+                
 
             base.Update(gameTime);
         }
@@ -70,22 +89,22 @@ namespace SandCoreCSharp
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-
-            string info = $"[Debug]\n" +
-                $"Player Position: [{hero.Pos.X};{hero.Pos.Y};{hero.Height}]\n" +
-                $"Camera Position: [{camera.Pos.X};{camera.Pos.Y}]\n" +
-                $"Player Chunk: {terrain.GetChunkExistPlayer().GetName()}\n" +
-                $"Player Position In Chunk: [{hero.ChunkPos[0]};{hero.ChunkPos[1]};{hero.ChunkPos[2]}]\n" +
-                $"Player Block Place: {hero.BlockId}\n" +
-                $"Mouse Chunk: {cursor.Chunk.GetName()}\n" +
-                $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}";
-
             base.Draw(gameTime);
 
-            _spriteBatch.Begin();
-            if(Keyboard.GetState().IsKeyDown(Keys.F3))
+            if (debugVars)
+            {
+                string info = $"[Debug]\n" +
+                    $"Player Position: [{hero.Pos.X};{hero.Pos.Y};{hero.Height}]\n" +
+                    $"Camera Position: [{camera.Pos.X};{camera.Pos.Y}]\n" +
+                    $"Player Chunk: {terrain.GetChunkExistPlayer().GetName()}\n" +
+                    $"Player Position In Chunk: [{hero.ChunkPos[0]};{hero.ChunkPos[1]};{hero.ChunkPos[2]}]\n" +
+                    $"Player Block Place: {hero.BlockId}\n" +
+                    $"Mouse Chunk: {cursor.Chunk.GetName()}\n" +
+                    $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}";
+                _spriteBatch.Begin();
                 _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
-            _spriteBatch.End();
+                _spriteBatch.End();
+            }
         }
     }
 }
