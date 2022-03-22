@@ -6,12 +6,15 @@ using System.Diagnostics;
 
 namespace SandCoreCSharp.Core
 {
-    class Block : DrawableGameComponent
+    public class Block : DrawableGameComponent
     {
+        // все блоки
+        public static List<Block> Blocks { get; private set; } = new List<Block>();
+
         // чанк в котором блок
-        private Chunk chunk;
+        public Chunk Chunk { get; protected set; }
         // позиция чанка в чанке (у блоков нет высоты, они всегда на максимальной)
-        private Point position;
+        public Point Position { get; protected set; }
 
         protected ContentManager content;
         protected SpriteBatch spriteBatch;
@@ -38,24 +41,24 @@ namespace SandCoreCSharp.Core
             content = Game.Content;
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
             Game.Components.Add(this);
+            Blocks.Add(this);
 
             SandCore sandCoreGame = (game as SandCore);
             player = sandCoreGame.hero;
             camera = sandCoreGame.camera;
             terrain = sandCoreGame.terrain;
 
-            chunk = _chunk;
-            position = _position;
+            Chunk = _chunk;
+            Position = _position;
 
-            collider = new Rectangle((int)(chunk.Pos.X + position.X * 32), (int)(chunk.Pos.Y + position.Y * 32), 32, 32);
+            collider = new Rectangle((int)(Chunk.Pos.X + Position.X * 32), (int)(Chunk.Pos.Y + Position.Y * 32), 32, 32);
 
             // проходим и проверяем, если там уже стоит блок, то новый не создаем
-            for (int i = 0; i < Game.Components.Count; i++)
+            for (int i = 0; i < Blocks.Count; i++)
             {
-                Block block = (Game.Components[i] as Block);
-                if (block != null)
-                    if (block.GetPosition() == this.GetPosition() && block != this)
-                        block.Break();
+                Block block = Blocks[i];
+                if (block.GetPosition() == this.GetPosition() && block != this)
+                    block.Break();
             }
         }
 
@@ -80,10 +83,11 @@ namespace SandCoreCSharp.Core
         public virtual void Break()
         {
             Game.Components.Remove(this);
-            Rectangle collider = new Rectangle((int)(chunk.Pos.X + position.X * 32), (int)(chunk.Pos.Y + position.Y * 32), 32, 32);
+            Blocks.Remove(this);
+            Rectangle collider = new Rectangle((int)(Chunk.Pos.X + Position.X * 32), (int)(Chunk.Pos.Y + Position.Y * 32), 32, 32);
         }
 
-        public Vector2 GetPosition() => new Vector2(chunk.Pos.X + position.X * 32, chunk.Pos.Y + position.Y * 32);
+        public Vector2 GetPosition() => new Vector2(Chunk.Pos.X + Position.X * 32, Chunk.Pos.Y + Position.Y * 32);
 
         // столкновение с игроком
         public virtual void CollidePlayer(Hero player)

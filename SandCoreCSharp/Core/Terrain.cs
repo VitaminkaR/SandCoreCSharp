@@ -9,7 +9,7 @@ using System.Diagnostics;
 namespace SandCoreCSharp.Core
 {
     // класс, генерирующий и отрисовывающий чанки
-    class Terrain : DrawableGameComponent
+    public class Terrain : DrawableGameComponent
     {
         private ContentManager content;
         private SpriteBatch spriteBatch;

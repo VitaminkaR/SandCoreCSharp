@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace SandCoreCSharp.Core
 {
-    class Hero : DrawableGameComponent
+    public class Hero : DrawableGameComponent
     {
         // позиция игрока
         public Vector2 Pos { get; private set; }
@@ -92,7 +92,7 @@ namespace SandCoreCSharp.Core
         private void Control()
         {
             // измерение высоты
-            if(ChunkPos != null)
+            if (ChunkPos != null)
                 Height = ChunkPos[2];
 
             KeyboardState ks = Keyboard.GetState();
@@ -136,19 +136,19 @@ namespace SandCoreCSharp.Core
         private bool CheckCollison(Vector2 direction)
         {
             Rectangle collider = new Rectangle((Pos + direction).ToPoint(), new Point(32, 32));
-            for (int i = 0; i < Game.Components.Count; i++)
+            for (int i = 0; i < Block.Blocks.Count; i++)
             {
-                Block block = (Game.Components[i] as Block);
-                if (block != null)
+                Block block = Block.Blocks[i];
+                if (collider.Intersects(block.collider) && block.IsSolid)
                 {
-                    if(collider.Intersects(block.collider) && block.IsSolid)
-                    {
-                        block.CollidePlayer(this);
-                        return false;
-                    }
-                }        
+                    block.CollidePlayer(this);
+                    return false;
+                }
             }
             return true;
         }
+
+        // при загрузке карты
+        public void SetPos(Vector2 pos) => Pos = pos;
     }
 }

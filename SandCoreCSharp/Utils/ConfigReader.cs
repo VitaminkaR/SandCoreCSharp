@@ -5,18 +5,22 @@ namespace SandCoreCSharp.Utils
 {
     static public class ConfigReader
     {
-        static public string ReadParam(string _param, char separator = '=')
+        static public string ReadParam(string fileName, string _param, char separator = '=')
         {
-            FileInfo info = new FileInfo("options.cfg");
+            FileInfo info = new FileInfo(fileName);
             if (!info.Exists)
                 return "NONE";
 
-            using (StreamReader sr = new StreamReader("options.cfg"))
+            using (StreamReader sr = new StreamReader(fileName))
             {
-                string line = sr.ReadLine();
-                string param = line.Split(separator)[0];
-                if (param == _param)
-                    return line.Split(separator)[1];
+                string line = ".";
+                do
+                {
+                    line = sr.ReadLine();
+                    string param = line.Split(separator)[0];
+                    if (param == _param)
+                        return line.Split(separator)[1];
+                } while (line != "");  
             }
 
             return "NONE";

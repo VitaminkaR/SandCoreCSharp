@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using SandCoreCSharp.Core;
 using SandCoreCSharp.Utils;
 using System;
+using System.Collections.Generic;
 
 namespace SandCoreCSharp
 {
@@ -50,7 +51,16 @@ namespace SandCoreCSharp
             hero = new Hero(this, WIDTH / 2 - 16, HEIGHT / 2 - 16, camera);
             cursor = new Cursor(this, hero);
 
-            SimplexNoise.CreateSeed(Convert.ToInt32(ConfigReader.ReadParam("seed")));
+            SimplexNoise.CreateSeed(Convert.ToInt32(ConfigReader.ReadParam("options.cfg", "seed")));
+
+            SimpleTimer timer = new SimpleTimer(5000, 
+            (object obj) =>
+            { 
+                // загрузка карты
+                string mapName = ConfigReader.ReadParam("options.cfg", "map"); // имя карты
+                MapSaver.LoadMap(mapName, this);
+            }, 
+            null);
 
             base.Initialize();
         }
@@ -65,7 +75,10 @@ namespace SandCoreCSharp
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                SaveMap();
                 Exit();
+            }
 
             // нажатие клавиш
             KeyboardState ks = Keyboard.GetState();
@@ -105,6 +118,14 @@ namespace SandCoreCSharp
                 _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
                 _spriteBatch.End();
             }
+        }
+
+        private void SaveMap()
+        {
+            string mapName = ConfigReader.ReadParam("options.cfg", "map"); // имя карты
+
+            // сохраняем карту
+            MapSaver.SaveMap(mapName, this);
         }
     }
 }
