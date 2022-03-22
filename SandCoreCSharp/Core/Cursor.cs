@@ -115,7 +115,7 @@ namespace SandCoreCSharp.Core
             {
                 Block block = (Game.Components[i] as Block);
                 if (block != null)
-                    if (block.GetPosition() == positionBlockCursor)
+                    if (block.Pos == positionBlockCursor)
                     {
                         SimpleTimer timer = new SimpleTimer(block.Hardness * 1000, Breaking, block); // ломает блок n секунд
                         breaking = true;
@@ -126,7 +126,8 @@ namespace SandCoreCSharp.Core
         // нажатие на правую кнопку мыши
         private void Use()
         {
-            new Wood(Game, Chunk, new Point(Tile.Position[0], Tile.Position[1]));
+            Vector2 positionBlockCursor = new Vector2(Tile.Position[0] * 32, Tile.Position[1] * 32) + Chunk.Pos;
+            new Wood(Game, positionBlockCursor);
         }
 
         // ломание блока

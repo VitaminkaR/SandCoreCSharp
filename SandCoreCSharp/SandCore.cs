@@ -53,7 +53,7 @@ namespace SandCoreCSharp
 
             SimplexNoise.CreateSeed(Convert.ToInt32(ConfigReader.ReadParam("options.cfg", "seed")));
 
-            SimpleTimer timer = new SimpleTimer(5000, 
+            SimpleTimer timer = new SimpleTimer(500, 
             (object obj) =>
             { 
                 // загрузка карты

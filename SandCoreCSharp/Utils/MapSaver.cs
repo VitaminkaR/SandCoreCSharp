@@ -30,17 +30,13 @@ namespace SandCoreCSharp.Utils
                         // ЗАПИСЬ БЛОКОВ
                         string type = data[1]; // тип
 
-                        // чанк в котором он был
-                        string[] _chunk = data[2].Split(new char[3] { ':', '}', ' ' });
-                        Chunk chunk = game.terrain.GetChunk(Convert.ToInt32(_chunk[1]), Convert.ToInt32(_chunk[3]));
-
                         // его позиция в чанке
-                        string[] pos = data[3].Split(new char[3] { ':', '}', ' ' });
-                        Point point = new Point(Convert.ToInt32(pos[1]), Convert.ToInt32(pos[3]));
+                        string[] posd = data[2].Split(new char[3] { ':', '}', ' ' });
+                        Vector2 pos = new Vector2(Convert.ToInt32(posd[1]), Convert.ToInt32(posd[3]));
 
                         // ЗДЕСЬ ПРОПИСЫВАТЬ ТИПЫ БЛОКОВ
                         if (type == "SandCoreCSharp.Core.Blocks.Wood")
-                            Block.Blocks.Add(new Wood(game, chunk, point));
+                            new Wood(game, pos);
                     }
 
                     // позиция игрока
@@ -57,6 +53,11 @@ namespace SandCoreCSharp.Utils
 
         static public void SaveMap(string mapName, SandCore game)
         {
+            // для перезаписи
+            FileInfo info = new FileInfo($"maps/{mapName}");
+            if (info.Exists)
+                info.Delete();
+
             Stream stream = File.Open($"maps/{mapName}", FileMode.OpenOrCreate);
             List<Block> blocks = Block.Blocks;
 
@@ -66,10 +67,9 @@ namespace SandCoreCSharp.Utils
             {
                 Block block = blocks[i];
                 string type = block.GetType().ToString();
-                string chunk = block.Chunk.Pos.ToString();
-                string pos = block.Position.ToString();
+                string pos = block.Pos.ToString();
 
-                data += "block|" + type + '|' + chunk + '|' + pos +  "\n";
+                data += "block|" + type + '|' + pos +  "\n";
             }
             string playerPos = game.hero.Pos.ToString();
             data += "ppos|" + playerPos + "\n";

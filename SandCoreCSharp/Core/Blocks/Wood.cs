@@ -5,7 +5,7 @@ namespace SandCoreCSharp.Core.Blocks
 {
     class Wood : Block
     {
-        public Wood(Game game, Chunk _chunk, Point _position) : base(game, _chunk, _position)
+        public Wood(Game game, Vector2 pos) : base(game, pos)
         {
             IsSolid = true;
             Hardness = 1;
