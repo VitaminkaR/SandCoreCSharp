@@ -11,3 +11,4 @@ v0.1.4 - bug fixes and correction of negative coordinates
 v0.2.0 - block system                                                                                                
 v0.2.1 - blocks do not break instantly                                                   
 v0.2.2 - improved block system (added virtual methods)
+v0.2.3 - the block system has been changed, and world saving has been added
