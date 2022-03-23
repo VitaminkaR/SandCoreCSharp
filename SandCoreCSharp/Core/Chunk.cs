@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using SandCoreCSharp.Core.Blocks;
+using System;
 
 namespace SandCoreCSharp.Core
 {
@@ -24,5 +26,15 @@ namespace SandCoreCSharp.Core
 
         // возвращает имя чанка
         public string GetName() => $"Chunk[{(int)(Pos.X / 512)}:{(int)(Pos.Y / 512)}]";
+
+        // вызвается, когда генерируется чанк
+        public void LoadChunk()
+        {
+        }
+        // вызывается когда удаляется чанк
+        public void UnloadChunk()
+        {
+            
+        }
     }
 }

@@ -96,7 +96,6 @@ namespace SandCoreCSharp.Core
 
         public override void Draw(GameTime gameTime)
         {
-            Vector2 camPos = (Game as SandCore).camera.Pos;
             spriteBatch.Begin();
             if (Active)
                 spriteBatch.Draw(texture, Pos, Color.White);
@@ -115,7 +114,8 @@ namespace SandCoreCSharp.Core
             {
                 Block block = (Game.Components[i] as Block);
                 if (block != null)
-                    if (block.Pos == positionBlockCursor)
+                    // блок в курсоре и есть инструмент, который может его добыть
+                    if (block.Pos == positionBlockCursor && (Game as SandCore).resources.Instruments.Contains(block.Instrument))
                     {
                         SimpleTimer timer = new SimpleTimer(block.Hardness * 1000, Breaking, block); // ломает блок n секунд
                         breaking = true;

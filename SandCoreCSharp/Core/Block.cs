@@ -33,6 +33,8 @@ namespace SandCoreCSharp.Core
         public int Hardness { get; protected set; } = 1;
         // имеет ли блок коллизию
         public bool IsSolid { get; protected set; } = true;
+        // какой инструмент нужен для добычи
+        public Instruments Instrument { get; protected set; } = Instruments.none;
 
         public Block(Game game, Vector2 pos) : base(game)
         {

@@ -26,6 +26,7 @@ namespace SandCoreCSharp
         internal Camera camera;
         internal Hero hero;
         internal Cursor cursor;
+        internal Resources resources;
 
         // controls
         private bool blocking;
@@ -50,6 +51,7 @@ namespace SandCoreCSharp
             camera = new Camera(this);
             hero = new Hero(this, WIDTH / 2 - 16, HEIGHT / 2 - 16, camera);
             cursor = new Cursor(this, hero);
+            resources = new Resources(this);
 
             SimplexNoise.CreateSeed(Convert.ToInt32(ConfigReader.ReadParam("options.cfg", "seed")));
 

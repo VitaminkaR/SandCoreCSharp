@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using SandCoreCSharp.Utils;
 using System.Diagnostics;
+using System;
+using SandCoreCSharp.Core.Blocks;
 
 namespace SandCoreCSharp.Core
 {
@@ -24,7 +26,6 @@ namespace SandCoreCSharp.Core
         // view chunks
         private List<Chunk> chunks;
 
-
         public Terrain(Game game) : base(game)
         {
             game.Components.Add(this);
@@ -38,6 +39,7 @@ namespace SandCoreCSharp.Core
         {
             chunks = new List<Chunk>();
             sprites = new Texture2D[255];
+            SpawnStones(null);
 
             base.Initialize();
         }
@@ -118,6 +120,7 @@ namespace SandCoreCSharp.Core
                 if (chunk.Pos.X > camBor.X + 600 || chunk.Pos.Y > camBor.Y + 600 ||
                     (chunk.Pos.X + 512) < camPos.X - 600 || (chunk.Pos.Y + 512) < camPos.Y - 600)
                 {
+                    chunk.UnloadChunk();
                     chunks.Remove(chunk);
                 }
             }
@@ -151,13 +154,15 @@ namespace SandCoreCSharp.Core
                     } // вода
                     @new.Tiles[x, y, heights[x, y]] = 2; // земля
 
-                    // под землей должны быть камушки
+                    // под землей должны быть камни
                     for (int i = 0; i < heights[x, y]; i++)
                     {
                         @new.Tiles[x, y, i] = 3;
                     }
                 }
             }
+
+            @new.LoadChunk();
 
             // добавляем в рисуемые чанки (потому все с камерой будет связано)
             chunks.Add(@new);
@@ -235,6 +240,28 @@ namespace SandCoreCSharp.Core
             if (x > 15 || y > 15 || x < 0 || y < 0)
                 throw new System.Exception();
             return new Tile(x, y, GetChunk(chunk[0], chunk[1]));
+        }
+
+        // спавн камушков
+        private void SpawnStones(object obj)
+        {
+            int stonesCount = 0;
+            for (int i = 0; i < Block.Blocks.Count; i++)
+            {
+                Block block = Block.Blocks[i];
+                if ((block as Stones) != null)
+                    stonesCount++;
+            }
+
+            if(stonesCount < 10)
+            {
+                Hero player = (Game as SandCore).hero;
+                Random rand = new Random();
+                Vector2 p1 = player.Pos + new Vector2(rand.Next(-1024, 1024), rand.Next(-1024, 1024));
+                Vector2 p2 = new Vector2((int)(p1.X / 32) * 32, (int)(p1.Y / 32) * 32);
+                new Stones(Game, p2);
+            }
+            SimpleTimer timer = new SimpleTimer(15000, SpawnStones, null);
         }
     }
 }

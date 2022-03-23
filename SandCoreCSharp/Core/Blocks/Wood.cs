@@ -9,6 +9,7 @@ namespace SandCoreCSharp.Core.Blocks
         {
             IsSolid = true;
             Hardness = 1;
+            Instrument = Instruments.none;
         }
 
         public override void Initialize()
