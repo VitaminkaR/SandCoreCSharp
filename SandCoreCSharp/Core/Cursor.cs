@@ -119,8 +119,15 @@ namespace SandCoreCSharp.Core
                     {
                         SimpleTimer timer = new SimpleTimer(block.Hardness * 1000, Breaking, block); // ломает блок n секунд
                         breaking = true;
+                        return;
                     }
             }
+
+            // ломание tile-ов
+            Resources res = (Game as SandCore).resources;
+            // если тайл - это камень и у игрока есть кирка
+            if (Tile.ID == 3 && res.Instruments.Contains(Instruments.pickaxe))
+                res.Resourse["stone"] += 1;
         }
 
         // нажатие на правую кнопку мыши

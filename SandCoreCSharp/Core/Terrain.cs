@@ -171,26 +171,16 @@ namespace SandCoreCSharp.Core
         // возвращает чанк по координате
         public Chunk GetChunk(float x, float y)
         {
+            int ix = (int)(x / 512);
+            int iy = (int)(y / 512);
+            if (x < 0) ix--;
+            if (y < 0) iy--;
             for (int i = 0; i < chunks.Count; i++)
             {
-                Vector2 pos = chunks[i].Pos;
-                if (x >= pos.X && x <= pos.X + 512
-                    && y >= pos.Y && y <= pos.Y + 512)
+                if (chunks[i].Pos == new Vector2(ix * 512, iy * 512))
                     return chunks[i];
             }
-            return chunks[0];
-        }
 
-        // возвращает чанк по индексу
-        public Chunk GetChunk(int ix, int iy)
-        {
-            float x = ix * 512;
-            float y = iy * 512;
-            for (int i = 0; i < chunks.Count; i++)
-            {
-                if (chunks[i].Pos == new Vector2(x, y))
-                    return chunks[i];
-            }
             return chunks[0];
         }
 
@@ -216,31 +206,35 @@ namespace SandCoreCSharp.Core
             return new int[] { tile.Position[0], tile.Position[1], oz };
         }
 
-        // возвращает  id блока на котором стоит игрок
-        public byte GetBlockIdPlayerPlace(Chunk chunk, int[] pos) => chunk.Tiles[pos[0], pos[1], pos[2]];
-
-        // возвращает блок по позиции
+        // возвращает плитку
         public Tile GetTile(Vector2 pos)
         {
-            int tx = (int)(pos.X / 32);
-            int ty = (int)(pos.Y / 32);
-            return GetTile(tx, ty);
+            // ищем чанк
+            Chunk chunk = GetChunk(pos.X, pos.Y);
+            // находим координаты относительно чанка
+            Vector2 p1 = pos - chunk.Pos - new Vector2(1, 1);
+            // находим индексы тайла
+            int x = (int)(p1.X / 32);
+            int y = (int)(p1.Y / 32);
+
+            if (x > 15 || y > 15)
+                return new Tile(0, 0, chunk, 0);
+
+            // ищем верхний блок
+            int z = 0;
+            for (int i = 0; i < 16; i++)
+            {
+                if (chunk.Tiles[x, y, 15 - i] == 0)
+                    continue;
+                else
+                    z = 15 - i;
+            }
+
+            return new Tile(x, y, chunk, chunk.Tiles[x, y, z]);
         }
 
-        // возвращает блок по индексу (система для удобного взаимодейсвтия  блоками)
-        public Tile GetTile(int ix, int iy)
-        {
-            int[] chunk = new int[2] { ix / 16, iy / 16 };
-            int x = 0;
-            int y = 0;
-            if (ix >= 0) x = ix - chunk[0] * 16;
-            if (iy >= 0) y = iy - chunk[1] * 16;
-            if (ix < 0) x = (ix - 1) - (chunk[0] - 1) * 16;
-            if (iy < 0) y = (iy - 1) - (chunk[1] - 1) * 16;
-            if (x > 15 || y > 15 || x < 0 || y < 0)
-                throw new System.Exception();
-            return new Tile(x, y, GetChunk(chunk[0], chunk[1]));
-        }
+        // возвращает  id блока на котором стоит игрок
+        public byte GetBlockIdPlayerPlace(Chunk chunk, int[] pos) => chunk.Tiles[pos[0], pos[1], pos[2]];
 
         // спавн камушков
         private void SpawnStones(object obj)

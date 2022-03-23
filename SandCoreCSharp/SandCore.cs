@@ -115,7 +115,9 @@ namespace SandCoreCSharp
                     $"Player Position In Chunk: [{hero.ChunkPos[0]};{hero.ChunkPos[1]};{hero.ChunkPos[2]}]\n" +
                     $"Player Block Place: {hero.BlockId}\n" +
                     $"Mouse Chunk: {cursor.Chunk.GetName()}\n" +
-                    $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}";
+                    $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}\n" +
+                    $"[Resources]\n" +
+                    $"Stone: {resources.Resourse["stone"]}";
                 _spriteBatch.Begin();
                 _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
                 _spriteBatch.End();
