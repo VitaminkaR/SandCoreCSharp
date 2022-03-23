@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using SandCoreCSharp.Core.Blocks;
 using System;
+using System.IO;
 
 namespace SandCoreCSharp.Core
 {
@@ -25,16 +25,53 @@ namespace SandCoreCSharp.Core
 
 
         // возвращает имя чанка
-        public string GetName() => $"Chunk[{(int)(Pos.X / 512)}:{(int)(Pos.Y / 512)}]";
+        public string GetName() => "C=" + (int)(Pos.X / 512) + ";" + (int)(Pos.Y / 512);
 
         // вызвается, когда генерируется чанк
         public void LoadChunk()
         {
+            if(new FileInfo("maps\\" + SandCore.map + "\\chunks\\" + GetName()).Exists)
+            {
+                using (StreamReader sr = new StreamReader("maps\\" + SandCore.map + "\\chunks\\" + GetName()))
+                {
+                    string line = "";
+                    while (true)
+                    {
+                        line = sr.ReadLine();
+
+                        if (line == null)
+                            break;
+
+                        Vector2 vec = new Vector2(Convert.ToInt32(line.Split('|')[2]), Convert.ToInt32(line.Split('|')[3]));
+                        Block.CreateBlock(line.Split('|')[1], vec);
+                    }
+                }
+            }
         }
+
         // вызывается когда удаляется чанк
         public void UnloadChunk()
         {
-            
+            var blocks = Block.Blocks;
+            string data = "";
+
+            for (int i = 0; i < blocks.Count; i++) // проходим по всем блокам
+            {
+                Block block = blocks[i];
+                if(block.GetChunk() == this && block.isSaving) // если блок находится в этом чанке, то сохраняем его
+                {
+                    // текст записи
+                    data += "BLOCK|" + block.Type + '|' + block.Pos.X + '|' + block.Pos.Y + '\n';
+                    SandCore.game.Components.Remove(block);
+                    Block.Blocks.Remove(block);
+                }
+            }
+
+            using (StreamWriter sw = new StreamWriter($"maps\\" + SandCore.map + "\\chunks\\" + GetName()))
+            {
+                sw.Write(data);
+            }
         }
+
     }
 }

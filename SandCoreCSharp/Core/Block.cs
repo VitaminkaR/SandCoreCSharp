@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using SandCoreCSharp.Core.Blocks;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 
 namespace SandCoreCSharp.Core
 {
@@ -27,6 +29,12 @@ namespace SandCoreCSharp.Core
 
         // Коллайдер
         public Rectangle collider;
+
+        // тэг для определения типа (ЗАГЛАВНЫМИ БУКВАМИ) (ОБЯЗАТЕЛЬНЫЙ ПРИ СОЗДАНИИ НОВОГО БЛОКА)
+        public string Type { get; protected set; } = "BLOCK";
+
+        // будет ли блок сохранятся
+        public bool isSaving = true;
 
         // параметры при создании блока
         // прочность блока (сколько секунд будет разрушаться) -параметр-
@@ -89,5 +97,17 @@ namespace SandCoreCSharp.Core
         // столкновение с игроком
         public virtual void CollidePlayer(Hero player)
         {}
+
+        // чанк в котором блок
+        public Chunk GetChunk() => terrain.GetChunk(Pos.X, Pos.Y);
+
+
+
+        // регистрирует новые блоки 
+        static public void CreateBlock(string type, Vector2 pos)
+        {
+            if (type == "WOOD")
+                new Wood(SandCore.game, pos);
+        }
     }
 }

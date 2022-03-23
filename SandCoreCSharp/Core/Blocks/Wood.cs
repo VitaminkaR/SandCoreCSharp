@@ -7,6 +7,7 @@ namespace SandCoreCSharp.Core.Blocks
     {
         public Wood(Game game, Vector2 pos) : base(game, pos)
         {
+            Type = "WOOD";
             IsSolid = true;
             Hardness = 1;
             Instrument = Instruments.none;
@@ -22,6 +23,14 @@ namespace SandCoreCSharp.Core.Blocks
             sprite = content.Load<Texture2D>("Wood");
 
             base.LoadContent();
+        }
+
+        public override void Break()
+        {
+            Resources resources = (Game as SandCore).resources;
+            resources.Resource["wood"] += 1;
+
+            base.Break();
         }
     }
 }

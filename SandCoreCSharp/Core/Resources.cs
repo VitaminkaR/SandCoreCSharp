@@ -10,7 +10,7 @@ namespace SandCoreCSharp.Core
         public List<Instruments> Instruments { get; private set; }
 
         // ресурсы
-        public Dictionary<string, int> Resourse { get; set; }
+        public Dictionary<string, int> Resource { get; set; }
 
         public Resources(Game game) : base(game)
         {
@@ -23,8 +23,9 @@ namespace SandCoreCSharp.Core
             Instruments.Add(Core.Instruments.none);
 
             // ИНИЦИАЛИЗАИЯ РЕСУРСОВ
-            Resourse = new Dictionary<string, int>();
-            Resourse.Add("stone", 0);
+            Resource = new Dictionary<string, int>();
+            Resource.Add("stone", 0);
+            Resource.Add("wood", 0);
 
             base.Initialize();
         }

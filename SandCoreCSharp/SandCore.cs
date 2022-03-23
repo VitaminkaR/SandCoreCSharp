@@ -5,6 +5,7 @@ using SandCoreCSharp.Core;
 using SandCoreCSharp.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SandCoreCSharp
 {
@@ -33,6 +34,9 @@ namespace SandCoreCSharp
         private bool debugVars;
         public static bool debugChunks;
 
+        // map loading
+        static public string map;
+
         public SandCore()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -55,14 +59,16 @@ namespace SandCoreCSharp
 
             SimplexNoise.CreateSeed(Convert.ToInt32(ConfigReader.ReadParam("options.cfg", "seed")));
 
-            SimpleTimer timer = new SimpleTimer(500, 
-            (object obj) =>
-            { 
-                // загрузка карты
-                string mapName = ConfigReader.ReadParam("options.cfg", "map"); // имя карты
-                MapSaver.LoadMap(mapName, this);
-            }, 
-            null);
+
+
+            // СОХРАНЕНИЯ
+            map = ConfigReader.ReadParam("options.cfg", "map");
+            // проверка существует ли директория с картой
+            if (!Directory.Exists("maps\\" + map))
+                Directory.CreateDirectory("maps\\" + SandCore.map);
+            // проверка существует ли директория с чанками
+            if (!Directory.Exists("maps\\" + map + "\\chunks"))
+                Directory.CreateDirectory("maps\\" + map + "\\chunks");
 
             base.Initialize();
         }
@@ -78,7 +84,6 @@ namespace SandCoreCSharp
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
-                SaveMap();
                 Exit();
             }
 
@@ -117,19 +122,12 @@ namespace SandCoreCSharp
                     $"Mouse Chunk: {cursor.Chunk.GetName()}\n" +
                     $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}\n" +
                     $"[Resources]\n" +
-                    $"Stone: {resources.Resourse["stone"]}";
+                    $"Stone: {resources.Resource["stone"]}\n" +
+                    $"Wood: {resources.Resource["wood"]}\n";
                 _spriteBatch.Begin();
                 _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
                 _spriteBatch.End();
             }
-        }
-
-        private void SaveMap()
-        {
-            string mapName = ConfigReader.ReadParam("options.cfg", "map"); // имя карты
-
-            // сохраняем карту
-            MapSaver.SaveMap(mapName, this);
         }
     }
 }

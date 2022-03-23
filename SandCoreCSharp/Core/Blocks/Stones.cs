@@ -9,8 +9,10 @@ namespace SandCoreCSharp.Core.Blocks
     {
         public Stones(Game game, Vector2 pos) : base(game, pos)
         {
+            Type = "STONES";
             IsSolid = false;
             Hardness = 0;
+            isSaving = false;
         }
 
         protected override void LoadContent()
@@ -35,7 +37,7 @@ namespace SandCoreCSharp.Core.Blocks
         {
             // когда нас собирает игрок, то реурс камня возрастает
             Resources resources = (Game as SandCore).resources;
-            resources.Resourse["stone"] += 1;
+            resources.Resource["stone"] += 1;
 
             base.Break();
         }
