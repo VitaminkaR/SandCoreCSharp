@@ -15,4 +15,5 @@ v0.2.3 - the block system has been changed, and world saving has been added
 v0.3.0 - many bug fixes, resource system, resource extraction system from blocks and tiles, added pebbles, spawn of pebbles, added check for production using a specific tool                                                                                                     
 v0.4.0 - added a normal save system, as well as block fixes                                                   
 v0.4.1 - indication of blocks when trying to break them or just when hovering over, saving resources                                   
-v0.4.2 - fixes a bunch of bugs, tree generation
+v0.4.2 - fixes a bunch of bugs, tree generation                                                                                   
+v0.4.3 - save the player's position
