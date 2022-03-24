@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
+using System.IO;
+using System;
 
 namespace SandCoreCSharp.Core
 {
@@ -51,7 +53,7 @@ namespace SandCoreCSharp.Core
             offset = Pos;
             Health = 100;
 
-            Pos = new Vector2(1024, 1024);
+            Load();
 
             base.Initialize();
         }
@@ -150,5 +152,49 @@ namespace SandCoreCSharp.Core
 
         // при загрузке карты
         public void SetPos(Vector2 pos) => Pos = pos;
+
+
+
+        // сохранения и загрузка позиция
+        // сохраняет инфу о позиции
+        private void Save()
+        {
+            string data = Pos.X.ToString() + '|' + Pos.Y.ToString();
+
+            using (StreamWriter sr = new StreamWriter("maps\\" + SandCore.map + "\\player_position"))
+            {
+                sr.Write(data);
+            }
+        }
+
+        // загружает позицию
+        private void Load()
+        {
+            if (new FileInfo("maps\\" + SandCore.map + "\\player_position").Exists)
+            {
+                using (StreamReader sr = new StreamReader("maps\\" + SandCore.map + "\\player_position"))
+                {
+                    string line = "";
+                    while (true)
+                    {
+                        line = sr.ReadLine();
+
+                        if (line == null)
+                            break;
+
+                        int x = Convert.ToInt32(line.Split('|')[0]);
+                        int y = Convert.ToInt32(line.Split('|')[1]);
+                        Pos = new Vector2(x, y);
+                    }
+                }
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            Save();
+
+            base.Dispose(disposing);
+        }
     }
 }
