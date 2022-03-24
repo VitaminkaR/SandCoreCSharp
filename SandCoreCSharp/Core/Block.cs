@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using SandCoreCSharp.Core.Blocks;
 using System;
 using System.Collections.Generic;
@@ -77,10 +78,23 @@ namespace SandCoreCSharp.Core
         // отрисовка спрайта в позиции
         public override void Draw(GameTime gameTime)
         {
+            Color color = Color.White;
+
+            Cursor cursor = (Game as SandCore).cursor;
+            // добыча блока
+            if (cursor.Pos == Pos)
+                color = Color.Green;
+            // если игрок не может сломать
+            if (cursor.Pos == Pos && Mouse.GetState().LeftButton == ButtonState.Pressed)
+                color = Color.Black;
+            // добыча блока
+            if (cursor.Pos == Pos && cursor.breaking)
+                color = Color.Red;
+
             spriteBatch.Begin();
             Vector2 pos = Pos - camera.Pos;
             if (sprite != null)
-                spriteBatch.Draw(sprite, pos, Color.White);
+                spriteBatch.Draw(sprite, pos, color);
             spriteBatch.End();
 
             base.Draw(gameTime);

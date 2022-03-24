@@ -37,7 +37,7 @@ namespace SandCoreCSharp.Core.Blocks
         {
             // когда нас собирает игрок, то реурс камня возрастает
             Resources resources = (Game as SandCore).resources;
-            resources.Resource["stone"] += 1;
+            resources.AddResource("stone", 1);
 
             base.Break();
         }

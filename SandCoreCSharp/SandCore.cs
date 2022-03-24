@@ -115,12 +115,12 @@ namespace SandCoreCSharp
             {
                 string info = $"[Debug]\n" +
                     $"Player Position: [{hero.Pos.X};{hero.Pos.Y};{hero.Height}]\n" +
-                    $"Camera Position: [{camera.Pos.X};{camera.Pos.Y}]\n" +
+                    $"Camera Position: [{camera.Pos.X};{camera.Pos.Y}]\n\n" +
                     $"Player Chunk: {terrain.GetChunkExistPlayer().GetName()}\n" +
                     $"Player Position In Chunk: [{hero.ChunkPos[0]};{hero.ChunkPos[1]};{hero.ChunkPos[2]}]\n" +
-                    $"Player Block Place: {hero.BlockId}\n" +
+                    $"Player Block Place: {hero.BlockId}\n\n" +
                     $"Mouse Chunk: {cursor.Chunk.GetName()}\n" +
-                    $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}\n" +
+                    $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}\n\n" +
                     $"[Resources]\n" +
                     $"Stone: {resources.Resource["stone"]}\n" +
                     $"Wood: {resources.Resource["wood"]}\n";

@@ -28,7 +28,7 @@ namespace SandCoreCSharp.Core.Blocks
         public override void Break()
         {
             Resources resources = (Game as SandCore).resources;
-            resources.Resource["wood"] += 1;
+            resources.AddResource("wood", 5);
 
             base.Break();
         }

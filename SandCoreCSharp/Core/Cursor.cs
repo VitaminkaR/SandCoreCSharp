@@ -23,7 +23,7 @@ namespace SandCoreCSharp.Core
         private bool mouseBlock;
 
         // для ломания блока
-        private bool breaking;
+        public bool breaking;
 
 
         public Cursor(Game game, Hero hero) : base(game)
@@ -61,7 +61,7 @@ namespace SandCoreCSharp.Core
                 this.Chunk = chunk;
                 // ищем блок
                 Tile = terrain.GetTile(pos);
-                Pos = (new Vector2(Tile.Position[0] * 32, Tile.Position[1] * 32) + Chunk.Pos) - camera.Pos;
+                Pos = (new Vector2(Tile.Position[0] * 32, Tile.Position[1] * 32) + Chunk.Pos);
             }
 
 
@@ -98,9 +98,9 @@ namespace SandCoreCSharp.Core
         {
             spriteBatch.Begin();
             if (Active)
-                spriteBatch.Draw(texture, Pos, Color.White);
+                spriteBatch.Draw(texture, Pos - (Game as SandCore).camera.Pos, Color.White);
             else
-                spriteBatch.Draw(texture, Pos, Color.Black);
+                spriteBatch.Draw(texture, Pos - (Game as SandCore).camera.Pos, Color.Black);
             spriteBatch.End();
 
             base.Draw(gameTime);
