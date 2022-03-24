@@ -66,7 +66,10 @@ namespace SandCoreCSharp.Core
             {
                 Block block = Blocks[i];
                 if (block.Pos == this.Pos && block != this)
-                    block.Break();
+                {
+                    Game.Components.Remove(block);
+                    Blocks.Remove(block);
+                }
             }
         }
 

@@ -142,18 +142,13 @@ namespace SandCoreCSharp.Core
             {
                 for (int y = 0; y < 16; y++)
                 {
+                    @new.Tiles[x, y, heights[x, y]] = 2; // земля
                     // изменение блоков от высоты
                     if (heights[x, y] > 14)
-                    {
-                        @new.Tiles[x, y, heights[x, y]] = 3;
-                        continue;
-                    }  // горы
+                        @new.Tiles[x, y, heights[x, y]] = 3; // горы
                     if (heights[x, y] < 4)
-                    {
-                        @new.Tiles[x, y, heights[x, y]] = 4;
-                        continue;
-                    } // вода
-                    @new.Tiles[x, y, heights[x, y]] = 2; // земля
+                        @new.Tiles[x, y, heights[x, y]] = 4;// вода
+                    
 
                     // под землей должны быть камни
                     for (int i = 0; i < heights[x, y]; i++)
@@ -225,10 +220,10 @@ namespace SandCoreCSharp.Core
             int z = 0;
             for (int i = 0; i < 16; i++)
             {
-                if (chunk.Tiles[x, y, 15 - i] == 0)
+                if (chunk.Tiles[x, y, i] == 0)
                     continue;
                 else
-                    z = 15 - i;
+                    z = i;
             }
 
             return new Tile(x, y, chunk, chunk.Tiles[x, y, z]);

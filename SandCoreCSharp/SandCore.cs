@@ -59,7 +59,7 @@ namespace SandCoreCSharp
 
             SimplexNoise.CreateSeed(Convert.ToInt32(ConfigReader.ReadParam("options.cfg", "seed")));
 
-
+            resources.Instruments.Add(Instruments.pickaxe);
 
             // СОХРАНЕНИЯ
             map = ConfigReader.ReadParam("options.cfg", "map");
@@ -120,10 +120,13 @@ namespace SandCoreCSharp
                     $"Player Position In Chunk: [{hero.ChunkPos[0]};{hero.ChunkPos[1]};{hero.ChunkPos[2]}]\n" +
                     $"Player Block Place: {hero.BlockId}\n\n" +
                     $"Mouse Chunk: {cursor.Chunk.GetName()}\n" +
+                    $"Mouse Tile ID: {cursor.Tile.ID}\n" +
                     $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}\n\n" +
                     $"[Resources]\n" +
                     $"Stone: {resources.Resource["stone"]}\n" +
-                    $"Wood: {resources.Resource["wood"]}\n";
+                    $"Wood: {resources.Resource["wood"]}\n" +
+                    $"Coal: {resources.Resource["coal"]}\n" +
+                    $"Iron: {resources.Resource["iron"]}";
                 _spriteBatch.Begin();
                 _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
                 _spriteBatch.End();

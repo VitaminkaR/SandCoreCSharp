@@ -17,17 +17,19 @@ namespace SandCoreCSharp.Core
         public Resources(Game game) : base(game)
         {
             game.Components.Add(this);
+            Resource = new Dictionary<string, int>();
+            Instruments = new List<Instruments>();
         }
 
         public override void Initialize()
         {
-            Instruments = new List<Instruments>();
             Instruments.Add(Core.Instruments.none);
 
             // ИНИЦИАЛИЗАИЯ РЕСУРСОВ
-            Resource = new Dictionary<string, int>();
             Resource.Add("stone", 0);
             Resource.Add("wood", 0);
+            Resource.Add("coal", 0);
+            Resource.Add("iron", 0);
 
             LoadResources();
 

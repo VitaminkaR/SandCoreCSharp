@@ -127,7 +127,17 @@ namespace SandCoreCSharp.Core
             Resources res = (Game as SandCore).resources;
             // если тайл - это камень и у игрока есть кирка
             if (Tile.ID == 3 && res.Instruments.Contains(Instruments.pickaxe))
-                res.Resource["stone"] += 1;
+            {
+                int chance = new Random().Next(101);
+
+                // из камня можно с разным шансом добыть
+                if(chance <= 5)
+                    res.Resource["iron"] += 1; // железо
+                if (chance > 5 && chance <= 20)
+                    res.Resource["coal"] += 1; // уголь
+                if (chance > 20)
+                    res.Resource["stone"] += 1; // сам камень
+            } 
         }
 
         // нажатие на правую кнопку мыши
