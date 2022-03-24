@@ -7,6 +7,7 @@ using SandCoreCSharp.Utils;
 using System.Diagnostics;
 using System;
 using SandCoreCSharp.Core.Blocks;
+using System.IO;
 
 namespace SandCoreCSharp.Core
 {
@@ -39,7 +40,7 @@ namespace SandCoreCSharp.Core
         {
             chunks = new List<Chunk>();
             sprites = new Texture2D[255];
-            SpawnStones(null);
+            GenerateStructure(null);
 
             base.Initialize();
         }
@@ -82,7 +83,7 @@ namespace SandCoreCSharp.Core
                             spriteBatch.Draw(sprites[id - 1], new Vector2(-camPos.X + x * 32 + chunkPos.X, -camPos.Y + y * 32 + chunkPos.Y), new Color(40 + z * 13, 40 + z * 13, 40 + z * 13));
 
                             // для дебага
-                            if(SandCore.debugChunks && (x == 0 || x == 15 || y == 0 || y == 15))
+                            if (SandCore.debugChunks && (x == 0 || x == 15 || y == 0 || y == 15))
                                 spriteBatch.Draw(sprites[id - 1], new Vector2(-camPos.X + x * 32 + chunkPos.X, -camPos.Y + y * 32 + chunkPos.Y), new Color(255, 0, 0));
                             break; // если блок отрисован, то нет смысла рисовать ниже (оптимизация)
                         }
@@ -128,6 +129,8 @@ namespace SandCoreCSharp.Core
             base.Update(gameTime);
         }
 
+
+
         // generate chunk
         public void Generate(float _x, float _y, int px, int py)
         {
@@ -148,7 +151,7 @@ namespace SandCoreCSharp.Core
                         @new.Tiles[x, y, heights[x, y]] = 3; // горы
                     if (heights[x, y] < 4)
                         @new.Tiles[x, y, heights[x, y]] = 4;// вода
-                    
+
 
                     // под землей должны быть камни
                     for (int i = 0; i < heights[x, y]; i++)
@@ -162,7 +165,20 @@ namespace SandCoreCSharp.Core
 
             // добавляем в рисуемые чанки (потому все с камерой будет связано)
             chunks.Add(@new);
+
+            // единичная генерация
+            Random rand = new Random();
+            if (!new FileInfo("maps\\" + SandCore.map + "\\chunks\\" + @new.GetName()).Exists)
+            {
+                int x = rand.Next(16);
+                int y = rand.Next(16);
+                Vector2 pos = new Vector2(x * 32 + @new.Pos.X, y * 32 + @new.Pos.Y);
+                if (GetTile(pos).ID != 4)
+                    Block.CreateBlock("WOOD", new Vector2(x * 32 + @new.Pos.X, y * 32 + @new.Pos.Y));
+            }
         }
+
+
 
         // возвращает чанк по координате
         public Chunk GetChunk(float x, float y)
@@ -192,7 +208,7 @@ namespace SandCoreCSharp.Core
 
             for (int i = 15; i > -1; i--)
             {
-               if (tile.Chunk.Tiles[tile.Position[0], tile.Position[1], i] != 0)
+                if (tile.Chunk.Tiles[tile.Position[0], tile.Position[1], i] != 0)
                 {
                     oz = i;
                     break;
@@ -232,9 +248,11 @@ namespace SandCoreCSharp.Core
         // возвращает  id блока на котором стоит игрок
         public byte GetBlockIdPlayerPlace(Chunk chunk, int[] pos) => chunk.Tiles[pos[0], pos[1], pos[2]];
 
-        // спавн камушков
-        private void SpawnStones(object obj)
+        // генеарция камушков и т д
+        private void GenerateStructure(object obj)
         {
+            Random rand = new Random();
+
             int stonesCount = 0;
             for (int i = 0; i < Block.Blocks.Count; i++)
             {
@@ -243,15 +261,18 @@ namespace SandCoreCSharp.Core
                     stonesCount++;
             }
 
-            if(stonesCount < 10)
+            // генерация камушков
+
+            if (stonesCount < 10)
             {
                 Hero player = (Game as SandCore).hero;
-                Random rand = new Random();
+                rand = new Random();
                 Vector2 p1 = player.Pos + new Vector2(rand.Next(-1024, 1024), rand.Next(-1024, 1024));
                 Vector2 p2 = new Vector2((int)(p1.X / 32) * 32, (int)(p1.Y / 32) * 32);
                 new Stones(Game, p2);
             }
-            SimpleTimer timer = new SimpleTimer(15000, SpawnStones, null);
+
+            SimpleTimer timer = new SimpleTimer(15000, GenerateStructure, null);
         }
     }
 }

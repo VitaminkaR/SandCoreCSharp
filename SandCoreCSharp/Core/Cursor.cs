@@ -131,12 +131,12 @@ namespace SandCoreCSharp.Core
                 int chance = new Random().Next(101);
 
                 // из камня можно с разным шансом добыть
-                if(chance <= 5)
-                    res.Resource["iron"] += 1; // железо
+                if (chance <= 5)
+                    res.AddResource("iron", 1); // железо
                 if (chance > 5 && chance <= 20)
-                    res.Resource["coal"] += 1; // уголь
+                    res.AddResource("coal", 1); // уголь
                 if (chance > 20)
-                    res.Resource["stone"] += 1; // сам камень
+                    res.AddResource("stone", 1); // сам камень
             } 
         }
 
