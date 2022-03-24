@@ -137,6 +137,7 @@ namespace SandCoreCSharp.Core
             Chunk @new = new Chunk(_x, _y);
 
             var heights = SimplexNoise.GetNoise(px * 16, py * 16, 0.01f); // находим высоты
+            // генерация тайлов
             for (int x = 0; x < 16; x++)
             {
                 for (int y = 0; y < 16; y++)

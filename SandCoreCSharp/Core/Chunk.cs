@@ -30,9 +30,9 @@ namespace SandCoreCSharp.Core
         // вызвается, когда генерируется чанк
         public void LoadChunk()
         {
-            if(new FileInfo("maps\\" + SandCore.map + "\\chunks\\" + GetName()).Exists)
+            if(new FileInfo("maps\\" + SandCore.map + "\\chunks\\" + GetName() + "B").Exists)
             {
-                using (StreamReader sr = new StreamReader("maps\\" + SandCore.map + "\\chunks\\" + GetName()))
+                using (StreamReader sr = new StreamReader("maps\\" + SandCore.map + "\\chunks\\" + GetName() + "B"))
                 {
                     string line = "";
                     while (true)
@@ -67,7 +67,7 @@ namespace SandCoreCSharp.Core
                 }
             }
 
-            using (StreamWriter sw = new StreamWriter($"maps\\" + SandCore.map + "\\chunks\\" + GetName()))
+            using (StreamWriter sw = new StreamWriter($"maps\\" + SandCore.map + "\\chunks\\" + GetName() + "B"))
             {
                 sw.Write(data);
             }
