@@ -20,7 +20,7 @@ namespace SandCoreCSharp
         static public SpriteFont font;
 
         // singleton
-        static public Game game;
+        static public SandCore game;
 
         // main objects
         internal Terrain terrain;
@@ -28,6 +28,7 @@ namespace SandCoreCSharp
         internal Hero hero;
         internal Cursor cursor;
         internal Resources resources;
+        internal Inventory inventory;
 
         // controls
         private bool blocking;
@@ -56,6 +57,7 @@ namespace SandCoreCSharp
             hero = new Hero(this, WIDTH / 2 - 16, HEIGHT / 2 - 16, camera);
             cursor = new Cursor(this, hero);
             resources = new Resources(this);
+            inventory = new Inventory(this);
 
             SimplexNoise.CreateSeed(Convert.ToInt32(ConfigReader.ReadParam("options.cfg", "seed")));
 
@@ -121,12 +123,7 @@ namespace SandCoreCSharp
                     $"Player Block Place: {hero.BlockId}\n\n" +
                     $"Mouse Chunk: {cursor.Chunk.GetName()}\n" +
                     $"Mouse Tile ID: {cursor.Tile.ID}\n" +
-                    $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}\n\n" +
-                    $"[Resources]\n" +
-                    $"Stone: {resources.Resource["stone"]}\n" +
-                    $"Wood: {resources.Resource["wood"]}\n" +
-                    $"Coal: {resources.Resource["coal"]}\n" +
-                    $"Iron: {resources.Resource["iron"]}";
+                    $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}\n\n";
                 _spriteBatch.Begin();
                 _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
                 _spriteBatch.End();
