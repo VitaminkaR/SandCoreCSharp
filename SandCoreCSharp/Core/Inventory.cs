@@ -62,6 +62,7 @@ namespace SandCoreCSharp.Core
         public override void Draw(GameTime gameTime)
         {
             Resources res = SandCore.game.resources;
+            CraftManager manager = SandCore.game.craftManager;
 
             int count = 3; // для отрисовки
 
@@ -80,8 +81,15 @@ namespace SandCoreCSharp.Core
                     count++;
                 }
 
+                count = 3;
+
                 // отрисовка крафтов
                 spriteBatch.DrawString(font, "CRAFTING", new Vector2(SandCore.WIDTH / 2 + 16, 16), Color.White);
+                foreach (var craft in manager.Recipes)
+                {
+                    spriteBatch.DrawString(font, craft.Key + " = " + craft.Value, new Vector2(SandCore.WIDTH / 2 + 16, 16 * count), manager.MayCraft(craft.Key) ? Color.Green : Color.Red); ;
+                    count++;
+                }
 
                 // отрисовка инструментов
                 spriteBatch.DrawString(font, "Pickaxe", new Vector2(160, 16), res.Resource["pickaxe"] > 0 ? Color.Green : Color.Red);

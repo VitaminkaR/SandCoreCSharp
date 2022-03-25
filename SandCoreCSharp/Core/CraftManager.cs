@@ -23,6 +23,10 @@ namespace SandCoreCSharp.Core
             // ИНИЦИАЛИЗАЦИЯ КРАФТОВ ""
             // топорик
             Recipes.Add("axe", "iron|15+wood|25");
+            // кирка
+            Recipes.Add("pickaxe", "iron|20+wood|25");
+            // лопата
+            Recipes.Add("shovel", "iron|10+wood|25");
 
             base.Initialize();
         }
@@ -33,13 +37,9 @@ namespace SandCoreCSharp.Core
             Resources res = SandCore.game.resources;
             string craftMarkup = Recipes[item];
             string[] components = craftMarkup.Split('+');
-            for (int i = 0; i < components.Length; i++)
-            {
-                string component = components[i].Split('|')[0];
-                int count = Convert.ToInt32(components[i].Split('|')[1]);
-                if (res.Resource[component] < count)
-                    return;
-            } // проверяем есть ли необходмые компоненты
+
+            if (!MayCraft(item))
+                return;
 
             for (int i = 0; i < components.Length; i++)
             {
@@ -50,6 +50,22 @@ namespace SandCoreCSharp.Core
 
             // добавляем нужный предмет
             res.AddResource(item, 1);
+        }
+
+        // проверка можно ли скрафтить
+        public bool MayCraft(string item)
+        {
+            Resources res = SandCore.game.resources;
+            string craftMarkup = Recipes[item];
+            string[] components = craftMarkup.Split('+');
+            for (int i = 0; i < components.Length; i++)
+            {
+                string component = components[i].Split('|')[0];
+                int count = Convert.ToInt32(components[i].Split('|')[1]);
+                if (res.Resource[component] < count)
+                    return false;
+            }
+            return true;
         }
     }
 }

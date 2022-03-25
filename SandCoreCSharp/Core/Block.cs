@@ -3,9 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SandCoreCSharp.Core.Blocks;
-using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace SandCoreCSharp.Core
 {
