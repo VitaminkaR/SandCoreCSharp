@@ -79,7 +79,7 @@ namespace SandCoreCSharp.Core
             {
                 mouseBlock = false;
                 breaking = false; // если отжали кнопку, то перестали ломать блок
-            }                
+            }
 
 
 
@@ -114,30 +114,44 @@ namespace SandCoreCSharp.Core
             {
                 Block block = (Game.Components[i] as Block);
                 if (block != null)
+                {
                     // блок в курсоре и есть инструмент, который может его добыть
-                    if (block.Pos == positionBlockCursor && (Game as SandCore).resources.Instruments.Contains(block.Instrument))
+                    if (block.Pos == positionBlockCursor)
                     {
-                        SimpleTimer timer = new SimpleTimer(block.Hardness * 1000, Breaking, block); // ломает блок n секунд
-                        breaking = true;
-                        return;
+                        if (block.Instrument != "")
+                        {
+                            if (SandCore.game.resources.Resource[block.Instrument] > 0)
+                            {
+                                SimpleTimer timer = new SimpleTimer(block.Hardness * 1000, Breaking, block); // ломает блок n секунд
+                                breaking = true;
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            SimpleTimer timer = new SimpleTimer(block.Hardness * 1000, Breaking, block); // ломает блок n секунд
+                            breaking = true;
+                            return;
+                        }
                     }
+                }
             }
 
             // ломание tile-ов
             Resources res = (Game as SandCore).resources;
             // если тайл - это камень и у игрока есть кирка
-            if (Tile.ID == 3 && res.Instruments.Contains(Instruments.pickaxe))
+            if (Tile.ID == 3 && res.Resource["pickaxe"] > 0)
             {
                 int chance = new Random().Next(101);
 
                 // из камня можно с разным шансом добыть
                 if (chance <= 5)
-                    res.AddResource("iron", 1); // железо
+                    res.AddResource("raw_iron", 1); // железо
                 if (chance > 5 && chance <= 20)
                     res.AddResource("coal", 1); // уголь
                 if (chance > 20)
                     res.AddResource("stone", 1); // сам камень
-            } 
+            }
         }
 
         // нажатие на правую кнопку мыши

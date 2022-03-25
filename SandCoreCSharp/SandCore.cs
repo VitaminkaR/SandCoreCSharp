@@ -29,6 +29,7 @@ namespace SandCoreCSharp
         internal Cursor cursor;
         internal Resources resources;
         internal Inventory inventory;
+        internal CraftManager craftManager;
 
         // controls
         private bool blocking;
@@ -58,10 +59,10 @@ namespace SandCoreCSharp
             cursor = new Cursor(this, hero);
             resources = new Resources(this);
             inventory = new Inventory(this);
+            craftManager = new CraftManager(this);
+            
 
             SimplexNoise.CreateSeed(Convert.ToInt32(ConfigReader.ReadParam("options.cfg", "seed")));
-
-            resources.Instruments.Add(Instruments.pickaxe);
 
             // СОХРАНЕНИЯ
             map = ConfigReader.ReadParam("options.cfg", "map");

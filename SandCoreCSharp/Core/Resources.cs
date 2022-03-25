@@ -8,9 +8,6 @@ namespace SandCoreCSharp.Core
     // класс который хранит все ресурсы добытые игроком
     public class Resources : GameComponent
     {
-        // инструменты которые есть у игрока
-        public List<Instruments> Instruments { get; private set; }
-
         // ресурсы
         public Dictionary<string, int> Resource { get; private set; }
 
@@ -18,17 +15,19 @@ namespace SandCoreCSharp.Core
         {
             game.Components.Add(this);
             Resource = new Dictionary<string, int>();
-            Instruments = new List<Instruments>();
         }
 
         public override void Initialize()
         {
-            Instruments.Add(Core.Instruments.none);
-
             // ИНИЦИАЛИЗАИЯ РЕСУРСОВ
+            Resource.Add("axe", 0);
+            Resource.Add("pickaxe", 0);
+            Resource.Add("shovel", 0);
+
             Resource.Add("stone", 0);
             Resource.Add("wood", 0);
             Resource.Add("coal", 0);
+            Resource.Add("raw_iron", 0);
             Resource.Add("iron", 0);
 
             LoadResources();

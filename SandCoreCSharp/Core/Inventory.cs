@@ -84,9 +84,9 @@ namespace SandCoreCSharp.Core
                 spriteBatch.DrawString(font, "CRAFTING", new Vector2(SandCore.WIDTH / 2 + 16, 16), Color.White);
 
                 // отрисовка инструментов
-                spriteBatch.DrawString(font, "Pickaxe", new Vector2(160, 16), res.Instruments.Contains(Instruments.pickaxe) ? Color.Green : Color.Red);
-                spriteBatch.DrawString(font, "Axe", new Vector2(256, 16), res.Instruments.Contains(Instruments.axe) ? Color.Green : Color.Red);
-                spriteBatch.DrawString(font, "Shovel", new Vector2(310, 16), res.Instruments.Contains(Instruments.shovel) ? Color.Green : Color.Red);
+                spriteBatch.DrawString(font, "Pickaxe", new Vector2(160, 16), res.Resource["pickaxe"] > 0 ? Color.Green : Color.Red);
+                spriteBatch.DrawString(font, "Axe", new Vector2(256, 16), res.Resource["axe"] > 0 ? Color.Green : Color.Red);
+                spriteBatch.DrawString(font, "Shovel", new Vector2(310, 16), res.Resource["shovel"] > 0 ? Color.Green : Color.Red);
 
                 spriteBatch.End();
             }

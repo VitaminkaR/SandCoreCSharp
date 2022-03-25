@@ -10,7 +10,7 @@ namespace SandCoreCSharp.Core.Blocks
             Type = "WOOD";
             IsSolid = true;
             Hardness = 1;
-            Instrument = Instruments.none;
+            Instrument = "";
         }
 
         public override void Initialize()
