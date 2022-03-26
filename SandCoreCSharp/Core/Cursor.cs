@@ -157,8 +157,15 @@ namespace SandCoreCSharp.Core
         // нажатие на правую кнопку мыши
         private void Use()
         {
+            Inventory inventory = SandCore.game.inventory;
             Vector2 positionBlockCursor = new Vector2(Tile.Position[0] * 32, Tile.Position[1] * 32) + Chunk.Pos;
-            new Wood(Game, positionBlockCursor);
+            string block = inventory.choosenBlock;
+            if(block != "")
+            {
+                // тут создаем блоки (да не автоматом)
+                if (block == "furnace")
+                    new Furnace(Game, positionBlockCursor);
+            }
         }
 
         // ломание блока

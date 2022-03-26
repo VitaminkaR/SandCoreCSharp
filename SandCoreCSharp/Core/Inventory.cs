@@ -27,6 +27,9 @@ namespace SandCoreCSharp.Core
         // выбранный рецепт 
         string choosenRecipe;
 
+        // выбранный ресурс
+        public string choosenBlock;
+
         private SpriteBatch spriteBatch;
 
         public Inventory(Game game) : base(game)
@@ -48,6 +51,7 @@ namespace SandCoreCSharp.Core
         public override void Update(GameTime gameTime)
         {
             CraftManager manager = SandCore.game.craftManager;
+            Resources res = SandCore.game.resources;
             KeyboardState ks = Keyboard.GetState();
             MouseState ms = Mouse.GetState();
 
@@ -64,26 +68,51 @@ namespace SandCoreCSharp.Core
             if (inventory)
             {
                 // выбор рецепта крафта
-                int number = ms.Position.Y / 16 - 4; // позиция по счету (как он отрисовывается)
-                int counter = 0;
-                foreach (var recipe in manager.Recipes) // перебираем рецепты
+                if (ms.X > SandCore.WIDTH / 2)
                 {
-                    if (counter == number)
+                    int number = ms.Position.Y / 16 - 4; // позиция по счету (как он отрисовывается)
+                    int counter = 0;
+                    foreach (var recipe in manager.Recipes) // перебираем рецепты
                     {
-                        choosenRecipe = recipe.Key;
-                        break;
+                        if (counter == number)
+                        {
+                            choosenRecipe = recipe.Key;
+                            break;
+                        }
+
+                        counter++;
                     }
-                    
-                    counter++;
+
+                    // если мышка вышла за края выбора крафтов(т е не наведена ни на один крафт), то убираем выделение
+                    if (number < 0 || number >= manager.Recipes.Count + 2)
+                        choosenRecipe = "";
                 }
 
-                // если мышка вышла за края выбора крафтов(т е не наведена ни на один крафт), то убираем выделение
-                if (number < 0 || number >= manager.Recipes.Count + 2) 
-                    choosenRecipe = "";
+                //выбор ресурса (чтоб ставить блоки)
+                if (ms.X < SandCore.WIDTH / 2 && ms.LeftButton == ButtonState.Pressed)
+                {
+                    int number = ms.Position.Y / 16 - 4; // позиция по счету (как он отрисовывается)
+                    int counter = 0;
+                    foreach (var resource in res.Resource) // перебираем ресурсы
+                    {
+                        if (counter == number)
+                        {
+                            choosenBlock = resource.Key;
+                            break;
+                        }
+
+                        counter++;
+                    }
+
+                    // если мышка вышла за края выбора ресусров(т е не наведена ни на один крафт), то убираем выделение
+                    if (number < 0 || number >= res.Resource.Count + 2)
+                        choosenBlock = "";
+                }
 
                 // МАГИЯ КРАФТА
                 if (ms.LeftButton == ButtonState.Pressed && !block)
                 {
+                    block = true;
                     if(choosenRecipe != "" && choosenRecipe != null)
                         manager.Craft(choosenRecipe);
                 }
@@ -110,7 +139,11 @@ namespace SandCoreCSharp.Core
                 spriteBatch.DrawString(font, "INVENTORY", new Vector2(16, 16), Color.White);
                 foreach (var resource in res.Resource)
                 {
-                    spriteBatch.DrawString(font, resource.Key + " = " + resource.Value, new Vector2(16, 16 * count), Color.White);
+                    Color color = Color.White; // если не выбран
+                    if (choosenBlock == resource.Key) // если предмет выбран 
+                        color = Color.Green;
+
+                    spriteBatch.DrawString(font, resource.Key + " = " + resource.Value, new Vector2(16, 16 * count), color);
                     count++;
                 }
 

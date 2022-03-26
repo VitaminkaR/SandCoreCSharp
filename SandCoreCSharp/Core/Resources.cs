@@ -30,6 +30,8 @@ namespace SandCoreCSharp.Core
             Resource.Add("raw_iron", 0);
             Resource.Add("iron", 0);
 
+            Resource.Add("furnace", 0);
+
             LoadResources();
 
             base.Initialize();

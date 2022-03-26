@@ -20,15 +20,17 @@ namespace SandCoreCSharp.Core
 
         public override void Initialize()
         {
-            // ИНИЦИАЛИЗАЦИЯ КРАФТОВ Recipes.Add("ресурс", "компонент|кол-во+компонент|кол-во.требуемое устройства");
+            // ИНИЦИАЛИЗАЦИЯ КРАФТОВ Recipes.Add("ресурс", "компонент|кол-во+компонент|кол-во требуемое устройства");
             // топорик
-            Recipes.Add("axe", "iron|15+wood|25");
+            Recipes.Add("axe", "iron|15+wood|25 ");
             // кирка
-            Recipes.Add("pickaxe", "iron|20+wood|25");
+            Recipes.Add("pickaxe", "iron|20+wood|25 ");
             // лопата
-            Recipes.Add("shovel", "iron|10+wood|25");
+            Recipes.Add("shovel", "iron|10+wood|25 ");
             // железо
-            Recipes.Add("iron", "raw_iron|2+coal|1.FURNACE");
+            Recipes.Add("iron", "raw_iron|2+coal|1 FURNACE");
+            // печь
+            Recipes.Add("furnace", "stone|50 ");
 
             base.Initialize();
         }
@@ -37,8 +39,8 @@ namespace SandCoreCSharp.Core
         public void Craft(string item)
         {
             Resources res = SandCore.game.resources;
-            string craftMarkup = Recipes[item];
-            string[] components = craftMarkup.Split('+');
+            string[] craftMarkup = Recipes[item].Split(' ');
+            string[] components = craftMarkup[0].Split('+');
 
             if (!MayCraft(item))
                 return;
@@ -60,9 +62,8 @@ namespace SandCoreCSharp.Core
             Resources res = SandCore.game.resources;
             Hero hero = SandCore.game.hero;
 
-            string craftMarkup = Recipes[item];
-            string[] components = craftMarkup.Split('+');
-            string req = craftMarkup.Split('.')[0];
+            string[] craftMarkup = Recipes[item].Split(' ');
+            string[] components = craftMarkup[0].Split('+');
 
             for (int i = 0; i < components.Length; i++)
             {
@@ -70,9 +71,8 @@ namespace SandCoreCSharp.Core
                 int count = Convert.ToInt32(components[i].Split('|')[1]);
                 if (res.Resource[component] < count)
                     return false;
-                if (req != "")
-                    if (!hero.Mechanisms.Contains(req))
-                        return false;
+                if (!hero.Mechanisms.Contains(craftMarkup[1]))
+                    return false;
             }
             return true;
         }

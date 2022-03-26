@@ -57,6 +57,7 @@ namespace SandCoreCSharp.Core
         public override void Initialize()
         {
             Mechanisms = new List<string>();
+            Mechanisms.Add("");
 
             speed = 3;
             offset = Pos;
