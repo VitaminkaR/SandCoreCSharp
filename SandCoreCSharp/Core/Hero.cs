@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using System.IO;
 using System;
+using System.Collections.Generic;
 
 namespace SandCoreCSharp.Core
 {
@@ -35,6 +36,12 @@ namespace SandCoreCSharp.Core
         // здоровье
         public float Health { get; private set; }
 
+        // механизмы с которыми рядом игрок
+        // механизмы - блоки, они сами добавляются в список (свой тег блока), когда к ним подошел игрок
+        // нужно для "требуемых" в крафте
+        public List<string> Mechanisms { get; set; }
+
+
         private ContentManager content;
         private SpriteBatch spriteBatch;
 
@@ -49,6 +56,8 @@ namespace SandCoreCSharp.Core
 
         public override void Initialize()
         {
+            Mechanisms = new List<string>();
+
             speed = 3;
             offset = Pos;
             Health = 100;
