@@ -15,3 +15,5 @@ v0.4.2 - fixes a bunch of bugs, tree generation
 v0.4.3 - save the player's position                                                                           
 v0.4.4 - adding an interface                                                                                 
 v0.4.5 - added crafts, a creepy and dangerous bug with cluttered RAM
+v0.4.6 - added craft selection
+v0.5.0 - crafts, mechanisms, inventory
