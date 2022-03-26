@@ -2,8 +2,6 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SandCoreCSharp.Core
 {
@@ -26,6 +24,9 @@ namespace SandCoreCSharp.Core
         // font
         SpriteFont font;
 
+        // выбранный рецепт 
+        string choosenRecipe;
+
         private SpriteBatch spriteBatch;
 
         public Inventory(Game game) : base(game)
@@ -46,15 +47,47 @@ namespace SandCoreCSharp.Core
 
         public override void Update(GameTime gameTime)
         {
+            CraftManager manager = SandCore.game.craftManager;
             KeyboardState ks = Keyboard.GetState();
+            MouseState ms = Mouse.GetState();
+
             if (ks.IsKeyDown(inventoryKey) && !block) // открытие инвентаря
             {
                 inventory = !inventory;
                 block = true;
             }
-                
-            if (ks.IsKeyUp(inventoryKey))
+
+            if (ks.IsKeyUp(inventoryKey) && ms.LeftButton == ButtonState.Released)
                 block = false;
+
+            // когда инвентарь открыт
+            if (inventory)
+            {
+                // выбор рецепта крафта
+                int number = ms.Position.Y / 16 - 4; // позиция по счету (как он отрисовывается)
+                int counter = 0;
+                foreach (var recipe in manager.Recipes) // перебираем рецепты
+                {
+                    if (counter == number)
+                    {
+                        choosenRecipe = recipe.Key;
+                        break;
+                    }
+
+                    counter++;
+                }
+
+                // если мышка вышла за края выбора крафтов(т е не наведена ни на один крафт), то убираем выделение
+                if (number < 0 || number >= manager.Recipes.Count + 2) 
+                    choosenRecipe = "";
+
+                // МАГИЯ КРАФТА
+                if (ms.LeftButton == ButtonState.Pressed && !block)
+                {
+                    if(choosenRecipe != "" && choosenRecipe != null)
+                        manager.Craft(choosenRecipe);
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -87,7 +120,13 @@ namespace SandCoreCSharp.Core
                 spriteBatch.DrawString(font, "CRAFTING", new Vector2(SandCore.WIDTH / 2 + 16, 16), Color.White);
                 foreach (var craft in manager.Recipes)
                 {
-                    spriteBatch.DrawString(font, craft.Key + " = " + craft.Value, new Vector2(SandCore.WIDTH / 2 + 16, 16 * count), manager.MayCraft(craft.Key) ? Color.Green : Color.Red); ;
+                    Color color = Color.Red; // если нельзя скрафтить и не выбран
+                    if (manager.MayCraft(craft.Key)) // если предмет можно скрафтить
+                        color = Color.Green;
+                    if (craft.Key == choosenRecipe) // если крафт предмета выбран
+                        color = Color.White;
+
+                    spriteBatch.DrawString(font, craft.Key + " = " + craft.Value, new Vector2(SandCore.WIDTH / 2 + 16, 16 * count), color);
                     count++;
                 }
 

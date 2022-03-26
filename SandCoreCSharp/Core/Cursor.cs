@@ -118,7 +118,7 @@ namespace SandCoreCSharp.Core
                     // блок в курсоре и есть инструмент, который может его добыть
                     if (block.Pos == positionBlockCursor)
                     {
-                        if (block.Instrument != "")
+                        if (block.Instrument != "" && block.Instrument != null)
                         {
                             if (SandCore.game.resources.Resource[block.Instrument] > 0)
                             {

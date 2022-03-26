@@ -27,6 +27,8 @@ namespace SandCoreCSharp.Core
             Recipes.Add("pickaxe", "iron|20+wood|25");
             // лопата
             Recipes.Add("shovel", "iron|10+wood|25");
+            // железо
+            Recipes.Add("iron", "raw_iron|2");
 
             base.Initialize();
         }
