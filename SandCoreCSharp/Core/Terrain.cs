@@ -274,5 +274,13 @@ namespace SandCoreCSharp.Core
 
             SimpleTimer timer = new SimpleTimer(15000, GenerateStructure, null);
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            for (int i = 0; i < chunks.Count; i++)
+                chunks[i].UnloadChunk();
+
+            base.Dispose(disposing);
+        }
     }
 }

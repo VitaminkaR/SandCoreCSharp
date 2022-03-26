@@ -158,13 +158,27 @@ namespace SandCoreCSharp.Core
         private void Use()
         {
             Inventory inventory = SandCore.game.inventory;
+            Resources resources = SandCore.game.resources;
+            Hero hero = SandCore.game.hero;
+
             Vector2 positionBlockCursor = new Vector2(Tile.Position[0] * 32, Tile.Position[1] * 32) + Chunk.Pos;
+            Rectangle collider = new Rectangle(positionBlockCursor.ToPoint(), new Point(32, 32)); // коллайдер курсора
             string block = inventory.choosenBlock;
-            if(block != "")
+
+            // чтобы блок не заспавнился в игроке
+            if(block != "" && !collider.Intersects(new Rectangle(hero.Pos.ToPoint(), new Point(32, 32))))
             {
                 // тут создаем блоки (да не автоматом)
                 if (block == "furnace")
+                {
+                    resources.AddResource(block, -1);
                     new Furnace(Game, positionBlockCursor);
+                }
+                if (block == "wood")
+                {
+                    resources.AddResource(block, -15);
+                    new Wood(Game, positionBlockCursor);
+                }
             }
         }
 

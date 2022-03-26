@@ -123,6 +123,8 @@ namespace SandCoreCSharp.Core
         {
             if (type == "WOOD")
                 new Wood(SandCore.game, pos);
+            if (type == "FURNACE")
+                new Furnace(SandCore.game, pos);
         }
     }
 }
