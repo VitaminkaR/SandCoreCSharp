@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SandCoreCSharp.Core;
+using SandCoreCSharp.Core.Blocks;
 using SandCoreCSharp.Utils;
 using System;
 using System.Collections.Generic;
@@ -73,6 +74,8 @@ namespace SandCoreCSharp
             if (!Directory.Exists("maps\\" + map + "\\blocks"))
                 Directory.CreateDirectory("maps\\" + map + "\\blocks");
 
+            ElectroMachine.LoadResourceEnergy();
+
             base.Initialize();
         }
 
@@ -131,6 +134,13 @@ namespace SandCoreCSharp
                 _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
                 _spriteBatch.End();
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            ElectroMachine.SaveResourceEnergy();
+
+            base.Dispose(disposing);
         }
     }
 }

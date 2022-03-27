@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using SandCoreCSharp.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace SandCoreCSharp.Core.Blocks
@@ -59,6 +61,31 @@ namespace SandCoreCSharp.Core.Blocks
                     up = wire;
                 if (wire.Pos == Pos + new Vector2(0, 32))
                     down = wire;
+            }
+        }
+
+
+
+        // сохраняет инфу о ресурсах в файл
+        static public void SaveResourceEnergy()
+        {
+            string data = Energy.ToString();
+
+            using (StreamWriter sr = new StreamWriter("maps\\" + SandCore.map + "\\energy"))
+            {
+                sr.Write(data);
+            }
+        }
+
+        // загружает ресурсы
+        static public void LoadResourceEnergy()
+        {
+            if (new FileInfo("maps\\" + SandCore.map + "\\energy").Exists)
+            {
+                using (StreamReader sr = new StreamReader("maps\\" + SandCore.map + "\\resources"))
+                {
+                    Energy = Convert.ToInt32(sr.ReadLine());
+                }
             }
         }
     }
