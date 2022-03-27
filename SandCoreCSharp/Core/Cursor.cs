@@ -152,6 +152,16 @@ namespace SandCoreCSharp.Core
                 if (chance > 20)
                     res.AddResource("stone", 1); // сам камень
             }
+
+            // если тайл - это земля и у игрока есть лопата
+            if (Tile.ID == 2 && res.Resource["shovel"] > 0)
+            {
+                int chance = new Random().Next(101);
+
+                // из земли можно с разным шансом добыть
+                if (chance <= 25)
+                    res.AddResource("sand", 1); // песок
+            }
         }
 
         // нажатие на правую кнопку мыши

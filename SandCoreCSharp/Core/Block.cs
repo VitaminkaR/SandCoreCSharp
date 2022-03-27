@@ -11,7 +11,7 @@ namespace SandCoreCSharp.Core
 {
     public class Block : DrawableGameComponent
     {
-        const int LoaderDistance = 256;
+        const int LoaderDistance = 1024;
 
         // все блоки
         public static List<Block> Blocks { get; private set; } = new List<Block>();
@@ -187,6 +187,8 @@ namespace SandCoreCSharp.Core
                 block = new Lumberjack(SandCore.game, pos);
             if (type == "wire")
                 block = new Wire(SandCore.game, pos);
+            if (type == "battery")
+                block = new Battery(SandCore.game, pos);
 
             if (!loader)
                 block.SaveBlock();

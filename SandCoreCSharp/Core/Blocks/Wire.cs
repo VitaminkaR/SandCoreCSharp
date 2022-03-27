@@ -6,26 +6,22 @@ using System.Collections.Generic;
 namespace SandCoreCSharp.Core.Blocks
 {
     // состояния провода LR - left-right UD - up-down
-    enum WireStates
+    public enum WireStates
     {
         Cross, 
         LR, 
         UD,
     }
 
-    class Wire : Block
+    public class Wire : ElectroMachine
     {
-        // провода
-        static public List<Wire> Wires { get; private set; } = new List<Wire>();
-
         // спрайты
         private Texture2D[] statesSprites;
 
         // состояние провода
         private WireStates state;
 
-        // заряжен ли провод
-        public bool Powered { get; private set; }
+        
 
         public Wire(Game game, Vector2 pos) : base(game, pos)
         {
@@ -37,10 +33,10 @@ namespace SandCoreCSharp.Core.Blocks
 
         public override void Initialize()
         {
-            Wires.Add(this);
-
             state = WireStates.Cross;
             statesSprites = new Texture2D[6];
+
+            Wires.Add(this);
 
             base.Initialize();
         }
@@ -86,26 +82,7 @@ namespace SandCoreCSharp.Core.Blocks
 
         public override void Update(GameTime gameTime)
         {
-            // присоединение провод рядом
-            // проверяем есть ли провод с каждой стороны
-            Wire left = null;
-            Wire right = null;
-            Wire up = null;
-            Wire down = null;
-
-            // находим провода по края
-            for (int i = 0; i < Wires.Count; i++)
-            {
-                Wire wire = Wires[i];
-                if (wire.Pos == Pos + new Vector2(-32, 0))
-                    left = wire;
-                if (wire.Pos == Pos + new Vector2(32, 0))
-                    right = wire;
-                if (wire.Pos == Pos + new Vector2(0, -32))
-                    up = wire;
-                if (wire.Pos == Pos + new Vector2(0, 32))
-                    down = wire;
-            }
+            FindWires();
 
             // если хотя бы 1 провод заряженный, то заряжаем этот
             if(left != null)

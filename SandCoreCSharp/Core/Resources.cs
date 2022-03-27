@@ -34,10 +34,12 @@ namespace SandCoreCSharp.Core
             Resource.Add("coal", 0);
             Resource.Add("raw_iron", 0);
             Resource.Add("iron", 0);
+            Resource.Add("sand", 0);
             Resource.Add("quartz", 0);
             Resource.Add("raw_gold", 0);
             Resource.Add("gold", 0);
             Resource.Add("adamant", 0);
+            Resource.Add("electrit", 0);
 
             // стандартные механизмы
             Resource.Add("furnace", 0);
@@ -47,6 +49,7 @@ namespace SandCoreCSharp.Core
             // промышленные механизмы
             Resource.Add("wire", 0);
             Resource.Add("frame", 0);
+            Resource.Add("battery", 0);
 
             LoadResources();
 

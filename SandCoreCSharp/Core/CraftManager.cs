@@ -25,8 +25,12 @@ namespace SandCoreCSharp.Core
             Recipes.Add("pickaxe", "iron|20+wood|25 ");
             // лопата
             Recipes.Add("shovel", "iron|10+wood|25 ");
+
             // железо
-            Recipes.Add("iron", "raw_iron|2+coal|1 FURNACE");
+            Recipes.Add("iron", "raw_iron|2+coal|1 furnace");
+            // кварц
+            Recipes.Add("quartz", "sand|10 ");
+
             // печь
             Recipes.Add("furnace", "stone|50 ");
             // шахта
@@ -34,10 +38,14 @@ namespace SandCoreCSharp.Core
             // лесорубка
             Recipes.Add("lumberjack", "wood|120+iron|15 ");
 
+            //электрит
+            Recipes.Add("electrit", "iron|1+quartz|2 ");
             // провод
             Recipes.Add("wire", "iron|4 ");
             // корпус механизма
             Recipes.Add("frame", "iron|50 ");
+            // батарейка
+            Recipes.Add("battery", "frame|1+electrit|5 ");
 
             base.Initialize();
         }

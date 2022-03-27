@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SandCoreCSharp.Core.Blocks;
 
 namespace SandCoreCSharp.Core
 {
@@ -168,6 +169,9 @@ namespace SandCoreCSharp.Core
                 spriteBatch.DrawString(font, "Pickaxe", new Vector2(160, 16), res.Resource["pickaxe"] > 0 ? Color.Green : Color.Red);
                 spriteBatch.DrawString(font, "Axe", new Vector2(256, 16), res.Resource["axe"] > 0 ? Color.Green : Color.Red);
                 spriteBatch.DrawString(font, "Shovel", new Vector2(310, 16), res.Resource["shovel"] > 0 ? Color.Green : Color.Red);
+
+                // отрисовка энергии
+                spriteBatch.DrawString(font, ElectroMachine.Energy.ToString() + "/" + ElectroMachine.MaxEnergy, new Vector2(452, 16), Color.Green);
 
                 spriteBatch.End();
             }
