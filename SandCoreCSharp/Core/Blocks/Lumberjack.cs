@@ -9,7 +9,7 @@ namespace SandCoreCSharp.Core.Blocks
     {
         public Lumberjack(Game game, Vector2 pos) : base(game, pos)
         {
-            Type = "LUMBERJACK";
+            Type = "lumberjack";
             isSaving = true;
             Hardness = 0;
             IsSolid = true;

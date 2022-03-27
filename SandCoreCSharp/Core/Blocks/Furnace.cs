@@ -8,7 +8,7 @@ namespace SandCoreCSharp.Core.Blocks
     {
         public Furnace(Game game, Vector2 pos) : base(game, pos)
         {
-            Type = "FURNACE";
+            Type = "furnace";
             IsSolid = true;
             Hardness = 0;
             isSaving = true;

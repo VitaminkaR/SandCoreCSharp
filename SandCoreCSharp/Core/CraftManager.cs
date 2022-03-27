@@ -33,6 +33,9 @@ namespace SandCoreCSharp.Core
             Recipes.Add("mine", "stone|50+wood|100+iron|30 ");
             // лесорубка
             Recipes.Add("lumberjack", "wood|120+iron|15 ");
+
+            // провод
+            Recipes.Add("wire", "iron|4 ");
             // корпус механизма
             Recipes.Add("frame", "iron|50 ");
 

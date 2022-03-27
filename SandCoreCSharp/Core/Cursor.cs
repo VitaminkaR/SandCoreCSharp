@@ -171,26 +171,8 @@ namespace SandCoreCSharp.Core
                 if (resources.Resource[block] == 0)
                     return;
                 // тут создаем блоки (да не автоматом)
-                if (block == "furnace")
-                {
-                    resources.AddResource(block, -1);
-                    new Furnace(Game, positionBlockCursor);
-                }
-                if (block == "wood")
-                {
-                    resources.AddResource(block, -15);
-                    new Wood(Game, positionBlockCursor);
-                }
-                if (block == "mine")
-                {
-                    resources.AddResource(block, -1);
-                    new Mine(Game, positionBlockCursor);
-                }
-                if (block == "lumberjack")
-                {
-                    resources.AddResource(block, -1);
-                    new Lumberjack(Game, positionBlockCursor);
-                }
+                resources.AddResource(block, -1);
+                Block.CreateBlock(block, positionBlockCursor);
             }
         }
 

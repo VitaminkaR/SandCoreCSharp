@@ -29,8 +29,8 @@ namespace SandCoreCSharp.Core
         // Коллайдер
         public Rectangle collider;
 
-        // тэг для определения типа (ЗАГЛАВНЫМИ БУКВАМИ) (ОБЯЗАТЕЛЬНЫЙ ПРИ СОЗДАНИИ НОВОГО БЛОКА)
-        public string Type { get; protected set; } = "BLOCK";
+        // тэг для определения типа (ОБЯЗАТЕЛЬНЫЙ ПРИ СОЗДАНИИ НОВОГО БЛОКА)
+        public string Type { get; protected set; } = "block";
 
         // будет ли блок сохранятся
         public bool isSaving = true;
@@ -121,14 +121,16 @@ namespace SandCoreCSharp.Core
         // регистрирует новые блоки 
         static public void CreateBlock(string type, Vector2 pos)
         {
-            if (type == "WOOD")
+            if (type == "wood")
                 new Wood(SandCore.game, pos);
-            if (type == "FURNACE")
+            if (type == "furnace")
                 new Furnace(SandCore.game, pos);
-            if (type == "MINE")
+            if (type == "mine")
                 new Mine(SandCore.game, pos);
-            if (type == "LUMBERJACK")
-                new Mine(SandCore.game, pos);
+            if (type == "lumberjack")
+                new Lumberjack(SandCore.game, pos);
+            if (type == "wire")
+                new Wire(SandCore.game, pos);
         }
     }
 }

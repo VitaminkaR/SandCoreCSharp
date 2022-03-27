@@ -23,20 +23,29 @@ namespace SandCoreCSharp.Core
         public override void Initialize()
         {
             // ИНИЦИАЛИЗАИЯ РЕСУРСОВ
+            // инструменты
             Resource.Add("axe", 0);
             Resource.Add("pickaxe", 0);
             Resource.Add("shovel", 0);
 
+            // ископаемые
             Resource.Add("stone", 0);
             Resource.Add("wood", 0);
             Resource.Add("coal", 0);
             Resource.Add("raw_iron", 0);
             Resource.Add("iron", 0);
+            Resource.Add("quartz", 0);
+            Resource.Add("raw_gold", 0);
+            Resource.Add("gold", 0);
+            Resource.Add("adamant", 0);
 
+            // стандартные механизмы
             Resource.Add("furnace", 0);
             Resource.Add("mine", 0);
             Resource.Add("lumberjack", 0);
 
+            // промышленные механизмы
+            Resource.Add("wire", 0);
             Resource.Add("frame", 0);
 
             LoadResources();

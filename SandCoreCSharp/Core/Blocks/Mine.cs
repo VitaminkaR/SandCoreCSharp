@@ -10,7 +10,7 @@ namespace SandCoreCSharp.Core.Blocks
     {
         public Mine(Game game, Vector2 pos) : base(game, pos)
         {
-            Type = "MINE";
+            Type = "mine";
             isSaving = true;
             Hardness = 0;
             IsSolid = true;

@@ -9,7 +9,7 @@ namespace SandCoreCSharp.Core.Blocks
     {
         public Stones(Game game, Vector2 pos) : base(game, pos)
         {
-            Type = "STONES";
+            Type = "stones";
             IsSolid = false;
             Hardness = 0;
             isSaving = false;

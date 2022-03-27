@@ -7,7 +7,7 @@ namespace SandCoreCSharp.Core.Blocks
     {
         public Wood(Game game, Vector2 pos) : base(game, pos)
         {
-            Type = "WOOD";
+            Type = "wood";
             IsSolid = true;
             Hardness = 1;
             Instrument = "";
