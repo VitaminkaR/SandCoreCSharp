@@ -86,7 +86,8 @@ namespace SandCoreCSharp.Core
                     // если мышка вышла за края выбора крафтов(т е не наведена ни на один крафт), то убираем выделение
                     if (number < 0 || number >= manager.Recipes.Count + 2)
                         choosenRecipe = "";
-                }
+                }else
+                    choosenRecipe = "";
 
                 //выбор ресурса (чтоб ставить блоки)
                 if (ms.X < SandCore.WIDTH / 2 && ms.LeftButton == ButtonState.Pressed)
@@ -105,7 +106,7 @@ namespace SandCoreCSharp.Core
                     }
 
                     // если мышка вышла за края выбора ресусров(т е не наведена ни на один крафт), то убираем выделение
-                    if (number < 0 || number >= res.Resource.Count + 2)
+                    if (number < 0 || number >= res.Resource.Count + 2 || ms.X > SandCore.WIDTH / 2)
                         choosenBlock = "";
                 }
 

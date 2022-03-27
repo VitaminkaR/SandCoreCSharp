@@ -125,6 +125,10 @@ namespace SandCoreCSharp.Core
                 new Wood(SandCore.game, pos);
             if (type == "FURNACE")
                 new Furnace(SandCore.game, pos);
+            if (type == "MINE")
+                new Mine(SandCore.game, pos);
+            if (type == "LUMBERJACK")
+                new Mine(SandCore.game, pos);
         }
     }
 }

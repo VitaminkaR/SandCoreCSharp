@@ -1,6 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 
@@ -31,6 +29,12 @@ namespace SandCoreCSharp.Core
             Recipes.Add("iron", "raw_iron|2+coal|1 FURNACE");
             // печь
             Recipes.Add("furnace", "stone|50 ");
+            // шахта
+            Recipes.Add("mine", "stone|50+wood|100+iron|30 ");
+            // лесорубка
+            Recipes.Add("lumberjack", "wood|120+iron|15 ");
+            // корпус механизма
+            Recipes.Add("frame", "iron|50 ");
 
             base.Initialize();
         }

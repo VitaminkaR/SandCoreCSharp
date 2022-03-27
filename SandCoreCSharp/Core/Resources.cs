@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
+using SandCoreCSharp.Utils;
 
 namespace SandCoreCSharp.Core
 {
@@ -15,6 +16,8 @@ namespace SandCoreCSharp.Core
         {
             game.Components.Add(this);
             Resource = new Dictionary<string, int>();
+
+            SimpleTimer saver = new SimpleTimer(5000, SaveResources, null);
         }
 
         public override void Initialize()
@@ -31,6 +34,10 @@ namespace SandCoreCSharp.Core
             Resource.Add("iron", 0);
 
             Resource.Add("furnace", 0);
+            Resource.Add("mine", 0);
+            Resource.Add("lumberjack", 0);
+
+            Resource.Add("frame", 0);
 
             LoadResources();
 
@@ -38,7 +45,7 @@ namespace SandCoreCSharp.Core
         }
 
         // сохраняет инфу о ресурсах в файл
-        private void SaveResources()
+        private void SaveResources(object obj)
         {
             string data = "";
 
@@ -49,7 +56,7 @@ namespace SandCoreCSharp.Core
 
             using (StreamWriter sr = new StreamWriter("maps\\" + SandCore.map + "\\resources"))
             {
-                sr.Write(data);
+                    sr.Write(data);
             }
         }
 
@@ -80,7 +87,6 @@ namespace SandCoreCSharp.Core
         public void AddResource(string type, int value)
         {
             Resource[type] += value;
-            SaveResources();
         }
     }
 }
