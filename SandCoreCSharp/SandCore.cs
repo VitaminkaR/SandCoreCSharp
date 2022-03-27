@@ -70,8 +70,8 @@ namespace SandCoreCSharp
             if (!Directory.Exists("maps\\" + map))
                 Directory.CreateDirectory("maps\\" + SandCore.map);
             // проверка существует ли директория с чанками
-            if (!Directory.Exists("maps\\" + map + "\\chunks"))
-                Directory.CreateDirectory("maps\\" + map + "\\chunks");
+            if (!Directory.Exists("maps\\" + map + "\\blocks"))
+                Directory.CreateDirectory("maps\\" + map + "\\blocks");
 
             base.Initialize();
         }
@@ -89,6 +89,8 @@ namespace SandCoreCSharp
             {
                 Exit();
             }
+
+            Block.LoadBlocks();
 
             // нажатие клавиш
             KeyboardState ks = Keyboard.GetState();

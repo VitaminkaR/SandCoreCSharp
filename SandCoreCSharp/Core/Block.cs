@@ -3,12 +3,16 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SandCoreCSharp.Core.Blocks;
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SandCoreCSharp.Core
 {
     public class Block : DrawableGameComponent
     {
+        const int LoaderDistance = 256;
+
         // все блоки
         public static List<Block> Blocks { get; private set; } = new List<Block>();
 
@@ -58,21 +62,16 @@ namespace SandCoreCSharp.Core
             Pos = pos;
 
             collider = new Rectangle(Pos.ToPoint(), new Point(32, 32));
-
-            // проходим и проверяем, если там уже стоит блок, то новый не создаем
-            for (int i = 0; i < Blocks.Count; i++)
-            {
-                Block block = Blocks[i];
-                if (block.Pos == this.Pos && block != this)
-                {
-                    Game.Components.Remove(block);
-                    Blocks.Remove(block);
-                }
-            }
         }
 
         public override void Update(GameTime gameTime)
         {
+            Hero hero = SandCore.game.hero;
+            Vector2 pos = hero.Pos;
+            float r = MathF.Sqrt(MathF.Pow(pos.X - Pos.X, 2) + MathF.Pow(pos.Y - Pos.Y, 2)); // ищем расстояние
+            if (r > LoaderDistance)
+                Unload();
+
             base.Update(gameTime);
         }
 
@@ -104,8 +103,8 @@ namespace SandCoreCSharp.Core
         // когда блок ломается
         public virtual void Break()
         {
-            Game.Components.Remove(this);
-            Blocks.Remove(this);
+            DeleteBlock();
+            Unload();
             Rectangle collider = new Rectangle(Pos.ToPoint(), new Point(32, 32));
         }
 
@@ -116,21 +115,81 @@ namespace SandCoreCSharp.Core
         // чанк в котором блок
         public Chunk GetChunk() => terrain.GetChunk(Pos.X, Pos.Y);
 
-
-
-        // регистрирует новые блоки 
-        static public void CreateBlock(string type, Vector2 pos)
+        // раньше было методом break, но этот метод един для всех блоков
+        public void Unload()
         {
+            Game.Components.Remove(this);
+            Blocks.Remove(this);
+        }
+
+        // сохранение блока
+        public void SaveBlock()
+        {
+            string data = $".{Pos.X}.{Pos.Y}.{Type}";
+            File.Create("maps\\" + SandCore.map + "\\blocks\\" + data);
+        }
+        
+        // удаление этого блока
+        public void DeleteBlock()
+        {
+            string data = $".{Pos.X}.{Pos.Y}.{Type}";
+            File.Delete("maps\\" + SandCore.map + "\\blocks\\" + data);
+        }
+        
+
+
+
+        // загружает блоки
+        static public void LoadBlocks()
+        {
+            Hero hero = SandCore.game.hero;
+            Vector2 pos = hero.Pos;
+            
+            // получаем все файлы с блоками
+            string[] files = Directory.GetFiles("maps\\" + SandCore.map + "\\blocks");
+            // проходимся по всем файлам
+            for (int i = 0; i < files.Length; i++)
+            {
+                // получаем полноценную инфу о блоке
+                string file = files[i];
+                string[] data = file.Split('.');
+                int x = Convert.ToInt32(data[1]);
+                int y = Convert.ToInt32(data[2]);
+                string type = data[3];
+
+                // проверяем расстояние
+                float r = MathF.Sqrt(MathF.Pow(pos.X - x, 2) + MathF.Pow(pos.Y - y, 2)); // ищем расстояние
+                if (r < LoaderDistance) // если оно меньше указанного, то создаем блок
+                    CreateBlock(type, new Vector2(x, y), true);
+            }
+        }
+
+        // регистрирует новые блоки (с параметром isSaving = true)
+        static public void CreateBlock(string type, Vector2 pos, bool loader = false)
+        {
+            // проходим и проверяем, если там уже стоит блок, то новый не создаем
+            for (int i = 0; i < Blocks.Count; i++)
+            {
+                Block b = Blocks[i];
+                if (b.Pos == pos)
+                    return;
+            }
+
+            Block block = null;
+
             if (type == "wood")
-                new Wood(SandCore.game, pos);
+                block = new Wood(SandCore.game, pos);
             if (type == "furnace")
-                new Furnace(SandCore.game, pos);
+                block = new Furnace(SandCore.game, pos);
             if (type == "mine")
-                new Mine(SandCore.game, pos);
+                block = new Mine(SandCore.game, pos);
             if (type == "lumberjack")
-                new Lumberjack(SandCore.game, pos);
+                block = new Lumberjack(SandCore.game, pos);
             if (type == "wire")
-                new Wire(SandCore.game, pos);
+                block = new Wire(SandCore.game, pos);
+
+            if (!loader)
+                block.SaveBlock();
         }
     }
 }

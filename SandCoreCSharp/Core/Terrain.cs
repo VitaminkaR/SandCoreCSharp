@@ -118,10 +118,9 @@ namespace SandCoreCSharp.Core
                 Chunk chunk = chunks[i]; // получаем чанк
                 // проверяем входит ли чанк в границы камеры, если нет, то удаляем его из отрисовываемых
                 // и генерируем новый чанк
-                if (chunk.Pos.X > camBor.X + 600 || chunk.Pos.Y > camBor.Y + 600 ||
-                    (chunk.Pos.X + 512) < camPos.X - 600 || (chunk.Pos.Y + 512) < camPos.Y - 600)
+                if (chunk.Pos.X > camBor.X + SandCore.WIDTH || chunk.Pos.Y > camBor.Y + SandCore.WIDTH ||
+                    (chunk.Pos.X + 512) < camPos.X - SandCore.HEIGHT || (chunk.Pos.Y + 512) < camPos.Y - SandCore.HEIGHT)
                 {
-                    chunk.UnloadChunk();
                     chunks.Remove(chunk);
                 }
             }
@@ -161,8 +160,6 @@ namespace SandCoreCSharp.Core
                 }
             }
 
-            @new.LoadChunk();
-
             // добавляем в рисуемые чанки (потому все с камерой будет связано)
             chunks.Add(@new);
 
@@ -174,7 +171,7 @@ namespace SandCoreCSharp.Core
                 int y = rand.Next(16);
                 Vector2 pos = new Vector2(x * 32 + @new.Pos.X, y * 32 + @new.Pos.Y);
                 if (GetTile(pos).ID != 4)
-                    Block.CreateBlock("WOOD", new Vector2(x * 32 + @new.Pos.X, y * 32 + @new.Pos.Y));
+                    Block.CreateBlock("wood", new Vector2(x * 32 + @new.Pos.X, y * 32 + @new.Pos.Y));
             }
         }
 
@@ -273,14 +270,6 @@ namespace SandCoreCSharp.Core
             }
 
             SimpleTimer timer = new SimpleTimer(15000, GenerateStructure, null);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            for (int i = 0; i < chunks.Count; i++)
-                chunks[i].UnloadChunk();
-
-            base.Dispose(disposing);
         }
     }
 }
