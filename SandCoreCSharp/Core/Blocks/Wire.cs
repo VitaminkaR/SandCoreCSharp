@@ -1,29 +1,31 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
+using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SandCoreCSharp.Core.Blocks
 {
     // состояния провода LR - left-right UD - up-down
     enum WireStates
     {
-        CrossOff, 
-        LROff, 
-        UDOff,
-        CrossOn,
-        LROn,
-        UDOn,
+        Cross, 
+        LR, 
+        UD,
     }
 
     class Wire : Block
     {
+        // провода
+        static public List<Wire> Wires { get; private set; } = new List<Wire>();
+
         // спрайты
         private Texture2D[] statesSprites;
 
         // состояние провода
         private WireStates state;
+
+        // заряжен ли провод
+        public bool Powered { get; private set; }
 
         public Wire(Game game, Vector2 pos) : base(game, pos)
         {
@@ -35,7 +37,9 @@ namespace SandCoreCSharp.Core.Blocks
 
         public override void Initialize()
         {
-            state = WireStates.CrossOff;
+            Wires.Add(this);
+
+            state = WireStates.Cross;
             statesSprites = new Texture2D[6];
 
             base.Initialize();
@@ -55,17 +59,17 @@ namespace SandCoreCSharp.Core.Blocks
 
         public override void Draw(GameTime gameTime)
         {
-            if (state == WireStates.CrossOff)
+            if (state == WireStates.Cross)
                 sprite = statesSprites[0];
-            if(state == WireStates.LROff)
+            if(state == WireStates.LR)
                 sprite = statesSprites[1];
-            if(state == WireStates.UDOff)
+            if(state == WireStates.UD)
                 sprite = statesSprites[2];
-            if(state == WireStates.CrossOn)
+            if(state == WireStates.Cross && Powered)
                 sprite = statesSprites[3];
-            if(state == WireStates.LROn)
+            if(state == WireStates.LR && Powered)
                 sprite = statesSprites[4];
-            if(state == WireStates.UDOn)
+            if(state == WireStates.UD && Powered)
                 sprite = statesSprites[5];
 
             base.Draw(gameTime);
@@ -75,8 +79,60 @@ namespace SandCoreCSharp.Core.Blocks
         {
             Resources resources = (Game as SandCore).resources;
             resources.AddResource("wire", 1);
+            Wires.Remove(this);
 
             base.Break();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            // присоединение провод рядом
+            // проверяем есть ли провод с каждой стороны
+            Wire left = null;
+            Wire right = null;
+            Wire up = null;
+            Wire down = null;
+
+            // находим провода по края
+            for (int i = 0; i < Wires.Count; i++)
+            {
+                Wire wire = Wires[i];
+                if (wire.Pos == Pos + new Vector2(-32, 0))
+                    left = wire;
+                if (wire.Pos == Pos + new Vector2(32, 0))
+                    right = wire;
+                if (wire.Pos == Pos + new Vector2(0, -32))
+                    up = wire;
+                if (wire.Pos == Pos + new Vector2(0, 32))
+                    down = wire;
+            }
+
+            // если хотя бы 1 провод заряженный, то заряжаем этот
+            if(left != null)
+                Powered = left.Powered;
+            if (right != null)
+                Powered = right.Powered;
+            if (up != null)
+                Powered = up.Powered;
+            if (down != null)
+                Powered = down.Powered;
+
+            // меняем состояние от положения других проводов
+            int x = 0;
+            int y = 0;
+            if (left != null || right != null)
+                x++;
+            if (up != null || down != null)
+                y++;
+            if (x == 1)
+                state = WireStates.LR;
+            if (y == 1)
+                state = WireStates.UD;
+            if (x == 1 && y == 1)
+                state = WireStates.Cross;
+            
+
+            base.Update(gameTime);
         }
     }
 }

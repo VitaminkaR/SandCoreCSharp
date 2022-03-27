@@ -67,6 +67,7 @@ namespace SandCoreCSharp.Core
             {
                     sr.Write(data);
             }
+            SimpleTimer saver = new SimpleTimer(5000, SaveResources, null);
         }
 
         // загружает ресурсы
@@ -96,6 +97,13 @@ namespace SandCoreCSharp.Core
         public void AddResource(string type, int value)
         {
             Resource[type] += value;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            SaveResources(null);
+
+            base.Dispose(disposing);
         }
     }
 }
