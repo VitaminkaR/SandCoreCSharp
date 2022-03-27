@@ -168,6 +168,8 @@ namespace SandCoreCSharp.Core
             // чтобы блок не заспавнился в игроке
             if(block != "" && !collider.Intersects(new Rectangle(hero.Pos.ToPoint(), new Point(32, 32))))
             {
+                if (block == null)
+                    return;
                 if (resources.Resource[block] == 0)
                     return;
                 // тут создаем блоки (да не автоматом)

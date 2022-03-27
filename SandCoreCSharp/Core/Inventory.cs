@@ -37,7 +37,7 @@ namespace SandCoreCSharp.Core
             game.Components.Add(this);
             content = Game.Content;
             spriteBatch = new SpriteBatch(Game.GraphicsDevice);
-            DrawOrder = 1;
+            DrawOrder = 2;
         }
 
         protected override void LoadContent()

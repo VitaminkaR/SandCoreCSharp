@@ -52,6 +52,7 @@ namespace SandCoreCSharp.Core
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
             Pos = new Vector2(x, y);
             camera = _camera;
+            DrawOrder = 1;
         }
 
         public override void Initialize()

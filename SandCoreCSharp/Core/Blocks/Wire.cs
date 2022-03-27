@@ -31,8 +31,14 @@ namespace SandCoreCSharp.Core.Blocks
             IsSolid = false;
             Hardness = 0;
             isSaving = true;
+        }
 
+        public override void Initialize()
+        {
+            state = WireStates.CrossOff;
             statesSprites = new Texture2D[6];
+
+            base.Initialize();
         }
 
         protected override void LoadContent()
@@ -45,6 +51,24 @@ namespace SandCoreCSharp.Core.Blocks
             statesSprites[5] = content.Load<Texture2D>("wires\\Wire-3o");
 
             base.LoadContent();
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            if (state == WireStates.CrossOff)
+                sprite = statesSprites[0];
+            if(state == WireStates.LROff)
+                sprite = statesSprites[1];
+            if(state == WireStates.UDOff)
+                sprite = statesSprites[2];
+            if(state == WireStates.CrossOn)
+                sprite = statesSprites[3];
+            if(state == WireStates.LROn)
+                sprite = statesSprites[4];
+            if(state == WireStates.UDOn)
+                sprite = statesSprites[5];
+
+            base.Draw(gameTime);
         }
 
         public override void Break()
