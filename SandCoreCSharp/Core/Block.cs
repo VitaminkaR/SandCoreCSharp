@@ -132,8 +132,12 @@ namespace SandCoreCSharp.Core
         // удаление этого блока
         public void DeleteBlock()
         {
-            string data = $".{Pos.X}.{Pos.Y}.{Type}";
-            File.Delete("maps\\" + SandCore.map + "\\blocks\\" + data);
+            try
+            {
+                string data = $".{Pos.X}.{Pos.Y}.{Type}";
+                File.Delete("maps\\" + SandCore.map + "\\blocks\\" + data);
+            }
+            catch { }
         }
         
 
@@ -189,9 +193,15 @@ namespace SandCoreCSharp.Core
                 block = new Wire(SandCore.game, pos);
             if (type == "battery")
                 block = new Battery(SandCore.game, pos);
+            if (type == "coal_generator")
+                block = new CoalGenerator(SandCore.game, pos);
 
             if (!loader)
                 block.SaveBlock();
         }
+
+
+        // ищет блок по позиции
+        static public Block FindBlock(Vector2 pos) => Blocks.Find(block => block.Pos == pos);
     }
 }

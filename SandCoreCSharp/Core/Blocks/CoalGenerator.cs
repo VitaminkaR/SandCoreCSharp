@@ -6,48 +6,37 @@ using System.Text;
 
 namespace SandCoreCSharp.Core.Blocks
 {
-    class Battery : ElectroMachine
+    class CoalGenerator : ElectroMachine
     {
-        public Battery(Game game, Vector2 pos) : base(game, pos)
+        public CoalGenerator(Game game, Vector2 pos) : base(game, pos)
         {
-            Type = "battery";
+            Type = "coal_generator";
             isSaving = true;
             Hardness = 0;
             IsSolid = true;
             Instrument = "";
             EnergyConsumption = 0;
-
-            MaxEnergy += 10000;
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (Energy > 20)
-                Powered = true;
-            else
-                Powered = false;
+            if (Energy + 256 < MaxEnergy)
+                Energy += 256;
 
             base.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            FindWires();
-
-            base.Draw(gameTime);
         }
 
         public override void Break()
         {
             Resources resources = (Game as SandCore).resources;
-            resources.AddResource("battery", 1);
+            resources.AddResource("coal_generaotr", 1);
 
             base.Break();
         }
 
         protected override void LoadContent()
         {
-            sprite = content.Load<Texture2D>("Battery");
+            sprite = content.Load<Texture2D>("CoalGenerator");
 
             base.LoadContent();
         }

@@ -16,8 +16,6 @@ namespace SandCoreCSharp.Core
         {
             game.Components.Add(this);
             Resource = new Dictionary<string, int>();
-
-            SimpleTimer saver = new SimpleTimer(5000, SaveResources, null);
         }
 
         public override void Initialize()
@@ -50,6 +48,7 @@ namespace SandCoreCSharp.Core
             Resource.Add("wire", 0);
             Resource.Add("frame", 0);
             Resource.Add("battery", 0);
+            Resource.Add("coal_generator", 0);
 
             LoadResources();
 
@@ -70,7 +69,6 @@ namespace SandCoreCSharp.Core
             {
                     sr.Write(data);
             }
-            SimpleTimer saver = new SimpleTimer(5000, SaveResources, null);
         }
 
         // загружает ресурсы

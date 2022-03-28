@@ -46,6 +46,8 @@ namespace SandCoreCSharp.Core
             Recipes.Add("frame", "iron|50 ");
             // батарейка
             Recipes.Add("battery", "frame|1+electrit|5 ");
+            // угольный генератор
+            Recipes.Add("coal_generator", "frame|2+electrit|20 ");
 
             base.Initialize();
         }

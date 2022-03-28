@@ -93,8 +93,6 @@ namespace SandCoreCSharp
                 Exit();
             }
 
-            Block.LoadBlocks();
-
             // нажатие клавиш
             KeyboardState ks = Keyboard.GetState();
             if (ks.IsKeyDown(Keys.F3) && !blocking)
@@ -109,13 +107,19 @@ namespace SandCoreCSharp
             }
             if (ks.GetPressedKeyCount() == 0)
                 blocking = false;
-                
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
+            // эти методы в draw, потому что draw вызывается меньшее кол-во раз, чем update,
+            // для этих методов каждый кадр не играет роль
+            // система проводов
+            ElectroMachine.UpdateWires();
+            // загрузка
+            Block.LoadBlocks();
+
             GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
 

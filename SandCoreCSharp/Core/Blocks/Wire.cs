@@ -8,8 +8,8 @@ namespace SandCoreCSharp.Core.Blocks
     // состояния провода LR - left-right UD - up-down
     public enum WireStates
     {
-        Cross, 
-        LR, 
+        Cross,
+        LR,
         UD,
     }
 
@@ -20,8 +20,6 @@ namespace SandCoreCSharp.Core.Blocks
 
         // состояние провода
         private WireStates state;
-
-        
 
         public Wire(Game game, Vector2 pos) : base(game, pos)
         {
@@ -55,17 +53,19 @@ namespace SandCoreCSharp.Core.Blocks
 
         public override void Draw(GameTime gameTime)
         {
+            FindWires();
+
             if (state == WireStates.Cross)
                 sprite = statesSprites[0];
-            if(state == WireStates.LR)
+            if (state == WireStates.LR)
                 sprite = statesSprites[1];
-            if(state == WireStates.UD)
+            if (state == WireStates.UD)
                 sprite = statesSprites[2];
-            if(state == WireStates.Cross && Powered)
+            if (state == WireStates.Cross && Powered)
                 sprite = statesSprites[3];
-            if(state == WireStates.LR && Powered)
+            if (state == WireStates.LR && Powered)
                 sprite = statesSprites[4];
-            if(state == WireStates.UD && Powered)
+            if (state == WireStates.UD && Powered)
                 sprite = statesSprites[5];
 
             base.Draw(gameTime);
@@ -82,17 +82,6 @@ namespace SandCoreCSharp.Core.Blocks
 
         public override void Update(GameTime gameTime)
         {
-            FindWires();
-
-            // если хотя бы 1 провод заряженный, то заряжаем этот
-            if(left != null)
-                Powered = left.Powered;
-            if (right != null)
-                Powered = right.Powered;
-            if (up != null)
-                Powered = up.Powered;
-            if (down != null)
-                Powered = down.Powered;
 
             // меняем состояние от положения других проводов
             int x = 0;
@@ -107,7 +96,6 @@ namespace SandCoreCSharp.Core.Blocks
                 state = WireStates.UD;
             if (x == 1 && y == 1)
                 state = WireStates.Cross;
-            
 
             base.Update(gameTime);
         }

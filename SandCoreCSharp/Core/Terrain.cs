@@ -162,17 +162,6 @@ namespace SandCoreCSharp.Core
 
             // добавляем в рисуемые чанки (потому все с камерой будет связано)
             chunks.Add(@new);
-
-            // единичная генерация
-            Random rand = new Random();
-            if (!new FileInfo("maps\\" + SandCore.map + "\\chunks\\" + @new.GetName()).Exists)
-            {
-                int x = rand.Next(16);
-                int y = rand.Next(16);
-                Vector2 pos = new Vector2(x * 32 + @new.Pos.X, y * 32 + @new.Pos.Y);
-                if (GetTile(pos).ID != 4)
-                    Block.CreateBlock("wood", new Vector2(x * 32 + @new.Pos.X, y * 32 + @new.Pos.Y));
-            }
         }
 
 
