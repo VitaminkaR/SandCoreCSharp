@@ -24,15 +24,5 @@ namespace SandCoreCSharp.Core.Blocks
 
             base.LoadContent();
         }
-
-        public override void Break()
-        {
-            Resources resources = (Game as SandCore).resources;
-            if(resources.Resource["axe"] > 0) // если есть топорик есть, то в общем добудем 15 а не 5 дерева
-                resources.AddResource("wood", 10);
-            resources.AddResource("wood", 5);
-
-            base.Break();
-        }
     }
 }

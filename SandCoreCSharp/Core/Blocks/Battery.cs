@@ -22,7 +22,7 @@ namespace SandCoreCSharp.Core.Blocks
 
         public override void Update(GameTime gameTime)
         {
-            if (Energy > 20)
+            if (res.Energy > 20)
                 Powered = true;
             else
                 Powered = false;
@@ -31,16 +31,14 @@ namespace SandCoreCSharp.Core.Blocks
         }
 
         public override void Draw(GameTime gameTime)
-        {
-            FindWires();
+        { 
 
             base.Draw(gameTime);
         }
 
         public override void Break()
         {
-            Resources resources = (Game as SandCore).resources;
-            resources.AddResource("battery", 1);
+            MaxEnergy -= 10000;
 
             base.Break();
         }

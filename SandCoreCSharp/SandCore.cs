@@ -74,8 +74,6 @@ namespace SandCoreCSharp
             if (!Directory.Exists("maps\\" + map + "\\blocks"))
                 Directory.CreateDirectory("maps\\" + map + "\\blocks");
 
-            ElectroMachine.LoadResourceEnergy();
-
             base.Initialize();
         }
 
@@ -115,8 +113,6 @@ namespace SandCoreCSharp
         {
             // эти методы в draw, потому что draw вызывается меньшее кол-во раз, чем update,
             // для этих методов каждый кадр не играет роль
-            // система проводов
-            ElectroMachine.UpdateWires();
             // загрузка
             Block.LoadBlocks();
 
@@ -138,13 +134,6 @@ namespace SandCoreCSharp
                 _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
                 _spriteBatch.End();
             }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            ElectroMachine.SaveResourceEnergy();
-
-            base.Dispose(disposing);
         }
     }
 }

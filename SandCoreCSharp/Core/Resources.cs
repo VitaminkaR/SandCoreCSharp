@@ -12,6 +12,9 @@ namespace SandCoreCSharp.Core
         // ресурсы
         public Dictionary<string, int> Resource { get; private set; }
 
+        // кол-во энергии
+        public int Energy { get; internal set; } = 0;
+
         public Resources(Game game) : base(game)
         {
             game.Components.Add(this);
@@ -45,12 +48,16 @@ namespace SandCoreCSharp.Core
             Resource.Add("lumberjack", 0);
 
             // промышленные механизмы
-            Resource.Add("wire", 0);
             Resource.Add("frame", 0);
             Resource.Add("battery", 0);
             Resource.Add("coal_generator", 0);
+            Resource.Add("quarry", 0);
+            Resource.Add("induction_furnace", 0);
 
             LoadResources();
+            LoadResourceEnergy();
+
+            Resource["pickaxe"] = 1;
 
             base.Initialize();
         }
@@ -100,9 +107,34 @@ namespace SandCoreCSharp.Core
             Resource[type] += value;
         }
 
+        // сохраняет инфу о ресурсах в файл
+        public void SaveResourceEnergy()
+        {
+            string data = Energy.ToString();
+
+            using (StreamWriter sr = new StreamWriter("maps\\" + SandCore.map + "\\energy"))
+            {
+                sr.Write(data);
+            }
+        }
+
+        // загружает ресурсы
+        public void LoadResourceEnergy()
+        {
+            if (new FileInfo("maps\\" + SandCore.map + "\\energy").Exists)
+            {
+                using (StreamReader sr = new StreamReader("maps\\" + SandCore.map + "\\energy"))
+                {
+                    string str = sr.ReadLine();
+                    Energy = Convert.ToInt32(str);
+                }
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             SaveResources(null);
+            SaveResourceEnergy();
 
             base.Dispose(disposing);
         }

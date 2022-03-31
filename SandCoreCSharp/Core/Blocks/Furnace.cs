@@ -20,13 +20,5 @@ namespace SandCoreCSharp.Core.Blocks
 
             base.LoadContent();
         }
-
-        public override void Break()
-        {
-            Resources resources = (Game as SandCore).resources;
-            resources.AddResource("furnace", 1);
-
-            base.Break();
-        }
     }
 }

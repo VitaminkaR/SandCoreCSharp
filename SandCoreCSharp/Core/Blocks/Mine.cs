@@ -26,14 +26,6 @@ namespace SandCoreCSharp.Core.Blocks
             base.LoadContent();
         }
 
-        public override void Break()
-        {
-            Resources resources = (Game as SandCore).resources;
-            resources.AddResource("mine", 1);
-
-            base.Break();
-        }
-
         // добыча
         private void Mining(object obj)
         {

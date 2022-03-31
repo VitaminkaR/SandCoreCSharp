@@ -40,7 +40,6 @@ namespace SandCoreCSharp.Core
         {
             chunks = new List<Chunk>();
             sprites = new Texture2D[255];
-            GenerateStructure(null);
 
             base.Initialize();
         }
@@ -233,32 +232,5 @@ namespace SandCoreCSharp.Core
 
         // возвращает  id блока на котором стоит игрок
         public byte GetBlockIdPlayerPlace(Chunk chunk, int[] pos) => chunk.Tiles[pos[0], pos[1], pos[2]];
-
-        // генеарция камушков и т д
-        private void GenerateStructure(object obj)
-        {
-            Random rand = new Random();
-
-            int stonesCount = 0;
-            for (int i = 0; i < Block.Blocks.Count; i++)
-            {
-                Block block = Block.Blocks[i];
-                if ((block as Stones) != null)
-                    stonesCount++;
-            }
-
-            // генерация камушков
-
-            if (stonesCount < 10)
-            {
-                Hero player = (Game as SandCore).hero;
-                rand = new Random();
-                Vector2 p1 = player.Pos + new Vector2(rand.Next(-1024, 1024), rand.Next(-1024, 1024));
-                Vector2 p2 = new Vector2((int)(p1.X / 32) * 32, (int)(p1.Y / 32) * 32);
-                new Stones(Game, p2);
-            }
-
-            SimpleTimer timer = new SimpleTimer(15000, GenerateStructure, null);
-        }
     }
 }

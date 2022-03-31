@@ -103,6 +103,9 @@ namespace SandCoreCSharp.Core
         // когда блок ломается
         public virtual void Break()
         {
+            Resources resources = (Game as SandCore).resources;
+            resources.AddResource(Type, 1);
+
             DeleteBlock();
             Unload();
             Rectangle collider = new Rectangle(Pos.ToPoint(), new Point(32, 32));
@@ -189,12 +192,14 @@ namespace SandCoreCSharp.Core
                 block = new Mine(SandCore.game, pos);
             if (type == "lumberjack")
                 block = new Lumberjack(SandCore.game, pos);
-            if (type == "wire")
-                block = new Wire(SandCore.game, pos);
             if (type == "battery")
                 block = new Battery(SandCore.game, pos);
             if (type == "coal_generator")
                 block = new CoalGenerator(SandCore.game, pos);
+            if (type == "quarry")
+                block = new Quarry(SandCore.game, pos);
+            if (type == "induction_furnace")
+                block = new InductionFurnace(SandCore.game, pos);
 
             if (!loader)
                 block.SaveBlock();

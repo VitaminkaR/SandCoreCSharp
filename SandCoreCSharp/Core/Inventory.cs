@@ -171,7 +171,8 @@ namespace SandCoreCSharp.Core
                 spriteBatch.DrawString(font, "Shovel", new Vector2(310, 16), res.Resource["shovel"] > 0 ? Color.Green : Color.Red);
 
                 // отрисовка энергии
-                spriteBatch.DrawString(font, ElectroMachine.Energy.ToString() + "/" + ElectroMachine.MaxEnergy, new Vector2(452, 16), Color.Green);
+                if(ElectroMachine.MaxEnergy > 0)
+                    spriteBatch.DrawString(font, res.Energy.ToString() + "/" + ElectroMachine.MaxEnergy, new Vector2(452, 16), Color.Yellow);
 
                 spriteBatch.End();
             }

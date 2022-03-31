@@ -21,8 +21,6 @@ namespace SandCoreCSharp.Core
             // ИНИЦИАЛИЗАЦИЯ КРАФТОВ Recipes.Add("ресурс", "компонент|кол-во+компонент|кол-во требуемое устройства");
             // топорик
             Recipes.Add("axe", "iron|15+wood|25 ");
-            // кирка
-            Recipes.Add("pickaxe", "iron|20+wood|25 ");
             // лопата
             Recipes.Add("shovel", "iron|10+wood|25 ");
 
@@ -40,14 +38,16 @@ namespace SandCoreCSharp.Core
 
             //электрит
             Recipes.Add("electrit", "iron|1+quartz|2 ");
-            // провод
-            Recipes.Add("wire", "iron|4 ");
             // корпус механизма
             Recipes.Add("frame", "iron|50 ");
             // батарейка
             Recipes.Add("battery", "frame|1+electrit|5 ");
             // угольный генератор
-            Recipes.Add("coal_generator", "frame|2+electrit|20 ");
+            Recipes.Add("coal_generator", "frame|2+electrit|20+battery|2 ");
+            // карьер
+            Recipes.Add("quarry", "frame|4+electrit|25 ");
+            // индукционная печь
+            Recipes.Add("induction_furnace", "frame|2+electrit|15 ");
 
             base.Initialize();
         }
