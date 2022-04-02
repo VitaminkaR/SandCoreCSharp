@@ -154,7 +154,7 @@ namespace SandCoreCSharp.Core
             }
 
             // если тайл - это земля и у игрока есть лопата
-            if (Tile.ID == 2 && res.Resource["shovel"] > 0)
+            if ((Tile.ID == 2 || Tile.ID == 5) && res.Resource["shovel"] > 0)
             {
                 int chance = new Random().Next(101);
 

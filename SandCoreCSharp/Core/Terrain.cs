@@ -22,6 +22,7 @@ namespace SandCoreCSharp.Core
         // 1 - grass
         // 2 - stone
         // 3 - water
+        // 4 - sand
         private Texture2D[] sprites;
 
         // view chunks
@@ -51,6 +52,7 @@ namespace SandCoreCSharp.Core
             sprites[1] = content.Load<Texture2D>("Grass");
             sprites[2] = content.Load<Texture2D>("Stone");
             sprites[3] = content.Load<Texture2D>("Water");
+            sprites[4] = content.Load<Texture2D>("Sand");
 
             base.LoadContent();
         }
@@ -149,6 +151,8 @@ namespace SandCoreCSharp.Core
                         @new.Tiles[x, y, heights[x, y]] = 3; // горы
                     if (heights[x, y] < 4)
                         @new.Tiles[x, y, heights[x, y]] = 4;// вода
+                    if (heights[x, y] == 4 || heights[x, y] == 5)
+                        @new.Tiles[x, y, heights[x, y]] = 5;// вода
 
 
                     // под землей должны быть камни

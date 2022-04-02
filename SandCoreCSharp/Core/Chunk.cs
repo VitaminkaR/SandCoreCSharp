@@ -15,6 +15,7 @@ namespace SandCoreCSharp.Core
         // 2 - grass
         // 3 - stone
         // 4 - water
+        // 5 - sand
         public byte[,,] Tiles { get; set; } = new byte[16, 16, 16];
 
         // позиция чанка
