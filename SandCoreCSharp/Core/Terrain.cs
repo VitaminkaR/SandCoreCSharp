@@ -25,7 +25,7 @@ namespace SandCoreCSharp.Core
         private Texture2D[] sprites;
 
         // view chunks
-        private List<Chunk> chunks;
+        public List<Chunk> Chunks { get; private set; }
 
         public Terrain(Game game) : base(game)
         {
@@ -38,7 +38,7 @@ namespace SandCoreCSharp.Core
         // init
         public override void Initialize()
         {
-            chunks = new List<Chunk>();
+            Chunks = new List<Chunk>();
             sprites = new Texture2D[255];
 
             base.Initialize();
@@ -61,7 +61,7 @@ namespace SandCoreCSharp.Core
             spriteBatch.Begin();
 
             // проходим пов сем чанкам
-            for (int i = 0; i < chunks.Count; i++)
+            for (int i = 0; i < Chunks.Count; i++)
             {
                 for (int x = 0; x < 16; x++)
                 {
@@ -69,12 +69,12 @@ namespace SandCoreCSharp.Core
                     {
                         for (int z = 15; z > -1; z--)
                         {
-                            byte id = chunks[i].Tiles[x, y, z]; // получаем id
+                            byte id = Chunks[i].Tiles[x, y, z]; // получаем id
                             if (id == 0) // если воздух то идем далее
                                 continue;
 
                             Vector2 camPos = (Game as SandCore).camera.Pos; // берем позицию камеры
-                            Vector2 chunkPos = chunks[i].Pos;
+                            Vector2 chunkPos = Chunks[i].Pos;
 
                             // отрисовываем блок в позиции относительно камеры и относительно координат чанка
                             // с текстурой для его id
@@ -112,15 +112,15 @@ namespace SandCoreCSharp.Core
             }
 
             // проверка на видимость 
-            for (int i = 0; i < chunks.Count; i++)
+            for (int i = 0; i < Chunks.Count; i++)
             {
-                Chunk chunk = chunks[i]; // получаем чанк
+                Chunk chunk = Chunks[i]; // получаем чанк
                 // проверяем входит ли чанк в границы камеры, если нет, то удаляем его из отрисовываемых
                 // и генерируем новый чанк
                 if (chunk.Pos.X > camBor.X + SandCore.WIDTH || chunk.Pos.Y > camBor.Y + SandCore.WIDTH ||
                     (chunk.Pos.X + 512) < camPos.X - SandCore.HEIGHT || (chunk.Pos.Y + 512) < camPos.Y - SandCore.HEIGHT)
                 {
-                    chunks.Remove(chunk);
+                    Chunks.Remove(chunk);
                 }
             }
 
@@ -132,7 +132,7 @@ namespace SandCoreCSharp.Core
         // generate chunk
         public void Generate(float _x, float _y, int px, int py)
         {
-            if (chunks.Any(obj => obj.Pos.X == _x && obj.Pos.Y == _y)) // проверяем если такой чанк есть, то не создаем такой же
+            if (Chunks.Any(obj => obj.Pos.X == _x && obj.Pos.Y == _y)) // проверяем если такой чанк есть, то не создаем такой же
                 return;
 
             Chunk @new = new Chunk(_x, _y);
@@ -160,7 +160,7 @@ namespace SandCoreCSharp.Core
             }
 
             // добавляем в рисуемые чанки (потому все с камерой будет связано)
-            chunks.Add(@new);
+            Chunks.Add(@new);
         }
 
 
@@ -172,13 +172,13 @@ namespace SandCoreCSharp.Core
             int iy = (int)(y / 512);
             if (x < 0) ix--;
             if (y < 0) iy--;
-            for (int i = 0; i < chunks.Count; i++)
+            for (int i = 0; i < Chunks.Count; i++)
             {
-                if (chunks[i].Pos == new Vector2(ix * 512, iy * 512))
-                    return chunks[i];
+                if (Chunks[i].Pos == new Vector2(ix * 512, iy * 512))
+                    return Chunks[i];
             }
 
-            return chunks[0];
+            return Chunks[0];
         }
 
         // возвращает чанк в котором игрок

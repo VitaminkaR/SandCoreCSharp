@@ -114,7 +114,7 @@ namespace SandCoreCSharp
             // эти методы в draw, потому что draw вызывается меньшее кол-во раз, чем update,
             // для этих методов каждый кадр не играет роль
             // загрузка
-            Block.LoadBlocks();
+            Block.LoadBlocks(terrain);
 
             GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);

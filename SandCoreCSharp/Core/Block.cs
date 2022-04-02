@@ -128,8 +128,12 @@ namespace SandCoreCSharp.Core
         // сохранение блока
         public void SaveBlock()
         {
+            // находим index чанка
+            Chunk chunk = terrain.GetChunk(Pos.X, Pos.Y);
+
             string data = $".{Pos.X}.{Pos.Y}.{Type}";
-            File.Create("maps\\" + SandCore.map + "\\blocks\\" + data);
+            Directory.CreateDirectory("maps\\" + SandCore.map + "\\blocks" + $"\\{chunk.GetName()}");
+            File.Create("maps\\" + SandCore.map + "\\blocks" + $"\\{chunk.GetName()}\\" + data);
         }
         
         // удаление этого блока
@@ -137,8 +141,11 @@ namespace SandCoreCSharp.Core
         {
             try
             {
+                // находим index чанка
+                Chunk chunk = terrain.GetChunk(Pos.X, Pos.Y);
+
                 string data = $".{Pos.X}.{Pos.Y}.{Type}";
-                File.Delete("maps\\" + SandCore.map + "\\blocks\\" + data);
+                File.Delete("maps\\" + SandCore.map + "\\blocks" + $"\\{chunk.GetName()}\\" + data);
             }
             catch { }
         }
@@ -147,27 +154,26 @@ namespace SandCoreCSharp.Core
 
 
         // загружает блоки
-        static public void LoadBlocks()
+        static public void LoadBlocks(Terrain terrain)
         {
-            Hero hero = SandCore.game.hero;
-            Vector2 pos = hero.Pos;
-            
-            // получаем все файлы с блоками
-            string[] files = Directory.GetFiles("maps\\" + SandCore.map + "\\blocks");
-            // проходимся по всем файлам
-            for (int i = 0; i < files.Length; i++)
+            for (int i = 0; i < terrain.Chunks.Count; i++)
             {
-                // получаем полноценную инфу о блоке
-                string file = files[i];
-                string[] data = file.Split('.');
-                int x = Convert.ToInt32(data[1]);
-                int y = Convert.ToInt32(data[2]);
-                string type = data[3];
+                Chunk chunk = terrain.Chunks[i];
+                string[] files = new string[0];
 
-                // проверяем расстояние
-                float r = MathF.Sqrt(MathF.Pow(pos.X - x, 2) + MathF.Pow(pos.Y - y, 2)); // ищем расстояние
-                if (r < LoaderDistance) // если оно меньше указанного, то создаем блок
+                if (new DirectoryInfo("maps\\" + SandCore.map + "\\blocks" + $"\\{chunk.GetName()}").Exists)
+                    files = Directory.GetFiles("maps\\" + SandCore.map + "\\blocks" + $"\\{chunk.GetName()}");
+
+                for (int j = 0; j < files.Length; j++)
+                {
+                    string file = files[j];
+                    string[] data = file.Split('.');
+                    int x = Convert.ToInt32(data[1]);
+                    int y = Convert.ToInt32(data[2]);
+                    string type = data[3];
+
                     CreateBlock(type, new Vector2(x, y), true);
+                }
             }
         }
 
