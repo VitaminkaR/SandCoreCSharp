@@ -48,8 +48,8 @@ namespace SandCoreCSharp.Core
 
         public override void Update(GameTime gameTime)
         {
-            Camera camera = (Game as SandCore).camera;
-            Terrain terrain = (Game as SandCore).terrain;
+            Camera camera = SandCore.camera;
+            Terrain terrain = SandCore.terrain;
             MouseState state = Mouse.GetState();
 
             Vector2 pos = camera.Pos + state.Position.ToVector2();
@@ -98,9 +98,9 @@ namespace SandCoreCSharp.Core
         {
             spriteBatch.Begin();
             if (Active)
-                spriteBatch.Draw(texture, Pos - (Game as SandCore).camera.Pos, Color.White);
+                spriteBatch.Draw(texture, Pos - SandCore.camera.Pos, Color.White);
             else
-                spriteBatch.Draw(texture, Pos - (Game as SandCore).camera.Pos, Color.Black);
+                spriteBatch.Draw(texture, Pos - SandCore.camera.Pos, Color.Black);
             spriteBatch.End();
 
             base.Draw(gameTime);
@@ -120,7 +120,7 @@ namespace SandCoreCSharp.Core
                     {
                         if (block.Instrument != "" && block.Instrument != null)
                         {
-                            if (SandCore.game.resources.Resource[block.Instrument] > 0)
+                            if (SandCore.resources.Resource[block.Instrument] > 0)
                             {
                                 SimpleTimer timer = new SimpleTimer(block.Hardness * 1000, Breaking, block); // ломает блок n секунд
                                 breaking = true;
@@ -138,7 +138,7 @@ namespace SandCoreCSharp.Core
             }
 
             // ломание tile-ов
-            Resources res = (Game as SandCore).resources;
+            Resources res = SandCore.resources;
             // если тайл - это камень и у игрока есть кирка
             if (Tile.ID == 3 && res.Resource["pickaxe"] > 0)
             {
@@ -162,17 +162,21 @@ namespace SandCoreCSharp.Core
                 if (chance <= 25)
                     res.AddResource("sand", 1); // песок
             }
+
+            // если тайл - вода и есть ведро
+            if (Tile.ID == 4 && res.Resource["bucket"] > 0)
+                res.AddResource("water", 1f * res.Resource["bucket"]);
         }
 
         // нажатие на правую кнопку мыши
         private void Use()
         {
-            Inventory inventory = SandCore.game.inventory;
-            Resources resources = SandCore.game.resources;
-            Hero hero = SandCore.game.hero;
+            Inventory inventory = SandCore.inventory;
+            Resources resources = SandCore.resources;
+            Hero hero = SandCore.hero;
 
-            Vector2 positionBlockCursor = new Vector2(Tile.Position[0] * 32, Tile.Position[1] * 32) + Chunk.Pos;
-            Rectangle collider = new Rectangle(positionBlockCursor.ToPoint(), new Point(32, 32)); // коллайдер курсора
+            Vector2 BlockPosition = new Vector2(Tile.Position[0] * 32, Tile.Position[1] * 32) + Chunk.Pos;
+            Rectangle collider = new Rectangle(BlockPosition.ToPoint(), new Point(32, 32)); // коллайдер курсора
             string block = inventory.choosenBlock;
 
             // чтобы блок не заспавнился в игроке
@@ -182,9 +186,15 @@ namespace SandCoreCSharp.Core
                     return;
                 if (resources.Resource[block] == 0)
                     return;
-                // тут создаем блоки (да не автоматом)
+                // тут создаем блоки
                 resources.AddResource(block, -1);
-                Block.CreateBlock(block, positionBlockCursor);
+                Block.CreateBlock(block, BlockPosition);
+            }
+
+            // если есть мотыга и тайл - это земля
+            if (Tile.ID == 2 && block == "hoe")
+            {
+                Block.CreateBlock("land", Pos);
             }
         }
 
@@ -198,5 +208,21 @@ namespace SandCoreCSharp.Core
                 block.Break();
             }
         }
+
+
+
+        // позволяет блоку получить инфу на него ли наведена мышь
+        static public bool FocusOnBlock(Vector2 position)
+        {
+            Cursor cursor = SandCore.cursor;
+            Rectangle collider = GetCollider();
+            Rectangle colliderBlock = new Rectangle(position.ToPoint(), new Point(32, 32));
+            if (collider.Intersects(colliderBlock))
+                return true;
+            else
+                return false;
+        }
+
+        static public Rectangle GetCollider() => new Rectangle(SandCore.cursor.Pos.ToPoint(), new Point(32, 32));
     }
 }

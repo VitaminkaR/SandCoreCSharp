@@ -75,7 +75,7 @@ namespace SandCoreCSharp.Core
                             if (id == 0) // если воздух то идем далее
                                 continue;
 
-                            Vector2 camPos = (Game as SandCore).camera.Pos; // берем позицию камеры
+                            Vector2 camPos =SandCore.camera.Pos; // берем позицию камеры
                             Vector2 chunkPos = Chunks[i].Pos;
 
                             // отрисовываем блок в позиции относительно камеры и относительно координат чанка
@@ -99,7 +99,7 @@ namespace SandCoreCSharp.Core
 
         public override void Update(GameTime gameTime)
         {
-            Vector2 CamPos = (Game as SandCore).camera.Pos; // берем позицию камеры
+            Vector2 CamPos = SandCore.camera.Pos; // берем позицию камеры
 
             // генерация
             Vector2 CenterCameraPos = CamPos + new Vector2(SandCore.WIDTH / 2, SandCore.HEIGHT / 2);
@@ -201,12 +201,12 @@ namespace SandCoreCSharp.Core
         }
 
         // возвращает чанк в котором игрок
-        public Chunk GetChunkExistPlayer() => GetChunk((Game as SandCore).hero.Pos.X, (Game as SandCore).hero.Pos.Y);
+        public Chunk GetChunkExistPlayer() => GetChunk(SandCore.hero.Pos.X, SandCore.hero.Pos.Y);
 
         // возвращает блок на котором стоит игрок
         public int[] GetChunkPosPlayer()
         {
-            Tile tile = GetTile((Game as SandCore).hero.Pos);
+            Tile tile = GetTile(SandCore.hero.Pos);
 
             int oz = 0;
 

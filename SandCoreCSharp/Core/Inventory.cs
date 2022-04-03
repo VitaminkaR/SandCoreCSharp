@@ -56,8 +56,8 @@ namespace SandCoreCSharp.Core
 
         public override void Update(GameTime gameTime)
         {
-            CraftManager manager = SandCore.game.craftManager;
-            Resources res = SandCore.game.resources;
+            CraftManager manager = SandCore.craftManager;
+            Resources res = SandCore.resources;
             KeyboardState ks = Keyboard.GetState();
             MouseState ms = Mouse.GetState();
 
@@ -76,7 +76,7 @@ namespace SandCoreCSharp.Core
                 // выбор рецепта крафта
                 if (ms.X > SandCore.WIDTH / 2)
                 {
-                    int number = ms.Position.Y / 16 - 4; // позиция по счету (как он отрисовывается)
+                    int number = ms.Position.Y / 16 - 3 + scroll; // позиция по счету (как он отрисовывается)
                     int counter = 0;
                     foreach (var recipe in manager.Recipes) // перебираем рецепты
                     {
@@ -98,7 +98,7 @@ namespace SandCoreCSharp.Core
                 //выбор ресурса (чтоб ставить блоки)
                 if (ms.X < SandCore.WIDTH / 2 && ms.LeftButton == ButtonState.Pressed)
                 {
-                    int number = ms.Position.Y / 16 - 4; // позиция по счету (как он отрисовывается)
+                    int number = ms.Position.Y / 16 - 3 + scroll; // позиция по счету (как он отрисовывается)
                     int counter = 0;
                     foreach (var resource in res.Resource) // перебираем ресурсы
                     {
@@ -133,8 +133,8 @@ namespace SandCoreCSharp.Core
 
         public override void Draw(GameTime gameTime)
         {
-            Resources res = SandCore.game.resources;
-            CraftManager manager = SandCore.game.craftManager;
+            Resources res = SandCore.resources;
+            CraftManager manager = SandCore.craftManager;
 
             int count = 3; // для отрисовки
 

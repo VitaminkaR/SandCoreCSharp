@@ -36,7 +36,7 @@ namespace SandCoreCSharp.Core.Blocks
 
         public ElectroMachine(Game game, Vector2 pos) : base(game, pos)
         {
-            res = SandCore.game.resources;
+            res = SandCore.resources;
         }
     }
 }

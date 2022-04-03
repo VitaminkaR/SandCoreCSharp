@@ -6,7 +6,7 @@ using System.Threading;
 namespace SandCoreCSharp.Core.Blocks
 {
     // шахта добывающая игроку ресурсы
-    class Mine : Mechanism
+    class Mine : Block
     {
         public Mine(Game game, Vector2 pos) : base(game, pos)
         {
@@ -19,7 +19,7 @@ namespace SandCoreCSharp.Core.Blocks
 
         public override void Update(GameTime gameTime)
         {
-            Resources res = SandCore.game.resources;
+            Resources res = SandCore.resources;
             res.AddResource("stone", 0.1f);
             res.AddResource("coal", 0.05f);
             res.AddResource("raw_iron", 0.01f);

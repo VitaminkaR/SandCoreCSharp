@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace SandCoreCSharp.Core.Blocks
 {
-    class Lumberjack : Mechanism
+    class Lumberjack : Block
     {
         public Lumberjack(Game game, Vector2 pos) : base(game, pos)
         {
@@ -18,7 +18,7 @@ namespace SandCoreCSharp.Core.Blocks
 
         public override void Update(GameTime gameTime)
         {
-            Resources res = SandCore.game.resources;
+            Resources res = SandCore.resources;
             res.AddResource("wood", 0.25f);
 
             base.Update(gameTime);

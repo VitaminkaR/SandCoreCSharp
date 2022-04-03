@@ -24,13 +24,13 @@ namespace SandCoreCSharp
         static public SandCore game;
 
         // main objects
-        internal Terrain terrain;
-        internal Camera camera;
-        internal Hero hero;
-        internal Cursor cursor;
-        internal Resources resources;
-        internal Inventory inventory;
-        internal CraftManager craftManager;
+        static internal Terrain terrain;
+        static internal Camera camera;
+        static internal Hero hero;
+        static internal Cursor cursor;
+        static internal Resources resources;
+        static internal Inventory inventory;
+        static internal CraftManager craftManager;
 
         // controls
         private bool blocking;

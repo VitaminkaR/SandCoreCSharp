@@ -37,6 +37,8 @@ namespace SandCoreCSharp.Core
             Resource.Add("axe", 0);
             Resource.Add("pickaxe", 0);
             Resource.Add("shovel", 0);
+            Resource.Add("hoe", 0);
+            Resource.Add("bucket", 0);
 
             // ископаемые
             Resource.Add("stone", 0);
@@ -62,6 +64,9 @@ namespace SandCoreCSharp.Core
             Resource.Add("coal_generator", 0);
             Resource.Add("quarry", 0);
             Resource.Add("induction_furnace", 0);
+
+            // жидкости
+            Resource.Add("water", 0);
 
             LoadResources();
             LoadResourceEnergy();
@@ -113,7 +118,8 @@ namespace SandCoreCSharp.Core
         // изменяет ресурс (добавляет)
         public void AddResource(string type, float value)
         {
-            Resource[type] += value;
+            if(Resource.ContainsKey(type))
+                Resource[type] += value;
         }
 
         // сохраняет инфу о ресурсах в файл

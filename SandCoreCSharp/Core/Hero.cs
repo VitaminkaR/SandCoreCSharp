@@ -36,12 +36,6 @@ namespace SandCoreCSharp.Core
         // здоровье
         public float Health { get; private set; }
 
-        // механизмы с которыми рядом игрок
-        // механизмы - блоки, они сами добавляются в список (свой тег блока), когда к ним подошел игрок
-        // нужно для "требуемых" в крафте
-        public List<string> Mechanisms { get; set; }
-
-
         private ContentManager content;
         private SpriteBatch spriteBatch;
 
@@ -57,9 +51,6 @@ namespace SandCoreCSharp.Core
 
         public override void Initialize()
         {
-            Mechanisms = new List<string>();
-            Mechanisms.Add("");
-
             speed = 3;
             offset = Pos;
             Health = 100;
@@ -81,7 +72,7 @@ namespace SandCoreCSharp.Core
             Control();
             CameraUpdate();
 
-            Terrain terrain = (Game as SandCore).terrain;
+            Terrain terrain = SandCore.terrain;
             Chunk = terrain.GetChunkExistPlayer();
             ChunkPos = terrain.GetChunkPosPlayer();
             BlockId = terrain.GetBlockIdPlayerPlace(Chunk, ChunkPos);

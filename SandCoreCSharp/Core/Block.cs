@@ -50,6 +50,12 @@ namespace SandCoreCSharp.Core
         // загруженые чанки
         static public List<string> loadChunks = new List<string>();
 
+        // События 
+        public delegate void Use();
+        protected event Use Using;
+
+
+
         public Block(Game game, Vector2 pos) : base(game)
         {
             content = Game.Content;
@@ -57,10 +63,9 @@ namespace SandCoreCSharp.Core
             Game.Components.Add(this);
             Blocks.Add(this);
 
-            SandCore sandCoreGame = (game as SandCore);
-            player = sandCoreGame.hero;
-            camera = sandCoreGame.camera;
-            terrain = sandCoreGame.terrain;
+            player =SandCore.hero;
+            camera = SandCore.camera;
+            terrain = SandCore.terrain;
 
             Pos = pos;
 
@@ -69,11 +74,14 @@ namespace SandCoreCSharp.Core
 
         public override void Update(GameTime gameTime)
         {
-            Hero hero = SandCore.game.hero;
+            // выгрузка блоков
+            Hero hero = SandCore.hero;
             Vector2 pos = hero.Pos;
             float r = MathF.Sqrt(MathF.Pow(pos.X - Pos.X, 2) + MathF.Pow(pos.Y - Pos.Y, 2)); // ищем расстояние
             if (r > LoaderDistance)
                 Unload();
+
+
 
             base.Update(gameTime);
         }
@@ -83,7 +91,7 @@ namespace SandCoreCSharp.Core
         {
             Color color = Color.White;
 
-            Cursor cursor = (Game as SandCore).cursor;
+            Cursor cursor = SandCore.cursor;
             // добыча блока
             if (cursor.Pos == Pos)
                 color = Color.Green;
@@ -106,7 +114,7 @@ namespace SandCoreCSharp.Core
         // когда блок ломается
         public virtual void Break()
         {
-            Resources resources = (Game as SandCore).resources;
+            Resources resources = SandCore.resources;
             resources.AddResource(Type, 1);
 
             DeleteBlock();
@@ -211,6 +219,8 @@ namespace SandCoreCSharp.Core
                 block = new Quarry(SandCore.game, pos);
             if (type == "induction_furnace")
                 block = new InductionFurnace(SandCore.game, pos);
+            if (type == "land")
+                block = new Land(SandCore.game, pos);
 
             if (block != null && !loader)
                 block.SaveBlock();

@@ -22,7 +22,7 @@ namespace SandCoreCSharp.Core.Blocks
 
         public override void Update(GameTime gameTime)
         {
-            Resources res = SandCore.game.resources;
+            Resources res = SandCore.resources;
 
             res.AddResource("sand", 0.35f);
             res.AddResource("quartz", 0.30f);
