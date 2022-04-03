@@ -35,19 +35,19 @@ namespace SandCoreCSharp.Core.Blocks
             base.LoadContent();
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void Using()
         {
             Resources res = SandCore.resources;
-            MouseState ms = Mouse.GetState();
+            Inventory inventory = SandCore.inventory;
 
-            if(!wet && res.Resource["water"] >= 1 && ms.LeftButton == ButtonState.Pressed && Cursor.FocusOnBlock(Pos))
+            if (!wet && inventory.choosenBlock == "bucket")
             {
                 res.Resource["water"] -= 1;
                 wet = true;
                 sprite = textures[1];
             }
 
-            base.Update(gameTime);
+            base.Using();
         }
     }
 }

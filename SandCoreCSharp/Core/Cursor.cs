@@ -180,22 +180,21 @@ namespace SandCoreCSharp.Core
             string block = inventory.choosenBlock;
 
             // чтобы блок не заспавнился в игроке
-            if(block != "" && !collider.Intersects(new Rectangle(hero.Pos.ToPoint(), new Point(32, 32))))
+            if(block == null && resources.Resource[block] == 0 && block != "" && !collider.Intersects(new Rectangle(hero.Pos.ToPoint(), new Point(32, 32))))
             {
-                if (block == null)
+                // если есть мотыга и тайл - земля
+                if (Tile.ID == 2 && block == "hoe")
+                {
+                    Block.CreateBlock("land", Pos);
                     return;
-                if (resources.Resource[block] == 0)
-                    return;
+                }
+
                 // тут создаем блоки
                 resources.AddResource(block, -1);
                 Block.CreateBlock(block, BlockPosition);
             }
 
-            // если есть мотыга и тайл - это земля
-            if (Tile.ID == 2 && block == "hoe")
-            {
-                Block.CreateBlock("land", Pos);
-            }
+            
         }
 
         // ломание блока

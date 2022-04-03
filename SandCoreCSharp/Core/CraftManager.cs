@@ -18,7 +18,7 @@ namespace SandCoreCSharp.Core
 
         public override void Initialize()
         {
-            // ИНИЦИАЛИЗАЦИЯ КРАФТОВ Recipes.Add("ресурс", "компонент|кол-во+компонент|кол-во требуемое устройства");
+            // ИНИЦИАЛИЗАЦИЯ КРАФТОВ Recipes.Add("ресурс", "компонент|кол-во+компонент|кол-во");
             // топорик
             Recipes.Add("axe", "iron|15+wood|25");
             // лопата

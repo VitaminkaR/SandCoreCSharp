@@ -50,12 +50,6 @@ namespace SandCoreCSharp.Core
         // загруженые чанки
         static public List<string> loadChunks = new List<string>();
 
-        // События 
-        public delegate void Use();
-        protected event Use Using;
-
-
-
         public Block(Game game, Vector2 pos) : base(game)
         {
             content = Game.Content;
@@ -84,7 +78,7 @@ namespace SandCoreCSharp.Core
             // если нажата правая кнопка на блоке
             Vector2 CursorCollider = SandCore.cursor.Pos;
             if (Pos == CursorCollider)
-                Using?.Invoke();
+                Using();
 
             base.Update(gameTime);
         }
@@ -163,6 +157,12 @@ namespace SandCoreCSharp.Core
             }
             catch { }
         }
+
+        // когда на блок нажали правой кнопко мыши 
+        protected virtual void Using()
+        {
+
+        }
         
 
 
@@ -228,7 +228,6 @@ namespace SandCoreCSharp.Core
             if (block != null && !loader)
                 block.SaveBlock();
         }
-
 
         // ищет блок по позиции
         static public Block FindBlock(Vector2 pos) => Blocks.Find(block => block.Pos == pos);
