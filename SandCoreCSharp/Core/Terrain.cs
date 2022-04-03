@@ -169,16 +169,17 @@ namespace SandCoreCSharp.Core
             // добавляем в рисуемые чанки
             Chunks.Add(@new);
 
-            //// генерация деревьев
-            //string chunkName = @new.GetName();
-            //Random rand = new Random();
-            //if (!new DirectoryInfo("maps\\" + SandCore.map + "\\blocks\\" + chunkName).Exists)
-            //{
-            //    float x = @new.Pos.X + rand.Next(16) * 32;
-            //    float y = @new.Pos.X + rand.Next(16) * 32;
-            //    Vector2 pos = new Vector2(x, y);
-            //    Block.CreateBlock("wood", pos);
-            //}
+            // генерация деревьев
+            string chunkName = @new.GetName();
+            Random rand = new Random();
+            if (!new DirectoryInfo("maps\\" + SandCore.map + "\\blocks\\" + chunkName).Exists)
+            {
+                float x = @new.Pos.X + rand.Next(16) * 32;
+                float y = @new.Pos.Y + rand.Next(16) * 32;
+                Vector2 pos = new Vector2(x, y);
+                if (GetTile(pos).ID == 2)
+                    Block.CreateBlock("wood", pos);
+            }
         }
 
 
