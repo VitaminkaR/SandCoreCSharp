@@ -33,6 +33,11 @@ namespace SandCoreCSharp.Core
 
         private SpriteBatch spriteBatch;
 
+        // для скроллинга рецептов
+        private int scroll;
+
+
+
         public Inventory(Game game) : base(game)
         {
             game.Components.Add(this);
@@ -118,6 +123,9 @@ namespace SandCoreCSharp.Core
                     if(choosenRecipe != "" && choosenRecipe != null)
                         manager.Craft(choosenRecipe);
                 }
+
+                // скролл
+                scroll = ms.ScrollWheelValue / -100;
             }
 
             base.Update(gameTime);
@@ -141,11 +149,14 @@ namespace SandCoreCSharp.Core
                 spriteBatch.DrawString(font, "INVENTORY", new Vector2(16, 16), Color.White);
                 foreach (var resource in res.Resource)
                 {
-                    Color color = Color.White; // если не выбран
-                    if (choosenBlock == resource.Key) // если предмет выбран 
-                        color = Color.Green;
+                    if (count - 3 >= scroll) // скролл
+                    {
+                        Color color = Color.White; // если не выбран
+                        if (choosenBlock == resource.Key) // если предмет выбран 
+                            color = Color.Green;
 
-                    spriteBatch.DrawString(font, resource.Key + " = " + resource.Value, new Vector2(16, 16 * count), color);
+                        spriteBatch.DrawString(font, resource.Key + " = " + resource.Value, new Vector2(16, 16 * (count - scroll)), color);
+                    }
                     count++;
                 }
 
@@ -155,13 +166,16 @@ namespace SandCoreCSharp.Core
                 spriteBatch.DrawString(font, "CRAFTING", new Vector2(SandCore.WIDTH / 2 + 16, 16), Color.White);
                 foreach (var craft in manager.Recipes)
                 {
-                    Color color = Color.Red; // если нельзя скрафтить и не выбран
-                    if (manager.MayCraft(craft.Key)) // если предмет можно скрафтить
-                        color = Color.Green;
-                    if (craft.Key == choosenRecipe) // если крафт предмета выбран
-                        color = Color.White;
+                    if (count - 3 >= scroll) // скролл
+                    {
+                        Color color = Color.Red; // если нельзя скрафтить и не выбран
+                        if (manager.MayCraft(craft.Key)) // если предмет можно скрафтить
+                            color = Color.Green;
+                        if (craft.Key == choosenRecipe) // если крафт предмета выбран
+                            color = Color.White;
 
-                    spriteBatch.DrawString(font, craft.Key + " = " + craft.Value, new Vector2(SandCore.WIDTH / 2 + 16, 16 * count), color);
+                        spriteBatch.DrawString(font, craft.Key + " = " + craft.Value, new Vector2(SandCore.WIDTH / 2 + 16, 16 * (count - scroll)), color);
+                    }
                     count++;
                 }
 
