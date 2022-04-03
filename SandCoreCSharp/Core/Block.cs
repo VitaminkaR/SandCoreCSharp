@@ -34,7 +34,7 @@ namespace SandCoreCSharp.Core
         public Rectangle collider;
 
         // тэг для определения типа (ОБЯЗАТЕЛЬНЫЙ ПРИ СОЗДАНИИ НОВОГО БЛОКА)
-        public string Type { get; protected set; } = "block";
+        public string Type { get; protected set; } = "example";
 
         // будет ли блок сохранятся
         public bool isSaving = true;
@@ -81,7 +81,10 @@ namespace SandCoreCSharp.Core
             if (r > LoaderDistance)
                 Unload();
 
-
+            // если нажата правая кнопка на блоке
+            Vector2 CursorCollider = SandCore.cursor.Pos;
+            if (Pos == CursorCollider)
+                Using?.Invoke();
 
             base.Update(gameTime);
         }

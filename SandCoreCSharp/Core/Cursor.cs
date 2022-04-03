@@ -176,7 +176,7 @@ namespace SandCoreCSharp.Core
             Hero hero = SandCore.hero;
 
             Vector2 BlockPosition = new Vector2(Tile.Position[0] * 32, Tile.Position[1] * 32) + Chunk.Pos;
-            Rectangle collider = new Rectangle(BlockPosition.ToPoint(), new Point(32, 32)); // коллайдер курсора
+            Rectangle collider = GetCollider();
             string block = inventory.choosenBlock;
 
             // чтобы блок не заспавнился в игроке
