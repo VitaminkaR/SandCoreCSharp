@@ -11,7 +11,7 @@ namespace SandCoreCSharp.Core
 {
     public class Block : DrawableGameComponent
     {
-        const int LoaderDistance = 1024;
+        const int LoaderDistance = 4096;
 
         // все блоки
         public static List<Block> Blocks { get; private set; } = new List<Block>();
@@ -46,6 +46,9 @@ namespace SandCoreCSharp.Core
         public bool IsSolid { get; protected set; } = true;
         // какой инструмент нужен для добычи // маленькими буквами
         public string Instrument { get; protected set; } = null;
+
+        // загруженые чанки
+        static public List<string> loadChunks = new List<string>();
 
         public Block(Game game, Vector2 pos) : base(game)
         {
@@ -159,6 +162,10 @@ namespace SandCoreCSharp.Core
             for (int i = 0; i < terrain.Chunks.Count; i++)
             {
                 Chunk chunk = terrain.Chunks[i];
+                if (loadChunks.Contains(chunk.GetName()))
+                    continue;
+                loadChunks.Add(chunk.GetName());
+
                 string[] files = new string[0];
 
                 if (new DirectoryInfo("maps\\" + SandCore.map + "\\blocks" + $"\\{chunk.GetName()}").Exists)
@@ -198,8 +205,6 @@ namespace SandCoreCSharp.Core
                 block = new Mine(SandCore.game, pos);
             if (type == "lumberjack")
                 block = new Lumberjack(SandCore.game, pos);
-            if (type == "battery")
-                block = new Battery(SandCore.game, pos);
             if (type == "coal_generator")
                 block = new CoalGenerator(SandCore.game, pos);
             if (type == "quarry")
@@ -207,7 +212,7 @@ namespace SandCoreCSharp.Core
             if (type == "induction_furnace")
                 block = new InductionFurnace(SandCore.game, pos);
 
-            if (!loader)
+            if (block != null && !loader)
                 block.SaveBlock();
         }
 

@@ -9,9 +9,6 @@ namespace SandCoreCSharp.Core.Blocks
 {
     public class ElectroMachine : Block
     {
-        // размер буфера энергии (увеличивается вместе с созданием батарей)
-        static public int MaxEnergy { get; protected set; } = 0;
-
         // заряжена ли машина
         public bool Powered { get; set; }
 
@@ -31,8 +28,8 @@ namespace SandCoreCSharp.Core.Blocks
                 res.Energy -= EnergyConsumption;
 
             // проверяем не перебор ли с энергий
-            if (res.Energy > MaxEnergy)
-                res.Energy = MaxEnergy;
+            if (res.Energy > Resources.MaxEnergy)
+                res.Energy = Resources.MaxEnergy;
 
             base.Update(gameTime);
         }

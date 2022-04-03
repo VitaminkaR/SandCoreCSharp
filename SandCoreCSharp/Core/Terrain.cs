@@ -122,7 +122,8 @@ namespace SandCoreCSharp.Core
                 if (chunk.Pos.X > camBor.X + SandCore.WIDTH || chunk.Pos.Y > camBor.Y + SandCore.WIDTH ||
                     (chunk.Pos.X + 512) < camPos.X - SandCore.HEIGHT || (chunk.Pos.Y + 512) < camPos.Y - SandCore.HEIGHT)
                 {
-                    Chunks.Remove(chunk);
+                    Block.loadChunks.Remove(chunk.GetName());
+                    Chunks.Remove(chunk); 
                 }
             }
 
@@ -215,8 +216,8 @@ namespace SandCoreCSharp.Core
             // находим координаты относительно чанка
             Vector2 p1 = pos - chunk.Pos - new Vector2(1, 1);
             // находим индексы тайла
-            int x = (int)(p1.X / 32);
-            int y = (int)(p1.Y / 32);
+            int x = (int)(MathF.Abs(p1.X / 32));
+            int y = (int)(MathF.Abs(p1.Y / 32));
 
             if (x > 15 || y > 15)
                 return new Tile(0, 0, chunk, 0);

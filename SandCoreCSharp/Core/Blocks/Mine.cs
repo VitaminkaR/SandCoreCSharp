@@ -15,8 +15,16 @@ namespace SandCoreCSharp.Core.Blocks
             Hardness = 0;
             IsSolid = true;
             Instrument = "";
+        }
 
-            SimpleTimer timer = new SimpleTimer(1000, Mining, null);
+        public override void Update(GameTime gameTime)
+        {
+            Resources res = SandCore.game.resources;
+            res.AddResource("stone", 0.1f);
+            res.AddResource("coal", 0.05f);
+            res.AddResource("raw_iron", 0.01f);
+
+            base.Update(gameTime);
         }
 
         protected override void LoadContent()
@@ -24,16 +32,6 @@ namespace SandCoreCSharp.Core.Blocks
             sprite = content.Load<Texture2D>("Mine");
 
             base.LoadContent();
-        }
-
-        // добыча
-        private void Mining(object obj)
-        {
-            Resources res = SandCore.game.resources;
-            res.AddResource("stone", 10);
-            res.AddResource("coal", 5);
-            res.AddResource("raw_iron", 1);
-            SimpleTimer timer = new SimpleTimer(1000, Mining, null);
         }
     }
 }

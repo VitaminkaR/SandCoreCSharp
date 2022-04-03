@@ -18,8 +18,21 @@ namespace SandCoreCSharp.Core.Blocks
             IsSolid = true;
             Instrument = "";
             EnergyConsumption = 32;
+        }
 
-            SimpleTimer timer = new SimpleTimer(1000, Mining, null);
+        public override void Update(GameTime gameTime)
+        {
+            Resources res = SandCore.game.resources;
+
+            res.AddResource("sand", 0.35f);
+            res.AddResource("quartz", 0.30f);
+            res.AddResource("stone", 0.25f);
+            res.AddResource("coal", 0.20f);
+            res.AddResource("raw_iron", 0.15f);
+            res.AddResource("raw_gold", 0.1f);
+            res.AddResource("adamant", 0.01f);
+
+            base.Update(gameTime);
         }
 
         protected override void LoadContent()
@@ -27,21 +40,6 @@ namespace SandCoreCSharp.Core.Blocks
             sprite = content.Load<Texture2D>("Quarry");
 
             base.LoadContent();
-        }
-
-        private void Mining(object obj)
-        {
-            Resources res = SandCore.game.resources;
-
-            res.AddResource("sand", 35);
-            res.AddResource("quartz", 30);
-            res.AddResource("stone", 25);
-            res.AddResource("coal", 20);
-            res.AddResource("raw_iron", 15);
-            res.AddResource("raw_gold", 10);
-            res.AddResource("adamant", 1);
-
-            SimpleTimer timer = new SimpleTimer(1000, Mining, null);
         }
     }
 }

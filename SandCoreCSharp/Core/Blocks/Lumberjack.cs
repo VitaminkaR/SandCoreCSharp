@@ -14,23 +14,20 @@ namespace SandCoreCSharp.Core.Blocks
             Hardness = 0;
             IsSolid = true;
             Instrument = "";
+        }
 
-            SimpleTimer timer = new SimpleTimer(1500, Felling, null);
+        public override void Update(GameTime gameTime)
+        {
+            Resources res = SandCore.game.resources;
+            res.AddResource("wood", 0.25f);
+
+            base.Update(gameTime);
         }
 
         protected override void LoadContent()
         {
             sprite = content.Load<Texture2D>("Lumberjack");
-
             base.LoadContent();
-        }
-
-        // добыча
-        private void Felling(object obj)
-        {
-            Resources res = SandCore.game.resources;
-            res.AddResource("wood", 20);
-            SimpleTimer timer = new SimpleTimer(1000, Felling, null);
         }
     }
 }

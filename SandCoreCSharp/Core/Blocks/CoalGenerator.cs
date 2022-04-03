@@ -20,7 +20,7 @@ namespace SandCoreCSharp.Core.Blocks
 
         public override void Update(GameTime gameTime)
         {
-            if (res.Energy + 256 < MaxEnergy && res.Resource["coal"] > 0)
+            if (res.Energy + 256 < Resources.MaxEnergy && res.Resource["coal"] > 0)
             {
                 res.Energy += 256;
                 res.AddResource("coal", -1);

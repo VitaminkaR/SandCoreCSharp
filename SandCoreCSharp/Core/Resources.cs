@@ -10,15 +10,24 @@ namespace SandCoreCSharp.Core
     public class Resources : GameComponent
     {
         // ресурсы
-        public Dictionary<string, int> Resource { get; private set; }
+        public Dictionary<string, float> Resource { get; private set; }
 
         // кол-во энергии
         public int Energy { get; internal set; } = 0;
+        // размер буфера энергии (увеличивается вместе с созданием батарей)
+        static public int MaxEnergy { get; protected set; } = 0;
 
         public Resources(Game game) : base(game)
         {
             game.Components.Add(this);
-            Resource = new Dictionary<string, int>();
+            Resource = new Dictionary<string, float>();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            MaxEnergy = (int)(Resource["battery"] * 15000);
+
+            base.Update(gameTime);
         }
 
         public override void Initialize()
@@ -94,7 +103,7 @@ namespace SandCoreCSharp.Core
                             break;
 
                         string res = line.Split('|')[0];
-                        int value = Convert.ToInt32(line.Split('|')[1]);
+                        float value = Convert.ToSingle(line.Split('|')[1]);
                         Resource[res] = value;
                     }
                 }
@@ -102,7 +111,7 @@ namespace SandCoreCSharp.Core
         }
 
         // изменяет ресурс (добавляет)
-        public void AddResource(string type, int value)
+        public void AddResource(string type, float value)
         {
             Resource[type] += value;
         }
