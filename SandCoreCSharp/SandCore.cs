@@ -129,7 +129,8 @@ namespace SandCoreCSharp
                     $"Player Block Place: {hero.BlockId}\n\n" +
                     $"Mouse Chunk: {cursor.Chunk.GetName()}\n" +
                     $"Mouse Tile ID: {cursor.Tile.ID}\n" +
-                    $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}\n\n";
+                    $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}\n\n" +
+                    $"Chunks: {terrain.Chunks.Count}\n\n";
                 _spriteBatch.Begin();
                 _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
                 _spriteBatch.End();

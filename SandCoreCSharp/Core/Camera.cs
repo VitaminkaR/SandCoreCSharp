@@ -6,7 +6,6 @@ namespace SandCoreCSharp.Core
     public class Camera : GameComponent
     {
         public Vector2 Pos { get; internal set; } // позиция камеры
-        public Vector2 Borders { get; private set; } // границы для проверки входит ли чанк в них
 
         private Vector2 borderSize; // размеры экрана (константы экрана из класса игры)
 
@@ -23,7 +22,6 @@ namespace SandCoreCSharp.Core
             borderSize = new Vector2(SandCore.WIDTH, SandCore.HEIGHT);
 
             Pos = new Vector2();
-            Borders = Pos + borderSize;       
 
             speed = 10;
 
@@ -32,9 +30,6 @@ namespace SandCoreCSharp.Core
 
         public override void Update(GameTime gameTime)
         {
-            // меняем границы для новых позиций
-            Borders = Pos + borderSize;
-
             //Control();
 
             base.Update(gameTime);

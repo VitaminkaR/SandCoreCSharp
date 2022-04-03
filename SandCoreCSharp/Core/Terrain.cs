@@ -99,28 +99,30 @@ namespace SandCoreCSharp.Core
 
         public override void Update(GameTime gameTime)
         {
-            Vector2 camPos = (Game as SandCore).camera.Pos; // берем позицию камеры
-            Vector2 camBor = (Game as SandCore).camera.Borders; // получаем края камеры
+            Vector2 CamPos = (Game as SandCore).camera.Pos; // берем позицию камеры
 
             // генерация
-            int ofx = (int)(camPos.X / 512);
-            int ofy = (int)(camPos.Y / 512);
-            for (int i = ofx - 1; i < ofx + 4; i++)
+            Vector2 CenterCameraPos = CamPos + new Vector2(SandCore.WIDTH / 2, SandCore.HEIGHT / 2);
+            int ofx = (int)(CenterCameraPos.X / 512);
+            int ofy = (int)(CenterCameraPos.Y / 512);
+            if (CenterCameraPos.X < 0) ofx--;
+            if (CenterCameraPos.Y < 0) ofy--;
+            for (int i = -2; i < 3; i++)
             {
-                for (int j = ofy - 1; j < ofy + 3; j++)
+                for (int j = -1; j < 2; j++)
                 {
-                    Generate(i * 512, j * 512, i + 1, j + 1);
+                    Generate((ofx + i) * 512, (ofy + j) * 512, ofx + i, ofy + j);
                 }
             }
 
             // проверка на видимость 
+            Rectangle CameraBorders = new Rectangle(CamPos.ToPoint(), new Point(SandCore.WIDTH, SandCore.HEIGHT));
             for (int i = 0; i < Chunks.Count; i++)
             {
-                Chunk chunk = Chunks[i]; // получаем чанк
+                Chunk chunk = Chunks[i];
+                Rectangle ChunkBorders = new Rectangle((chunk.Pos - new Vector2(512, 512)).ToPoint(), new Point(1536, 1536));
                 // проверяем входит ли чанк в границы камеры, если нет, то удаляем его из отрисовываемых
-                // и генерируем новый чанк
-                if (chunk.Pos.X > camBor.X + SandCore.WIDTH || chunk.Pos.Y > camBor.Y + SandCore.WIDTH ||
-                    (chunk.Pos.X + 512) < camPos.X - SandCore.HEIGHT || (chunk.Pos.Y + 512) < camPos.Y - SandCore.HEIGHT)
+                if (!CameraBorders.Intersects(ChunkBorders))
                 {
                     Block.loadChunks.Remove(chunk.GetName());
                     Chunks.Remove(chunk); 
@@ -164,8 +166,19 @@ namespace SandCoreCSharp.Core
                 }
             }
 
-            // добавляем в рисуемые чанки (потому все с камерой будет связано)
+            // добавляем в рисуемые чанки
             Chunks.Add(@new);
+
+            //// генерация деревьев
+            //string chunkName = @new.GetName();
+            //Random rand = new Random();
+            //if (!new DirectoryInfo("maps\\" + SandCore.map + "\\blocks\\" + chunkName).Exists)
+            //{
+            //    float x = @new.Pos.X + rand.Next(16) * 32;
+            //    float y = @new.Pos.X + rand.Next(16) * 32;
+            //    Vector2 pos = new Vector2(x, y);
+            //    Block.CreateBlock("wood", pos);
+            //}
         }
 
 
