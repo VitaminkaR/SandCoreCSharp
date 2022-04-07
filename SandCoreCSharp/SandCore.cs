@@ -82,6 +82,7 @@ namespace SandCoreCSharp
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             font = Content.Load<SpriteFont>("font");
+            Block.LoadContents(Content);
         }
 
         protected override void Update(GameTime gameTime)

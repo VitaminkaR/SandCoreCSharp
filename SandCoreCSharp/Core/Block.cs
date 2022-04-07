@@ -15,6 +15,8 @@ namespace SandCoreCSharp.Core
 
         // все блоки
         public static List<Block> Blocks { get; private set; } = new List<Block>();
+        // спрайты блоков
+        static protected Dictionary<string, Texture2D> Sprites { get; private set; } = new Dictionary<string, Texture2D>();
 
         // глобальная позиция
         public Vector2 Pos { get; protected set; }
@@ -59,6 +61,8 @@ namespace SandCoreCSharp.Core
 
         public Block(Game game, Vector2 pos) : base(game)
         {
+            Type = this.GetType().Name.ToLower();
+
             content = Game.Content;
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
             Game.Components.Add(this);
@@ -82,6 +86,13 @@ namespace SandCoreCSharp.Core
         }
 
 
+
+        protected override void LoadContent()
+        {
+            sprite = Sprites[Type];
+
+            base.LoadContent();
+        }
 
         public override void Update(GameTime gameTime)
         {
@@ -131,7 +142,6 @@ namespace SandCoreCSharp.Core
             Resources resources = SandCore.resources;
             resources.AddResource(Type, 1);
 
-            SaveTags();
             DeleteBlock();
             Unload();
             Rectangle collider = new Rectangle(Pos.ToPoint(), new Point(32, 32));
@@ -179,6 +189,20 @@ namespace SandCoreCSharp.Core
 
 
 
+        // загружает текстуры
+        static public void LoadContents(ContentManager content)
+        {
+            Sprites["wood"] = content.Load<Texture2D>("Wood");
+            Sprites["quarry"] = content.Load<Texture2D>("Quarry");
+            Sprites["lumberjack"] = content.Load<Texture2D>("Lumberjack");
+            Sprites["mine"] = content.Load<Texture2D>("Mine");
+            Sprites["induction_furnace"] = content.Load<Texture2D>("InductionFurnace");
+            Sprites["furnace"] = content.Load<Texture2D>("Furnace");
+            Sprites["coal_generator"] = content.Load<Texture2D>("CoalGenerator");
+            Sprites["land"] = content.Load<Texture2D>("Land");
+            Sprites["mud"] = content.Load<Texture2D>("Mud");
+            Sprites["mud_with_seeds"] = content.Load<Texture2D>("MudWithSeeds");
+        }
 
         // загружает блоки
         static public void LoadBlocks(Terrain terrain)
@@ -238,12 +262,14 @@ namespace SandCoreCSharp.Core
             if (type == "land")
                 block = new Land(SandCore.game, pos);
 
-            if (block != null && !loader)
-                block.SaveBlock();
-
-            Resources resources = SandCore.resources;
             if(block != null)
+            {
+                Resources resources = SandCore.resources;
                 resources.AddResource(block.Type, -1);
+
+                if (!loader)
+                    block.SaveBlock();
+            } 
         }
 
         // ищет блок по позиции

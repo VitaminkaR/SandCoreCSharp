@@ -19,13 +19,6 @@ namespace SandCoreCSharp.Core.Blocks
             EnergyConsumption = 16;
         }
 
-        protected override void LoadContent()
-        {
-            sprite = content.Load<Texture2D>("InductionFurnace");
-
-            base.LoadContent();
-        }
-
         public override void Update(GameTime gameTime)
         {
             if(res.Resource["raw_gold"] > 0)

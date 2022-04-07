@@ -34,12 +34,5 @@ namespace SandCoreCSharp.Core.Blocks
 
             base.Update(gameTime);
         }
-
-        protected override void LoadContent()
-        {
-            sprite = content.Load<Texture2D>("Quarry");
-
-            base.LoadContent();
-        }
     }
 }

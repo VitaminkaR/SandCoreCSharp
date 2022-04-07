@@ -17,12 +17,5 @@ namespace SandCoreCSharp.Core.Blocks
         {
             base.Initialize();
         }
-
-        protected override void LoadContent()
-        {
-            sprite = content.Load<Texture2D>("Wood");
-
-            base.LoadContent();
-        }
     }
 }
