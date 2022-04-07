@@ -50,6 +50,13 @@ namespace SandCoreCSharp.Core
         // загруженые чанки
         static public List<string> loadChunks = new List<string>();
 
+        // для работы с загрузками
+        protected string path; // сам путь до файла,  в котором можно хранить, что требуется
+        protected string directory; // директория (название чанка блока)
+        protected FileInfo file; // информация о файлах
+
+
+
         public Block(Game game, Vector2 pos) : base(game)
         {
             content = Game.Content;
@@ -57,14 +64,24 @@ namespace SandCoreCSharp.Core
             Game.Components.Add(this);
             Blocks.Add(this);
 
-            player =SandCore.hero;
+            player = SandCore.hero;
             camera = SandCore.camera;
             terrain = SandCore.terrain;
 
             Pos = pos;
 
             collider = new Rectangle(Pos.ToPoint(), new Point(32, 32));
+
+            // для работы с загрузками
+            // находим index чанка
+            Chunk chunk = terrain.GetChunk(Pos.X, Pos.Y);
+            directory = "maps\\" + SandCore.map + "\\blocks" + $"\\{chunk.GetName()}";
+            string data = $".{Pos.X}.{Pos.Y}.{Type}";
+            path = directory + data;
+            file = new FileInfo(path);
         }
+
+
 
         public override void Update(GameTime gameTime)
         {
@@ -77,7 +94,7 @@ namespace SandCoreCSharp.Core
 
             // если нажата правая кнопка на блоке
             Vector2 CursorCollider = SandCore.cursor.Pos;
-            if (Pos == CursorCollider)
+            if (Pos == CursorCollider && Mouse.GetState().RightButton == ButtonState.Pressed)
                 Using();
 
             base.Update(gameTime);
@@ -114,6 +131,7 @@ namespace SandCoreCSharp.Core
             Resources resources = SandCore.resources;
             resources.AddResource(Type, 1);
 
+            SaveTags();
             DeleteBlock();
             Unload();
             Rectangle collider = new Rectangle(Pos.ToPoint(), new Point(32, 32));
@@ -121,10 +139,10 @@ namespace SandCoreCSharp.Core
 
         // столкновение с игроком
         public virtual void CollidePlayer(Hero player)
-        {}
+        { }
 
         // чанк в котором блок
-        public Chunk GetChunk() => terrain.GetChunk(Pos.X, Pos.Y);
+        public Chunk GetChunk() => SandCore.terrain.GetChunk(Pos.X, Pos.Y);
 
         // раньше было методом break, но этот метод един для всех блоков
         public void Unload()
@@ -136,34 +154,29 @@ namespace SandCoreCSharp.Core
         // сохранение блока
         public void SaveBlock()
         {
-            // находим index чанка
-            Chunk chunk = terrain.GetChunk(Pos.X, Pos.Y);
-
-            string data = $".{Pos.X}.{Pos.Y}.{Type}";
-            Directory.CreateDirectory("maps\\" + SandCore.map + "\\blocks" + $"\\{chunk.GetName()}");
-            File.Create("maps\\" + SandCore.map + "\\blocks" + $"\\{chunk.GetName()}\\" + data);
+            Directory.CreateDirectory(directory);
+            File.Create(path);
         }
-        
+
         // удаление этого блока
         public void DeleteBlock()
         {
             try
             {
-                // находим index чанка
-                Chunk chunk = terrain.GetChunk(Pos.X, Pos.Y);
-
-                string data = $".{Pos.X}.{Pos.Y}.{Type}";
-                File.Delete("maps\\" + SandCore.map + "\\blocks" + $"\\{chunk.GetName()}\\" + data);
+                File.Delete(path);
             }
             catch { }
         }
+
+
+
 
         // когда на блок нажали правой кнопко мыши 
         protected virtual void Using()
         {
 
         }
-        
+
 
 
 
@@ -227,6 +240,10 @@ namespace SandCoreCSharp.Core
 
             if (block != null && !loader)
                 block.SaveBlock();
+
+            Resources resources = SandCore.resources;
+            if(block != null)
+                resources.AddResource(block.Type, -1);
         }
 
         // ищет блок по позиции

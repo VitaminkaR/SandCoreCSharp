@@ -68,6 +68,10 @@ namespace SandCoreCSharp.Core
             // жидкости
             Resource.Add("water", 0);
 
+            // растения
+            Resource.Add("seed", 0);
+            Resource.Add("wheat", 0);
+
             LoadResources();
             LoadResourceEnergy();
 

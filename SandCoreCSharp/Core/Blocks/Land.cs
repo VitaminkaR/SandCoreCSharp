@@ -10,26 +10,29 @@ namespace SandCoreCSharp.Core.Blocks
     // класс грядки (основа земледелия)
     class Land : Block
     {
-        // полита ли градяка водой
-        private bool wet;
-
         private Texture2D[] textures;
-
-
 
         public Land(Game game, Vector2 pos) : base(game, pos)
         {
             Type = "land";
             IsSolid = false;
-            Hardness = 1;
+            Hardness = 0;
             Instrument = "";
+        }
+
+
+
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
         }
 
         protected override void LoadContent()
         {
-            textures = new Texture2D[2];
+            textures = new Texture2D[3];
             textures[0] = content.Load<Texture2D>("Land");
             textures[1] = content.Load<Texture2D>("Mud");
+            textures[2] = content.Load<Texture2D>("MudWithSeeds");
             sprite = textures[0];
 
             base.LoadContent();
@@ -40,12 +43,7 @@ namespace SandCoreCSharp.Core.Blocks
             Resources res = SandCore.resources;
             Inventory inventory = SandCore.inventory;
 
-            if (!wet && inventory.choosenBlock == "bucket")
-            {
-                res.Resource["water"] -= 1;
-                wet = true;
-                sprite = textures[1];
-            }
+           
 
             base.Using();
         }

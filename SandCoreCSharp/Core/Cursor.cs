@@ -180,7 +180,7 @@ namespace SandCoreCSharp.Core
             string block = inventory.choosenBlock;
 
             // чтобы блок не заспавнился в игроке
-            if(block == null && resources.Resource[block] == 0 && block != "" && !collider.Intersects(new Rectangle(hero.Pos.ToPoint(), new Point(32, 32))))
+            if(block != null && resources.Resource[block] != 0 && block != "" && !collider.Intersects(new Rectangle(hero.Pos.ToPoint(), new Point(32, 32))))
             {
                 // если есть мотыга и тайл - земля
                 if (Tile.ID == 2 && block == "hoe")
@@ -189,8 +189,6 @@ namespace SandCoreCSharp.Core
                     return;
                 }
 
-                // тут создаем блоки
-                resources.AddResource(block, -1);
                 Block.CreateBlock(block, BlockPosition);
             }
 
