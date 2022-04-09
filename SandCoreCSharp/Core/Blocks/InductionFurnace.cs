@@ -11,7 +11,6 @@ namespace SandCoreCSharp.Core.Blocks
     {
         public InductionFurnace(Game game, Vector2 pos) : base(game, pos)
         {
-            Type = "induction_furnace";
             isSaving = true;
             Hardness = 0;
             IsSolid = true;

@@ -61,9 +61,9 @@ namespace SandCoreCSharp.Core
             // промышленные механизмы
             Resource.Add("frame", 0);
             Resource.Add("battery", 0);
-            Resource.Add("coal_generator", 0);
+            Resource.Add("coalgenerator", 0);
             Resource.Add("quarry", 0);
-            Resource.Add("induction_furnace", 0);
+            Resource.Add("inductionfurnace", 0);
 
             // жидкости
             Resource.Add("water", 0);

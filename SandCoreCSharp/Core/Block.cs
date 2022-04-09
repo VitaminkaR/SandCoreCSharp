@@ -80,7 +80,7 @@ namespace SandCoreCSharp.Core
             // находим index чанка
             Chunk chunk = terrain.GetChunk(Pos.X, Pos.Y);
             directory = "maps\\" + SandCore.map + "\\blocks" + $"\\{chunk.GetName()}";
-            string data = $".{Pos.X}.{Pos.Y}.{Type}";
+            string data = $"\\.{Pos.X}.{Pos.Y}.{Type}";
             path = directory + data;
             file = new FileInfo(path);
         }
