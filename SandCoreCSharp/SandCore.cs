@@ -54,6 +54,15 @@ namespace SandCoreCSharp
         {
             game = this;
 
+            // СОХРАНЕНИЯ
+            map = ConfigReader.ReadParam("options.cfg", "map");
+            // проверка существует ли директория с картой
+            if (!Directory.Exists("maps\\" + map))
+                Directory.CreateDirectory("maps\\" + SandCore.map);
+            // проверка существует ли директория с чанками
+            if (!Directory.Exists("maps\\" + map + "\\blocks"))
+                Directory.CreateDirectory("maps\\" + map + "\\blocks");
+
             terrain = new Terrain(this);
             camera = new Camera(this);
             hero = new Hero(this, WIDTH / 2 - 16, HEIGHT / 2 - 16, camera);
@@ -63,16 +72,7 @@ namespace SandCoreCSharp
             craftManager = new CraftManager(this);
             
 
-            SimplexNoise.CreateSeed(Convert.ToInt32(ConfigReader.ReadParam("options.cfg", "seed")));
-
-            // СОХРАНЕНИЯ
-            map = ConfigReader.ReadParam("options.cfg", "map");
-            // проверка существует ли директория с картой
-            if (!Directory.Exists("maps\\" + map))
-                Directory.CreateDirectory("maps\\" + SandCore.map);
-            // проверка существует ли директория с чанками
-            if (!Directory.Exists("maps\\" + map + "\\blocks"))
-                Directory.CreateDirectory("maps\\" + map + "\\blocks");
+            SimplexNoise.CreateSeed(Convert.ToInt32(ConfigReader.ReadParam("options.cfg", "seed")));  
 
             base.Initialize();
         }
@@ -131,7 +131,7 @@ namespace SandCoreCSharp
                     $"Mouse Chunk: {cursor.Chunk.GetName()}\n" +
                     $"Mouse Tile ID: {cursor.Tile.ID}\n" +
                     $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}\n\n" +
-                    $"Chunks: {terrain.Chunks.Count}\n\n";
+                    $"Chunks: {terrain.Chunks.Count}\n";
                 _spriteBatch.Begin();
                 _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
                 _spriteBatch.End();

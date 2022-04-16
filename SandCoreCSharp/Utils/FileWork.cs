@@ -8,14 +8,14 @@ namespace SandCoreCSharp.Utils
         static public void Write(string path, string message)
         {
             StreamWriter sw = new StreamWriter(path);
-            sw.Write(message);
+            sw.Write(message + '\n');
             sw.Close();
         }
 
         static public string[] Read(string path)
         {
             if (!File.Exists(path))
-                return new string[0];
+                return null;
 
             StreamReader sr = new StreamReader(path);
             List<string> lines = new List<string>();

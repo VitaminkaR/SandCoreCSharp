@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SandCoreCSharp.Core.Blocks;
+using SandCoreCSharp.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -57,7 +58,8 @@ namespace SandCoreCSharp.Core
         protected string directory; // директория (название чанка блока)
         protected FileInfo file; // информация о файлах
 
-
+        // информация, которая сохраняется в файл блока
+        protected string Tags { get; set; }
 
         public Block(Game game, Vector2 pos) : base(game)
         {
@@ -166,6 +168,7 @@ namespace SandCoreCSharp.Core
         {
             Directory.CreateDirectory(directory);
             File.Create(path);
+            SaveTags();
         }
 
         // удаление этого блока
@@ -176,6 +179,19 @@ namespace SandCoreCSharp.Core
                 File.Delete(path);
             }
             catch { }
+        }
+
+        // сохранение тэгов
+        protected void SaveTags() => FileWork.Write(path, Tags);
+
+        // загрузка тэгов
+        protected void LoadTags()
+        {
+            string[] msg = FileWork.Read(path);
+            if (msg.Length > 0)
+                Tags = msg[0];
+            else
+                SaveTags();
         }
 
 
@@ -227,20 +243,21 @@ namespace SandCoreCSharp.Core
                     int y = Convert.ToInt32(data[2]);
                     string type = data[3];
 
-                    CreateBlock(type, new Vector2(x, y), true);
+                    Block block = CreateBlock(type, new Vector2(x, y), true);
+                    block?.LoadTags();
                 }
             }
         }
 
         // регистрирует новые блоки (с параметром isSaving = true)
-        static public void CreateBlock(string type, Vector2 pos, bool loader = false)
+        static public Block CreateBlock(string type, Vector2 pos, bool loader = false)
         {
             // проходим и проверяем, если там уже стоит блок, то новый не создаем
             for (int i = 0; i < Blocks.Count; i++)
             {
                 Block b = Blocks[i];
                 if (b.Pos == pos)
-                    return;
+                    return null;
             }
 
             Block block = null;
@@ -264,12 +281,16 @@ namespace SandCoreCSharp.Core
 
             if(block != null)
             {
+                return block;
+
                 Resources resources = SandCore.resources;
                 resources.AddResource(block.Type, -1);
 
                 if (!loader)
                     block.SaveBlock();
-            } 
+            }
+
+            return null;
         }
 
         // ищет блок по позиции
