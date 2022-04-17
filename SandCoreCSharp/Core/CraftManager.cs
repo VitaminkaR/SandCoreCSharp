@@ -45,11 +45,11 @@ namespace SandCoreCSharp.Core
             // батарейка
             Recipes.Add("battery", "frame|1+electrit|5");
             // угольный генератор
-            Recipes.Add("coal_generator", "frame|2+electrit|20+battery|2");
+            Recipes.Add("coalgenerator", "frame|2+electrit|20+battery|2");
             // карьер
             Recipes.Add("quarry", "frame|4+electrit|25");
             // индукционная печь
-            Recipes.Add("induction_furnace", "frame|2+electrit|15");
+            Recipes.Add("inductionfurnace", "frame|2+electrit|15");
 
             // нить
             Recipes.Add("string", "cotton|5");

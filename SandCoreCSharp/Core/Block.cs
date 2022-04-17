@@ -219,9 +219,9 @@ namespace SandCoreCSharp.Core
             Sprites["quarry"] = content.Load<Texture2D>("Quarry");
             Sprites["lumberjack"] = content.Load<Texture2D>("Lumberjack");
             Sprites["mine"] = content.Load<Texture2D>("Mine");
-            Sprites["induction_furnace"] = content.Load<Texture2D>("InductionFurnace");
+            Sprites["inductionfurnace"] = content.Load<Texture2D>("InductionFurnace");
             Sprites["furnace"] = content.Load<Texture2D>("Furnace");
-            Sprites["coal_generator"] = content.Load<Texture2D>("CoalGenerator");
+            Sprites["coalgenerator"] = content.Load<Texture2D>("CoalGenerator");
             Sprites["land"] = content.Load<Texture2D>("Land");
             Sprites["mud"] = content.Load<Texture2D>("Mud");
             Sprites["mud_with_seeds"] = content.Load<Texture2D>("MudWithSeeds");
@@ -281,11 +281,11 @@ namespace SandCoreCSharp.Core
                 block = new Mine(SandCore.game, pos);
             if (type == "lumberjack")
                 block = new Lumberjack(SandCore.game, pos);
-            if (type == "coal_generator")
+            if (type == "coalgenerator")
                 block = new CoalGenerator(SandCore.game, pos);
             if (type == "quarry")
                 block = new Quarry(SandCore.game, pos);
-            if (type == "induction_furnace")
+            if (type == "inductionfurnace")
                 block = new InductionFurnace(SandCore.game, pos);
             if (type == "land")
                 block = new Land(SandCore.game, pos);

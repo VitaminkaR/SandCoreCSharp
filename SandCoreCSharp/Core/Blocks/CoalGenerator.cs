@@ -10,7 +10,6 @@ namespace SandCoreCSharp.Core.Blocks
     {
         public CoalGenerator(Game game, Vector2 pos) : base(game, pos)
         {
-            Type = "coal_generator";
             isSaving = true;
             Hardness = 0;
             IsSolid = true;
