@@ -168,7 +168,6 @@ namespace SandCoreCSharp.Core
         {
             Directory.CreateDirectory(directory);
             File.Create(path);
-            SaveTags();
         }
 
         // удаление этого блока
@@ -196,7 +195,7 @@ namespace SandCoreCSharp.Core
         protected void LoadTags()
         {
             string[] msg = FileWork.Read(path);
-            if (msg.Length > 0 && msg[0] != "")
+            if (msg != null && msg.Length > 0 && msg[0] != "")
                 Tags = msg;
             else
                 SaveTags();
@@ -226,6 +225,8 @@ namespace SandCoreCSharp.Core
             Sprites["land"] = content.Load<Texture2D>("Land");
             Sprites["mud"] = content.Load<Texture2D>("Mud");
             Sprites["mud_with_seeds"] = content.Load<Texture2D>("MudWithSeeds");
+            Sprites["wheat_1"] = content.Load<Texture2D>("wheat_1");
+            Sprites["wheat_2"] = content.Load<Texture2D>("wheat_2");
         }
 
         // загружает блоки
@@ -294,7 +295,7 @@ namespace SandCoreCSharp.Core
                     Resources resources = SandCore.resources;
                     resources.AddResource(block.Type, -1);
                 }
-                    
+
                 return block;
             }
 

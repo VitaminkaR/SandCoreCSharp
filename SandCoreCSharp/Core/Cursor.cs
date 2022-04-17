@@ -161,6 +161,8 @@ namespace SandCoreCSharp.Core
                 // из земли можно с разным шансом добыть
                 if (chance <= 25)
                     res.AddResource("sand", 1); // песок
+                if (chance <= 15)
+                    res.AddResource("seed", 1); // семена
             }
 
             // если тайл - вода и есть ведро
