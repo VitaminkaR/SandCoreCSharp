@@ -59,7 +59,7 @@ namespace SandCoreCSharp.Core
         protected FileInfo file; // информация о файлах
 
         // информация, которая сохраняется в файл блока
-        protected string Tags { get; set; }
+        protected string[] Tags { get; set; } = new string[10];
 
         public Block(Game game, Vector2 pos) : base(game)
         {
@@ -182,14 +182,22 @@ namespace SandCoreCSharp.Core
         }
 
         // сохранение тэгов
-        protected void SaveTags() => FileWork.Write(path, Tags);
+        protected void SaveTags()
+        {
+            string data = "";
+            for (int i = 0; i < Tags.Length; i++)
+            {
+                data += Tags[i] + '\n';
+            }
+            FileWork.Write(path, data);
+        }
 
         // загрузка тэгов
         protected void LoadTags()
         {
             string[] msg = FileWork.Read(path);
-            if (msg.Length > 0)
-                Tags = msg[0];
+            if (msg.Length > 0 && msg[0] != "")
+                Tags = msg;
             else
                 SaveTags();
         }
@@ -243,8 +251,7 @@ namespace SandCoreCSharp.Core
                     int y = Convert.ToInt32(data[2]);
                     string type = data[3];
 
-                    Block block = CreateBlock(type, new Vector2(x, y), true);
-                    block?.LoadTags();
+                    CreateBlock(type, new Vector2(x, y), true);
                 }
             }
         }
@@ -281,13 +288,14 @@ namespace SandCoreCSharp.Core
 
             if(block != null)
             {
-                return block;
-
-                Resources resources = SandCore.resources;
-                resources.AddResource(block.Type, -1);
-
                 if (!loader)
+                {
                     block.SaveBlock();
+                    Resources resources = SandCore.resources;
+                    resources.AddResource(block.Type, -1);
+                }
+                    
+                return block;
             }
 
             return null;

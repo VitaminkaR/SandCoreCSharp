@@ -9,14 +9,6 @@ namespace SandCoreCSharp.Core.Blocks
     // класс грядки (основа земледелия)
     class Land : Block
     {
-        // полита ли грядка?
-        private bool isWatered;
-        // что растет
-        private string seed;
-        // стадия роста
-        private int stage;
-
-
 
         public Land(Game game, Vector2 pos) : base(game, pos)
         {
@@ -24,15 +16,18 @@ namespace SandCoreCSharp.Core.Blocks
             Hardness = 0;
             Instrument = "";
 
-            stage = 0;
-            seed = "none";
+            Tags[0] = "f";
+            Tags[1] = "none";
+            Tags[2] = "first";
+
+            LoadTags();
         }
 
 
 
         public override void Draw(GameTime gameTime)
         {
-            if (isWatered)
+            if (Tags[0] == "t")
                 sprite = Sprites["mud"];
 
             base.Draw(gameTime);
@@ -43,9 +38,10 @@ namespace SandCoreCSharp.Core.Blocks
             Resources res = SandCore.resources;
             Inventory inventory = SandCore.inventory;
 
-           if(!isWatered && seed == "none")
+           if(Tags[0] == "f" && Tags[1] == "none" && inventory.choosenBlock == "bucket")
            {
-                isWatered = true;
+                Tags[0] = "t";
+                SaveTags();
            }
 
             base.Using();
