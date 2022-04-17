@@ -7,6 +7,7 @@ using System;
 namespace SandCoreCSharp.Core.Blocks
 {
     // класс грядки (основа земледелия)
+    // ! спрайт растение берется по такой структуре "название_растения(такое же как у ресурса растения)" + "_" + "стадия_роста(цифра)" 
     class Land : Block
     {
         private int counter;
@@ -45,14 +46,13 @@ namespace SandCoreCSharp.Core.Blocks
 
             // если посажены семена и 1 стадия роста
             if (Tags[1] != "none")
-                sprite = Sprites["mud_with_seeds"];
-
-            // тут указываем растения и их стадии роста
-            // пшеничка (растет быстро (в 2 стадии))
-            if (Tags[1] == "wheat" && Tags[2] == "1")
-                sprite = Sprites["wheat_1"];
-            if (Tags[1] == "wheat" && Tags[2] == "2")
-                sprite = Sprites["wheat_2"];
+            {
+                if(Tags[2] == "0")
+                    sprite = Sprites["mud_with_seeds"];
+                else
+                    sprite = Sprites[Tags[1] + '_' + Tags[2]];
+            }
+                
 
             // если земля сухая
             if (Tags[0] == "f")
@@ -80,7 +80,12 @@ namespace SandCoreCSharp.Core.Blocks
                 res.AddResource("seed", -1);
 
                 // тут рандомно выбираем растения (растение называть как название ресурса)
-                Tags[1] = "wheat";
+                int id = new Random().Next(2);
+                if (id == 0)
+                    Tags[1] = "wheat";
+                if (id == 1)
+                    Tags[1] = "cotton";
+
 
                 SaveTags();
             }
@@ -88,7 +93,7 @@ namespace SandCoreCSharp.Core.Blocks
             base.Using();
         }
 
-        // когда растение поспевает тэг[2] == 'ready' 
+        // когда растение поспевает
         private void Ripe()
         {
             SandCore.resources.AddResource(Tags[1], 1);
@@ -108,6 +113,8 @@ namespace SandCoreCSharp.Core.Blocks
 
             // Стадия на которой созревает растение
             if (Tags[1] == "wheat" && stage == 2)
+                Ripe();
+            if (Tags[1] == "cotton" && stage == 3)
                 Ripe();
         }
     }

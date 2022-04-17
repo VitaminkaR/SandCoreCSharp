@@ -51,6 +51,9 @@ namespace SandCoreCSharp.Core
             // индукционная печь
             Recipes.Add("induction_furnace", "frame|2+electrit|15");
 
+            // нить
+            Recipes.Add("string", "cotton|5");
+
             base.Initialize();
         }
 
