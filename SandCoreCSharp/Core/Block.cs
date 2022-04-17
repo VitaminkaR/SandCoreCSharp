@@ -227,6 +227,9 @@ namespace SandCoreCSharp.Core
             Sprites["mud_with_seeds"] = content.Load<Texture2D>("MudWithSeeds");
             Sprites["wheat_1"] = content.Load<Texture2D>("wheat_1");
             Sprites["wheat_2"] = content.Load<Texture2D>("wheat_2");
+            Sprites["cotton_1"] = content.Load<Texture2D>("cotton_1");
+            Sprites["cotton_2"] = content.Load<Texture2D>("cotton_2");
+            Sprites["cotton_3"] = content.Load<Texture2D>("cotton_3");
         }
 
         // загружает блоки

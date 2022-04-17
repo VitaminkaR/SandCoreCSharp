@@ -71,6 +71,10 @@ namespace SandCoreCSharp.Core
             // растения
             Resource.Add("seed", 0);
             Resource.Add("wheat", 0);
+            Resource.Add("cotton", 0);
+
+            // другое
+            Resource.Add("string", 0);
 
             LoadResources();
             LoadResourceEnergy();
