@@ -47,12 +47,12 @@ namespace SandCoreCSharp.Core.Blocks
             // если посажены семена и 1 стадия роста
             if (Tags[1] != "none")
             {
-                if(Tags[2] == "0")
+                if (Tags[2] == "0")
                     sprite = Sprites["mud_with_seeds"];
                 else
                     sprite = Sprites[Tags[1] + '_' + Tags[2]];
             }
-                
+
 
             // если земля сухая
             if (Tags[0] == "f")
@@ -63,32 +63,21 @@ namespace SandCoreCSharp.Core.Blocks
 
         protected override void Using()
         {
-            Resources res = SandCore.resources;
             Inventory inventory = SandCore.inventory;
 
             // если сухая, ничего не растет, есть ведро и вода, то поливаем грядку
-            if (Tags[0] == "f" && Tags[1] == "none" && inventory.choosenBlock == "bucket" && res.Resource["water"] > 0)
+            if (inventory.choosenBlock == "bucket")
             {
-                Tags[0] = "t";
-                res.AddResource("water", -1);
-                SaveTags();
+                Wet();
             }
 
             // если мокрая, ничего не растет, выбраны семена, то сажаем семена (рандомное в будущем растение)
-            if (Tags[0] == "t" && Tags[1] == "none" && inventory.choosenBlock == "seed" && res.Resource["seed"] > 0)
+            if (inventory.choosenBlock == "seed")
             {
-                res.AddResource("seed", -1);
-
-                // тут рандомно выбираем растения (растение называть как название ресурса)
-                int id = new Random().Next(2);
-                if (id == 0)
-                    Tags[1] = "wheat";
-                if (id == 1)
-                    Tags[1] = "cotton";
-
-
-                SaveTags();
+                Plant();
             }
+
+            SaveTags();
 
             base.Using();
         }
@@ -116,6 +105,40 @@ namespace SandCoreCSharp.Core.Blocks
                 Ripe();
             if (Tags[1] == "cotton" && stage == 3)
                 Ripe();
+        }
+
+        //  полить грядку
+        public void Wet()
+        {
+            Resources res = SandCore.resources;
+
+            if (Tags[0] == "f" && Tags[1] == "none" && res.Resource["water"] > 0)
+            {
+                Tags[0] = "t";
+                res.AddResource("water", -1);
+                SaveTags();
+            }
+        }
+
+        // посадить что-то
+        public void Plant()
+        {
+            Resources res = SandCore.resources;
+
+            if (Tags[0] == "t" && Tags[1] == "none" && res.Resource["seed"] > 0)
+            {
+                res.AddResource("seed", -1);
+
+                // тут рандомно выбираем растения (растение называть как название ресурса)
+                int id = new Random().Next(2);
+                if (id == 0)
+                    Tags[1] = "wheat";
+                if (id == 1)
+                    Tags[1] = "cotton";
+
+
+                SaveTags();
+            }
         }
     }
 }

@@ -50,6 +50,8 @@ namespace SandCoreCSharp.Core
             Recipes.Add("quarry", "frame|4+electrit|25");
             // индукционная печь
             Recipes.Add("inductionfurnace", "frame|2+electrit|15");
+            // фермер
+            Recipes.Add("farmer", "frame|2+electrit|10+hoe|1+bucket|2");
 
             // нить
             Recipes.Add("string", "cotton|5");

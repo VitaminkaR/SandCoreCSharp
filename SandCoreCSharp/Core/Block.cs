@@ -59,7 +59,7 @@ namespace SandCoreCSharp.Core
         protected FileInfo file; // информация о файлах
 
         // информация, которая сохраняется в файл блока
-        protected string[] Tags { get; set; } = new string[10];
+        public string[] Tags { get; set; } = new string[10];
 
         public Block(Game game, Vector2 pos) : base(game)
         {
@@ -223,6 +223,7 @@ namespace SandCoreCSharp.Core
             Sprites["furnace"] = content.Load<Texture2D>("Furnace");
             Sprites["coalgenerator"] = content.Load<Texture2D>("CoalGenerator");
             Sprites["land"] = content.Load<Texture2D>("Land");
+            Sprites["farmer"] = content.Load<Texture2D>("Farmer");
             Sprites["mud"] = content.Load<Texture2D>("Mud");
             Sprites["mud_with_seeds"] = content.Load<Texture2D>("MudWithSeeds");
             Sprites["wheat_1"] = content.Load<Texture2D>("wheat_1");
@@ -289,6 +290,8 @@ namespace SandCoreCSharp.Core
                 block = new InductionFurnace(SandCore.game, pos);
             if (type == "land")
                 block = new Land(SandCore.game, pos);
+            if (type == "farmer")
+                block = new Farmer(SandCore.game, pos);
 
             if(block != null)
             {

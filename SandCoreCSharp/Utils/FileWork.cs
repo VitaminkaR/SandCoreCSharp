@@ -7,9 +7,15 @@ namespace SandCoreCSharp.Utils
     {
         static public void Write(string path, string message)
         {
-            StreamWriter sw = new StreamWriter(path);
-            sw.Write(message + '\n');
-            sw.Close();
+            try
+            {
+                StreamWriter sw = new StreamWriter(path);
+                sw.Write(message + '\n');
+                sw.Close();
+            }
+            catch (System.Exception)
+            {
+            }          
         }
 
         static public string[] Read(string path)

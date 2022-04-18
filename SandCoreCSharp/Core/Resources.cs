@@ -64,6 +64,7 @@ namespace SandCoreCSharp.Core
             Resource.Add("coalgenerator", 0);
             Resource.Add("quarry", 0);
             Resource.Add("inductionfurnace", 0);
+            Resource.Add("farmer", 0);
 
             // жидкости
             Resource.Add("water", 0);
