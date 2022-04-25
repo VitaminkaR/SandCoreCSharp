@@ -22,7 +22,7 @@ namespace SandCoreCSharp.Core.Blocks
             Tags[1] = "none";
             Tags[2] = "0";
 
-            LoadTags();
+            
         }
 
 
@@ -77,8 +77,6 @@ namespace SandCoreCSharp.Core.Blocks
                 Plant();
             }
 
-            SaveTags();
-
             base.Using();
         }
 
@@ -116,7 +114,6 @@ namespace SandCoreCSharp.Core.Blocks
             {
                 Tags[0] = "t";
                 res.AddResource("water", -1);
-                SaveTags();
             }
         }
 
@@ -135,9 +132,6 @@ namespace SandCoreCSharp.Core.Blocks
                     Tags[1] = "wheat";
                 if (id == 1)
                     Tags[1] = "cotton";
-
-
-                SaveTags();
             }
         }
     }

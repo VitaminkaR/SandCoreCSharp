@@ -70,7 +70,8 @@ namespace SandCoreCSharp
             resources = new Resources(this);
             inventory = new Inventory(this);
             craftManager = new CraftManager(this);
-            
+
+            Logger.LogTitle($"SandCore# World: {map}", this);
 
             SimplexNoise.CreateSeed(Convert.ToInt32(ConfigReader.ReadParam("options.cfg", "seed")));  
 
@@ -136,6 +137,13 @@ namespace SandCoreCSharp
                 _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
                 _spriteBatch.End();
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            Logger.MessageBox(0, "Saving world...", "SandCore#", 0);
+
+            base.Dispose(disposing);
         }
     }
 }

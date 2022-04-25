@@ -94,6 +94,12 @@ namespace SandCoreCSharp.Core
 
 
 
+        public override void Initialize()
+        {
+            LoadTags();
+            base.Initialize();
+        }
+
         protected override void LoadContent()
         {
             sprite = Sprites[Type];
@@ -172,7 +178,9 @@ namespace SandCoreCSharp.Core
         public void SaveBlock()
         {
             Directory.CreateDirectory(directory);
-            File.Create(path);
+            if(!File.Exists(path))
+                File.Create(path);
+            SaveTags();
         }
 
         // удаление этого блока
@@ -296,5 +304,12 @@ namespace SandCoreCSharp.Core
 
         // ищет блок по позиции
         static public Block FindBlock(Vector2 pos) => Blocks.Find(block => block.Pos == pos);
+
+        protected override void Dispose(bool disposing)
+        {
+            SaveBlock();
+
+            base.Dispose(disposing);
+        }
     }
 }
