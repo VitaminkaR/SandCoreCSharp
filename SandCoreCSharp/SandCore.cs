@@ -113,17 +113,13 @@ namespace SandCoreCSharp
 
         protected override void Draw(GameTime gameTime)
         {
-            // эти методы в draw, потому что draw вызывается меньшее кол-во раз, чем update,
-            // для этих методов каждый кадр не играет роль
-            // загрузка
-            Block.LoadBlocks(terrain);
-
             GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
 
             if (debugVars)
             {
                 string info = $"[Debug]\n" +
+                    $"FPS: {1 / gameTime.ElapsedGameTime.TotalSeconds}\n\n" +
                     $"Player Position: [{hero.Pos.X};{hero.Pos.Y};{hero.Height}]\n" +
                     $"Camera Position: [{camera.Pos.X};{camera.Pos.Y}]\n\n" +
                     $"Player Chunk: {terrain.GetChunkExistPlayer().GetName()}\n" +
@@ -141,7 +137,7 @@ namespace SandCoreCSharp
 
         protected override void Dispose(bool disposing)
         {
-            Logger.MessageBox(0, "Saving world...", "SandCore#", 0);
+            //Logger.MessageBox(0, "Saving world...", "SandCore#", 0);
 
             base.Dispose(disposing);
         }

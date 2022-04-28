@@ -2,8 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SandCoreCSharp.Core.Blocks;
-using SandCoreCSharp.Utils;
+using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,8 +11,6 @@ namespace SandCoreCSharp.Core
 {
     public class Block : DrawableGameComponent
     {
-        const int LoaderDistance = 4096;
-
         // все блоки
         public static List<Block> Blocks { get; private set; } = new List<Block>();
         // спрайты блоков
@@ -33,6 +30,9 @@ namespace SandCoreCSharp.Core
         protected Camera camera;
         protected Terrain terrain;
 
+        // чанк в котором зарегестрирован блок
+        private Chunk thisChunk;
+
         // Коллайдер
         public Rectangle collider;
 
@@ -49,17 +49,10 @@ namespace SandCoreCSharp.Core
         public bool IsSolid { get; protected set; } = true;
         // какой инструмент нужен для добычи // маленькими буквами
         public string Instrument { get; protected set; } = null;
-
-        // загруженые чанки
-        static public List<string> loadChunks = new List<string>();
-
-        // для работы с загрузками
-        protected string path; // сам путь до файла,  в котором можно хранить, что требуется
-        protected string directory; // директория (название чанка блока)
-        protected FileInfo file; // информация о файлах
-
         // информация, которая сохраняется в файл блока
-        public string[] Tags { get; set; } = new string[10];
+        public string[] Tags { get; set; } = new string[8];
+
+
 
         // фабрика блоков
         static private BlockFabric fabric = new BlockFabric();
@@ -83,22 +76,10 @@ namespace SandCoreCSharp.Core
 
             collider = new Rectangle(Pos.ToPoint(), new Point(32, 32));
 
-            // для работы с загрузками
             // находим index чанка
-            Chunk chunk = terrain.GetChunk(Pos.X, Pos.Y);
-            directory = "maps\\" + SandCore.map + "\\blocks" + $"\\{chunk.GetName()}";
-            string data = $"\\.{Pos.X}.{Pos.Y}.{Type}";
-            path = directory + data;
-            file = new FileInfo(path);
+            thisChunk = terrain.GetChunk(Pos.X, Pos.Y);
         }
 
-
-
-        public override void Initialize()
-        {
-            LoadTags();
-            base.Initialize();
-        }
 
         protected override void LoadContent()
         {
@@ -109,13 +90,6 @@ namespace SandCoreCSharp.Core
 
         public override void Update(GameTime gameTime)
         {
-            // выгрузка блоков
-            Hero hero = SandCore.hero;
-            Vector2 pos = hero.Pos;
-            float r = MathF.Sqrt(MathF.Pow(pos.X - Pos.X, 2) + MathF.Pow(pos.Y - Pos.Y, 2)); // ищем расстояние
-            if (r > LoaderDistance)
-                Unload();
-
             // если нажата правая кнопка на блоке
             Vector2 CursorCollider = SandCore.cursor.Pos;
             if (Pos == CursorCollider && Mouse.GetState().RightButton == ButtonState.Pressed)
@@ -155,7 +129,6 @@ namespace SandCoreCSharp.Core
             Resources resources = SandCore.resources;
             resources.AddResource(Type, 1);
 
-            DeleteBlock();
             Unload();
             Rectangle collider = new Rectangle(Pos.ToPoint(), new Point(32, 32));
         }
@@ -173,47 +146,6 @@ namespace SandCoreCSharp.Core
             Game.Components.Remove(this);
             Blocks.Remove(this);
         }
-
-        // сохранение блока
-        public void SaveBlock()
-        {
-            Directory.CreateDirectory(directory);
-            if(!File.Exists(path))
-                File.Create(path);
-            SaveTags();
-        }
-
-        // удаление этого блока
-        public void DeleteBlock()
-        {
-            try
-            {
-                File.Delete(path);
-            }
-            catch { }
-        }
-
-        // сохранение тэгов
-        protected void SaveTags()
-        {
-            string data = "";
-            for (int i = 0; i < Tags.Length; i++)
-            {
-                data += Tags[i] + '\n';
-            }
-            FileWork.Write(path, data);
-        }
-
-        // загрузка тэгов
-        protected void LoadTags()
-        {
-            string[] msg = FileWork.Read(path);
-            if (msg != null && msg.Length > 0 && msg[0] != "")
-                Tags = msg;
-            else
-                SaveTags();
-        }
-
 
 
 
@@ -246,34 +178,6 @@ namespace SandCoreCSharp.Core
             Sprites["cotton_3"] = content.Load<Texture2D>("cotton_3");
         }
 
-        // загружает блоки
-        static public void LoadBlocks(Terrain terrain)
-        {
-            for (int i = 0; i < terrain.Chunks.Count; i++)
-            {
-                Chunk chunk = terrain.Chunks[i];
-                if (loadChunks.Contains(chunk.GetName()))
-                    continue;
-                loadChunks.Add(chunk.GetName());
-
-                string[] files = new string[0];
-
-                if (new DirectoryInfo("maps\\" + SandCore.map + "\\blocks" + $"\\{chunk.GetName()}").Exists)
-                    files = Directory.GetFiles("maps\\" + SandCore.map + "\\blocks" + $"\\{chunk.GetName()}");
-
-                for (int j = 0; j < files.Length; j++)
-                {
-                    string file = files[j];
-                    string[] data = file.Split('.');
-                    int x = Convert.ToInt32(data[1]);
-                    int y = Convert.ToInt32(data[2]);
-                    string type = data[3];
-
-                    CreateBlock(type, new Vector2(x, y), true);
-                }
-            }
-        }
-
         // регистрирует новые блоки (с параметром isSaving = true)
         static public Block CreateBlock(string type, Vector2 pos, bool loader = false)
         {
@@ -291,7 +195,6 @@ namespace SandCoreCSharp.Core
             {
                 if (!loader)
                 {
-                    block.SaveBlock();
                     Resources resources = SandCore.resources;
                     resources.AddResource(block.Type, -1);
                 }
@@ -305,11 +208,57 @@ namespace SandCoreCSharp.Core
         // ищет блок по позиции
         static public Block FindBlock(Vector2 pos) => Blocks.Find(block => block.Pos == pos);
 
-        protected override void Dispose(bool disposing)
-        {
-            SaveBlock();
 
-            base.Dispose(disposing);
+
+        // запускается когда выгружается чанк, для сохранения блоков в этом чанке
+        static public void UnloadChunk(Chunk chunk)
+        {
+            List<Block> blocks = new List<Block>();
+            for (int i = 0; i < Blocks.Count; i++)
+                if (Blocks[i].thisChunk == chunk)
+                    blocks.Add(Blocks[i]);
+
+            string data = "";
+            for (int i = 0; i < blocks.Count; i++)
+            {
+                data += $"{blocks[i].Type}|{blocks[i].Pos.X}|{blocks[i].Pos.Y}|{JsonSerializer.Serialize(blocks[i].Tags, typeof(string[]))}\n";
+                blocks[i].Unload();
+            }
+                
+
+            string path = $"maps\\{SandCore.map}\\blocks\\{chunk.GetName()}";
+            // можно заменить на using конструкцию
+            StreamWriter sw = new StreamWriter(path, false);
+            sw.Write(data);
+            sw.Close();
+        }
+
+        // запускается при генерации чанка, загружает блоки
+        static public void LoadChunks(Chunk chunk)
+        {
+            string path = $"maps\\{SandCore.map}\\blocks\\{chunk.GetName()}";
+            bool exist = new FileInfo(path).Exists;
+            string[] data = new string[0];
+            if (exist)
+            {
+                StreamReader sr = new StreamReader(path);
+                data = sr.ReadToEnd().Split('\n');
+                sr.Close();
+            }
+
+            if (data.Length == 0)
+                return;
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                string[] info = data[i].Split('|');
+                if(data[i] != "")
+                {
+                    Block block = fabric.Create(info[0], new Vector2(Convert.ToInt32(info[1]), Convert.ToInt32(info[2])));
+                    // загружаем тэги
+                    block.Tags = (string[])JsonSerializer.Deserialize(info[3], typeof(string[]));
+                } 
+            }
         }
     }
 }

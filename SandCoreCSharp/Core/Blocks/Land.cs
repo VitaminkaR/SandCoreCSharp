@@ -21,8 +21,6 @@ namespace SandCoreCSharp.Core.Blocks
             Tags[0] = "f";
             Tags[1] = "none";
             Tags[2] = "0";
-
-            
         }
 
 
@@ -88,7 +86,6 @@ namespace SandCoreCSharp.Core.Blocks
             Tags[0] = "f";
             Tags[1] = "none";
             Tags[2] = "0";
-            SaveTags();
         }
 
         // рост растения, повышении стадии и завершение роста(созревание для каждого вида растения)
@@ -96,7 +93,6 @@ namespace SandCoreCSharp.Core.Blocks
         {
             int stage = Convert.ToInt32(Tags[2]);
             Tags[2] = (stage + 1).ToString();
-            SaveTags();
 
             // Стадия на которой созревает растение
             if (Tags[1] == "wheat" && stage == 2)

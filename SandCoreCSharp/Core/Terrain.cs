@@ -102,16 +102,19 @@ namespace SandCoreCSharp.Core
             Vector2 CamPos = SandCore.camera.Pos; // берем позицию камеры
 
             // генерация
-            Vector2 CenterCameraPos = CamPos + new Vector2(SandCore.WIDTH / 2, SandCore.HEIGHT / 2);
-            int ofx = (int)(CenterCameraPos.X / 512);
-            int ofy = (int)(CenterCameraPos.Y / 512);
-            if (CenterCameraPos.X < 0) ofx--;
-            if (CenterCameraPos.Y < 0) ofy--;
-            for (int i = -2; i < 3; i++)
+            if (Chunks.Count < 17)
             {
-                for (int j = -1; j < 2; j++)
+                Vector2 CenterCameraPos = CamPos + new Vector2(SandCore.WIDTH / 2, SandCore.HEIGHT / 2);
+                int ofx = (int)(CenterCameraPos.X / 512);
+                int ofy = (int)(CenterCameraPos.Y / 512);
+                if (CenterCameraPos.X < 0) ofx--;
+                if (CenterCameraPos.Y < 0) ofy--;
+                for (int i = -2; i < 3; i++)
                 {
-                    Generate((ofx + i) * 512, (ofy + j) * 512, ofx + i, ofy + j);
+                    for (int j = -1; j < 2; j++)
+                    {
+                        Generate((ofx + i) * 512, (ofy + j) * 512, ofx + i, ofy + j);
+                    }
                 }
             }
 
@@ -124,7 +127,7 @@ namespace SandCoreCSharp.Core
                 // проверяем входит ли чанк в границы камеры, если нет, то удаляем его из отрисовываемых
                 if (!CameraBorders.Intersects(ChunkBorders))
                 {
-                    Block.loadChunks.Remove(chunk.GetName());
+                    Block.UnloadChunk(chunk);
                     Chunks.Remove(chunk); 
                 }
             }
@@ -169,16 +172,21 @@ namespace SandCoreCSharp.Core
             // добавляем в рисуемые чанки
             Chunks.Add(@new);
 
-            // генерация деревьев
+            // начальная генерация
             string chunkName = @new.GetName();
             Random rand = new Random();
-            if (!new DirectoryInfo("maps\\" + SandCore.map + "\\blocks\\" + chunkName).Exists)
+            bool exist = new FileInfo($"maps\\{SandCore.map}\\blocks\\" + chunkName).Exists;
+            if (!exist)
             {
                 float x = @new.Pos.X + rand.Next(16) * 32;
                 float y = @new.Pos.Y + rand.Next(16) * 32;
                 Vector2 pos = new Vector2(x, y);
                 if (GetTile(pos).ID == 2)
                     Block.CreateBlock("wood", pos);
+            } // загрука блоков
+            else
+            {
+                Block.LoadChunks(@new);
             }
         }
 

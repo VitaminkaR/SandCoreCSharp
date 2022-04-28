@@ -31,7 +31,7 @@ namespace SandCoreCSharp.Core
             if (type == "farmer")
                 block = new Farmer(SandCore.game, pos);
 
-            return null;
+            return block;
         }
     }
 }
