@@ -28,11 +28,16 @@ namespace SandCoreCSharp.Core
         // view chunks
         public List<Chunk> Chunks { get; private set; }
 
+        // графика
+        private Graphics graphics;
+
+
         public Terrain(Game game) : base(game)
         {
             game.Components.Add(this);
             content = game.Content;
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
+            graphics = new Graphics(game.GraphicsDevice);
         }
 
 
@@ -62,35 +67,7 @@ namespace SandCoreCSharp.Core
         {
             spriteBatch.Begin();
 
-            // проходим пов сем чанкам
-            for (int i = 0; i < Chunks.Count; i++)
-            {
-                for (int x = 0; x < 16; x++)
-                {
-                    for (int y = 0; y < 16; y++)
-                    {
-                        for (int z = 15; z > -1; z--)
-                        {
-                            byte id = Chunks[i].Tiles[x, y, z]; // получаем id
-                            if (id == 0) // если воздух то идем далее
-                                continue;
-
-                            Vector2 camPos =SandCore.camera.Pos; // берем позицию камеры
-                            Vector2 chunkPos = Chunks[i].Pos;
-
-                            // отрисовываем блок в позиции относительно камеры и относительно координат чанка
-                            // с текстурой для его id
-                            // делаем более темным в зависимости от его высоты
-                            spriteBatch.Draw(sprites[id - 1], new Vector2(-camPos.X + x * 32 + chunkPos.X, -camPos.Y + y * 32 + chunkPos.Y), new Color(40 + z * 13, 40 + z * 13, 40 + z * 13));
-
-                            // для дебага
-                            if (SandCore.debugChunks && (x == 0 || x == 15 || y == 0 || y == 15))
-                                spriteBatch.Draw(sprites[id - 1], new Vector2(-camPos.X + x * 32 + chunkPos.X, -camPos.Y + y * 32 + chunkPos.Y), new Color(255, 0, 0));
-                            break; // если блок отрисован, то нет смысла рисовать ниже (оптимизация)
-                        }
-                    }
-                }
-            }
+            graphics.Drawing();
 
             spriteBatch.End();
 
@@ -169,6 +146,8 @@ namespace SandCoreCSharp.Core
                 }
             }
 
+            GenerateVertex(@new);
+
             // добавляем в рисуемые чанки
             Chunks.Add(@new);
 
@@ -189,6 +168,26 @@ namespace SandCoreCSharp.Core
                 Block.LoadChunks(@new);
             }
         }
+
+        public void GenerateVertex(Chunk chunk)
+        {
+            int x = (int)(chunk.Pos.X / 512);
+            int y = (int)(chunk.Pos.Y / 512);
+            for (int i = 16 * x; i < 16 * x + 16; i++)
+            {
+                for (int j = 16 * y; j < 16 * y + 16; j++)
+                {
+                    graphics.vertices.Add(new VertexPositionColor(new Vector3(i / 20f + 0.05f, j / 20f, 0), Color.Green));
+                    graphics.vertices.Add(new VertexPositionColor(new Vector3(i / 20f, j / 20f, 0), Color.Green));
+                    graphics.vertices.Add(new VertexPositionColor(new Vector3(i / 20f, j / 20f - 0.05f, 0), Color.Green));
+                    graphics.vertices.Add(new VertexPositionColor(new Vector3(i / 20f + 0.05f, j / 20f - 0.05f, 0), Color.Green));
+                }
+                graphics.vertices.Add(new VertexPositionColor(new Vector3(i / 20f + 0.05f, 0, 0), Color.Green));
+            }
+            graphics.vertx = graphics.vertices.ToArray();
+        }
+
+
 
 
 
