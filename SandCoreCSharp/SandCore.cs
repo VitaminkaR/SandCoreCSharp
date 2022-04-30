@@ -122,7 +122,7 @@ namespace SandCoreCSharp
                     $"FPS: {1 / gameTime.ElapsedGameTime.TotalSeconds}\n\n" +
                     $"Player Position: [{hero.Pos.X};{hero.Pos.Y};{hero.Height}]\n" +
                     $"Camera Position: [{camera.Pos.X};{camera.Pos.Y}]\n\n" +
-                    $"Player Chunk: {terrain.GetChunkExistPlayer().GetName()}\n" +
+                    $"Player Chunk: {(int)(hero.Pos.X / Terrain.CHUNK_SIZE)} ; {(int)(hero.Pos.Y / Terrain.CHUNK_SIZE)}\n" +
                     $"Player Position In Chunk: [{hero.ChunkPos[0]};{hero.ChunkPos[1]};{hero.ChunkPos[2]}]\n" +
                     $"Player Block Place: {hero.BlockId}\n\n" +
                     $"Mouse Chunk: {cursor.Chunk.GetName()}\n" +

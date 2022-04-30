@@ -10,8 +10,13 @@ namespace SandCoreCSharp.Core
 {
     class Graphics
     {
-        public List<VertexPositionColor> Vertices { get; set; }
+        public List<VertexPositionColorTexture> Vertices { get; set; }
         public List<int> Indices { get; set; }
+        public Texture2D Texture
+        {
+            get => basicEffect.Texture;
+            set => basicEffect.Texture = value;
+        }
         
 
 
@@ -25,10 +30,12 @@ namespace SandCoreCSharp.Core
         public Graphics(GraphicsDevice _graphicsDevice)
         {
             graphicsDevice = _graphicsDevice;
-            Vertices = new List<VertexPositionColor>();
+            Vertices = new List<VertexPositionColorTexture>();
             Indices = new List<int>();
             basicEffect = new BasicEffect(graphicsDevice);
             basicEffect.VertexColorEnabled = true;
+            basicEffect.TextureEnabled = true;
+            
         }
 
 

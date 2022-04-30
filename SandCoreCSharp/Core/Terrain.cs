@@ -15,18 +15,10 @@ namespace SandCoreCSharp.Core
     public class Terrain : DrawableGameComponent
     {
         const float TILE_SIZE = 0.04f;
-        const float CHUNK_SIZE = TILE_SIZE * 16;
+        public const float CHUNK_SIZE = TILE_SIZE * 16;
 
         private ContentManager content;
         private SpriteBatch spriteBatch;
-
-        // sprites tiles
-        // 0 - mud
-        // 1 - grass
-        // 2 - stone
-        // 3 - water
-        // 4 - sand
-        private Texture2D[] sprites;
 
         // view chunks
         public List<Chunk> Chunks { get; private set; }
@@ -48,7 +40,6 @@ namespace SandCoreCSharp.Core
         public override void Initialize()
         {
             Chunks = new List<Chunk>();
-            sprites = new Texture2D[255];
 
             base.Initialize();
         }
@@ -56,11 +47,7 @@ namespace SandCoreCSharp.Core
         // load sprites (ADD SPRITES)
         protected override void LoadContent()
         {
-            sprites[0] = content.Load<Texture2D>("Mud");
-            sprites[1] = content.Load<Texture2D>("Grass");
-            sprites[2] = content.Load<Texture2D>("Stone");
-            sprites[3] = content.Load<Texture2D>("Water");
-            sprites[4] = content.Load<Texture2D>("Sand");
+            graphics.Texture = content.Load<Texture2D>("tile");
 
             base.LoadContent();
         }
@@ -77,7 +64,7 @@ namespace SandCoreCSharp.Core
             Vector2 CamPos = SandCore.camera.Pos; // берем позицию камеры
 
             //генерация
-            if (Chunks.Count < 16)
+            if (Chunks.Count < 25)
             {
                 PredGenerate();
             }
@@ -110,8 +97,6 @@ namespace SandCoreCSharp.Core
             Vector2 CamPos = SandCore.camera.Pos; // берем позицию камеры
             int ofx = (int)(CamPos.X / CHUNK_SIZE);
             int ofy = (int)(CamPos.Y / CHUNK_SIZE);
-            if (CamPos.X < 0) ofx--;
-            if (CamPos.Y < 0) ofy--;
             for (int i = -2; i < 3; i++)
             {
                 for (int j = -2; j < 3; j++)
@@ -178,8 +163,8 @@ namespace SandCoreCSharp.Core
 
         private void GenerateVertex(Chunk chunk)
         {
-            int x = (int)(chunk.Pos.X / CHUNK_SIZE);
-            int y = (int)(chunk.Pos.Y / CHUNK_SIZE);
+            float x = chunk.Pos.X / CHUNK_SIZE;
+            float y = chunk.Pos.Y / CHUNK_SIZE;
             for (int i = 0; i < 16; i++)
             {
                 for (int j = 0; j < 16; j++)
@@ -219,13 +204,13 @@ namespace SandCoreCSharp.Core
 
         private void DrawRect(float x, float y, Color color)
         {
-            graphics.Vertices.Add(new VertexPositionColor(new Vector3(x, y, 0), color));
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x, y, 0), color, new Vector2(0, 0)));
             graphics.Indices.Add(graphics.Vertices.Count - 1);
-            graphics.Vertices.Add(new VertexPositionColor(new Vector3(x + TILE_SIZE, y, 0), color));
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x + TILE_SIZE, y, 0), color, new Vector2(1, 0)));
             graphics.Indices.Add(graphics.Vertices.Count - 1);
-            graphics.Vertices.Add(new VertexPositionColor(new Vector3(x + TILE_SIZE, y - TILE_SIZE, 0), color));
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x + TILE_SIZE, y - TILE_SIZE, 0), color, new Vector2(1, 1)));
             graphics.Indices.Add(graphics.Vertices.Count - 1);
-            graphics.Vertices.Add(new VertexPositionColor(new Vector3(x, y - TILE_SIZE, 0), color));
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x, y - TILE_SIZE, 0), color, new Vector2(0, 1)));
             graphics.Indices.Add(graphics.Vertices.Count - 1);
 
             graphics.Indices.Add(graphics.Vertices.Count - 4);
@@ -240,7 +225,7 @@ namespace SandCoreCSharp.Core
             //&& vertex.Position.Y >= chunk.Pos.Y
             //&& vertex.Position.Y <= chunk.Pos.Y + CHUNK_SIZE);
 
-            graphics.Vertices = new List<VertexPositionColor>();
+            graphics.Vertices = new List<VertexPositionColorTexture>();
             graphics.Indices = new List<int>();
             Chunks = new List<Chunk>();
 
