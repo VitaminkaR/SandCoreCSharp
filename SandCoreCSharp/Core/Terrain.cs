@@ -73,7 +73,7 @@ namespace SandCoreCSharp.Core
         {
             Vector2 CamPos = SandCore.camera.Pos; // берем позицию камеры
 
-            // генерация
+            //генерация
             if (Chunks.Count < 17)
             {
                 Vector2 CenterCameraPos = CamPos + new Vector2(SandCore.WIDTH / 2, SandCore.HEIGHT / 2);
@@ -100,7 +100,7 @@ namespace SandCoreCSharp.Core
                 if (!CameraBorders.Intersects(ChunkBorders))
                 {
                     Block.UnloadChunk(chunk);
-                    Chunks.Remove(chunk); 
+                    Chunks.Remove(chunk);
                 }
             }
 
@@ -130,7 +130,7 @@ namespace SandCoreCSharp.Core
                     if (heights[x, y] < 4)
                         @new.Tiles[x, y, heights[x, y]] = 4;// вода
                     if (heights[x, y] == 4 || heights[x, y] == 5)
-                        @new.Tiles[x, y, heights[x, y]] = 5;// вода
+                        @new.Tiles[x, y, heights[x, y]] = 5;// песок
 
 
                     // под землей должны быть камни
@@ -168,20 +168,57 @@ namespace SandCoreCSharp.Core
         {
             int x = (int)(chunk.Pos.X / 512);
             int y = (int)(chunk.Pos.Y / 512);
-            for (int i = 16 * x; i < 16 * x + 16; i++)
+            for (int i = 0; i < 16; i++)
             {
-                for (int j = 16 * y; j < 16 * y + 16; j++)
+                for (int j = 0; j < 16; j++)
                 {
-                    graphics.vertices.Add(new VertexPositionColor(new Vector3(i / 20f + 0.05f, j / 20f, 0), Color.Green));
-                    graphics.vertices.Add(new VertexPositionColor(new Vector3(i / 20f, j / 20f, 0), Color.Green));
-                    graphics.vertices.Add(new VertexPositionColor(new Vector3(i / 20f, j / 20f - 0.05f, 0), Color.Green));
-                    graphics.vertices.Add(new VertexPositionColor(new Vector3(i / 20f + 0.05f, j / 20f - 0.05f, 0), Color.Green));
+                    Color color = Color.Black;
+
+                    int id = 0;
+                    int height = 0;
+
+                    for (int z = 15; z > -1; z--)
+                    {
+                        if (chunk.Tiles[i, j, z] != 0)
+                        {
+                            id = chunk.Tiles[i, j, z];
+                            height = z;
+                            break;
+                        }
+                    }
+
+                    if (id == 2)
+                        color = Color.Green;
+                    if (id == 3)
+                        color = Color.Gray;
+                    if (id == 4)
+                        color = Color.Blue;
+                    if (id == 5)
+                        color = Color.Yellow;
+
+                    color = new Color(color.R - 100, color.G - 100, color.B - 100);
+
+                    color = new Color(color.R + height * 5, color.G + height * 5, color.B + height * 5);
+
+                    DrawRect((float)(i + x * 16) / 20, (float)(j + y * 16) / 20, color);
                 }
-                graphics.vertices.Add(new VertexPositionColor(new Vector3(i / 20f + 0.05f, 0, 0), Color.Green));
             }
-            graphics.vertx = graphics.vertices.ToArray();
         }
 
+        private void DrawRect(float x, float y, Color color)
+        {
+            graphics.Vertices.Add(new VertexPositionColor(new Vector3(x, y, 0), color));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+            graphics.Vertices.Add(new VertexPositionColor(new Vector3(x + 0.05f, y, 0), color));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+            graphics.Vertices.Add(new VertexPositionColor(new Vector3(x + 0.05f, y - 0.05f, 0), color));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+            graphics.Vertices.Add(new VertexPositionColor(new Vector3(x, y - 0.05f, 0), color));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+
+            graphics.Indices.Add(graphics.Vertices.Count - 4);
+            graphics.Indices.Add(-1);
+        }
 
 
 

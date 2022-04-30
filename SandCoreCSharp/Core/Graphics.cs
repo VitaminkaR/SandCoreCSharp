@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using SandCoreCSharp.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,17 +13,24 @@ namespace SandCoreCSharp.Core
         private Matrix worldMatrix;
         private Matrix viewMatrix;
         private Matrix projectionMatrix;
-        public List<VertexPositionColor> vertices { get; set; }
-        public VertexPositionColor[] vertx;
+
+        public List<VertexPositionColor> Vertices { get; set; }
+        public List<int> Indices { get; set; }
+        
+
+
         private BasicEffect basicEffect;
         private GraphicsDevice graphicsDevice;
 
-        
+
+        private int debug = 1;
+
 
         public Graphics(GraphicsDevice _graphicsDevice)
         {
             graphicsDevice = _graphicsDevice;
-            vertices = new List<VertexPositionColor>();
+            Vertices = new List<VertexPositionColor>();
+            Indices = new List<int>();
 
             worldMatrix = Matrix.CreateWorld(Vector3.Zero, Vector3.Forward, Vector3.Up);
             viewMatrix = Matrix.CreateLookAt(new Vector3(0, 0, 1), Vector3.Zero, Vector3.Up);
@@ -30,7 +39,7 @@ namespace SandCoreCSharp.Core
                 MathHelper.ToRadians(45),  // 45 degree angle
                 (float)graphicsDevice.Viewport.Width /
                 (float)graphicsDevice.Viewport.Height,
-                1.0f, 100.0f); 
+                1.0f, 100.0f);
 
 
             basicEffect = new BasicEffect(graphicsDevice);
@@ -39,14 +48,19 @@ namespace SandCoreCSharp.Core
             basicEffect.World = worldMatrix;
             basicEffect.View = viewMatrix;
             basicEffect.Projection = projectionMatrix;
-
-            vertx = vertices.ToArray();
         }
 
 
 
         public void Drawing()
         {
+            viewMatrix = Matrix.CreateLookAt(new Vector3(0, 0, 1 + Mouse.GetState().ScrollWheelValue / -100), Vector3.Zero, Vector3.Up);
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Up) && debug < Indices.Count - 1)
+                debug += 5;
+            if (Keyboard.GetState().IsKeyDown(Keys.Down) && debug > 1)
+                debug -= 5;
+
             worldMatrix = SandCore.camera.WorldPos;
 
             basicEffect.World = worldMatrix;
@@ -57,8 +71,8 @@ namespace SandCoreCSharp.Core
             {
                 pass.Apply();
 
-                if(vertx.Length > 0)
-                    graphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip, vertx, 0, vertices.Count - 1);
+                if (Vertices.Count > 0)
+                    graphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleStrip, Vertices.ToArray(), 0, Vertices.Count, Indices.ToArray(), 0, Indices.Count - 3);
             }
         }
     }
