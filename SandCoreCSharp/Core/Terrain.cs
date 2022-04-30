@@ -65,12 +65,7 @@ namespace SandCoreCSharp.Core
         // draw chunks
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
-
             graphics.Drawing();
-
-            spriteBatch.End();
-
             base.Draw(gameTime);
         }
 

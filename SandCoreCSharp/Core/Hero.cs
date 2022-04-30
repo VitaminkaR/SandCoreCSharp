@@ -70,7 +70,6 @@ namespace SandCoreCSharp.Core
         public override void Update(GameTime gameTime)
         {
             Control();
-            CameraUpdate();
 
             Terrain terrain = SandCore.terrain;
             Chunk = terrain.GetChunkExistPlayer();
@@ -121,12 +120,6 @@ namespace SandCoreCSharp.Core
                 Pos += new Vector2(speed, 0);
             if (ks.IsKeyDown(Keys.A) && CheckCollison(new Vector2(-speed, 0)))
                 Pos += new Vector2(-speed, 0);
-        }
-
-        // присоединение камеры
-        private void CameraUpdate()
-        {
-            camera.Pos = Pos - offset;
         }
 
         // проверка на воду

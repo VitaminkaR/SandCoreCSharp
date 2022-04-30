@@ -47,6 +47,8 @@ namespace SandCoreCSharp.Core
 
         public void Drawing()
         {
+            worldMatrix = SandCore.camera.WorldPos;
+
             basicEffect.World = worldMatrix;
             basicEffect.View = viewMatrix;
             basicEffect.Projection = projectionMatrix;

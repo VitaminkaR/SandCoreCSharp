@@ -6,9 +6,7 @@ namespace SandCoreCSharp.Core
     public class Camera : GameComponent
     {
         public Vector2 Pos { get; internal set; } // позиция камеры
-
-        private Vector2 borderSize; // размеры экрана (константы экрана из класса игры)
-
+        public Matrix WorldPos { get; private set; } // графическая позиция камеры
         private float speed; // скорость перемещения в пикселях
 
 
@@ -19,24 +17,14 @@ namespace SandCoreCSharp.Core
 
         public override void Initialize()
         {
-            borderSize = new Vector2(SandCore.WIDTH, SandCore.HEIGHT);
-
             Pos = new Vector2();
-
-            speed = 10;
+            speed = 0.005f;
+            WorldPos = Matrix.CreateWorld(Vector3.Zero, Vector3.Forward, Vector3.Up);
 
             base.Initialize();
         }
 
         public override void Update(GameTime gameTime)
-        {
-            //Control();
-
-            base.Update(gameTime);
-        }
-
-        // управление камерой (пока нет персонажа)
-        private void Control()
         {
             KeyboardState ks = Keyboard.GetState();
 
@@ -44,13 +32,15 @@ namespace SandCoreCSharp.Core
                 return;
 
             if (ks.IsKeyDown(Keys.W))
-                Pos += new Vector2(0, -speed);
+                WorldPos *= Matrix.CreateTranslation(0, -speed, 0);
             if (ks.IsKeyDown(Keys.S))
-                Pos += new Vector2(0, speed);
+                WorldPos *= Matrix.CreateTranslation(0, speed, 0);
             if (ks.IsKeyDown(Keys.D))
-                Pos += new Vector2(speed, 0);
+                WorldPos *= Matrix.CreateTranslation(-speed, 0, 0);
             if (ks.IsKeyDown(Keys.A))
-                Pos += new Vector2(-speed, 0);
+                WorldPos *= Matrix.CreateTranslation(speed, 0, 0);
+
+            base.Update(gameTime);
         }
     }
 }
