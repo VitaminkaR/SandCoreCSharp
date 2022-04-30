@@ -37,9 +37,19 @@ namespace SandCoreCSharp.Core
 
         public override void Update(GameTime gameTime)
         {
-            KeyboardState ks = Keyboard.GetState();
 
             viewMatrix = Matrix.CreateLookAt(new Vector3(0, 0, 1 + Mouse.GetState().ScrollWheelValue / -100), Vector3.Zero, Vector3.Up);
+
+            Hero hero = SandCore.hero;
+
+
+            base.Update(gameTime);
+        }
+
+        // debug
+        private void ControlCamera()
+        {
+            KeyboardState ks = Keyboard.GetState();
 
             if (ks.GetPressedKeys().Length == 0) // если клавиши не нажаты, то далее не проверяем
                 return;
@@ -64,8 +74,6 @@ namespace SandCoreCSharp.Core
                 worldMatrix *= Matrix.CreateTranslation(speed, 0, 0);
                 Pos += new Vector2(speed, 0);
             }
-
-            base.Update(gameTime);
         }
     }
 }

@@ -105,9 +105,9 @@ namespace SandCoreCSharp.Core
 
             // бег
             if (ks.IsKeyDown(Keys.LeftShift))
-                speed = 5;
+                speed = 0.01f;
             else
-                speed = 3;
+                speed = 0.005f;
 
             PlayerInWater();
 
