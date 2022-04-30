@@ -65,7 +65,7 @@ namespace SandCoreCSharp
 
             terrain = new Terrain(this);
             camera = new Camera(this);
-            hero = new Hero(this, WIDTH / 2 - 16, HEIGHT / 2 - 16, camera);
+            hero = new Hero(this, 0, 0, camera);
             cursor = new Cursor(this, hero);
             resources = new Resources(this);
             inventory = new Inventory(this);

@@ -9,7 +9,17 @@ namespace SandCoreCSharp.Core
         public Matrix viewMatrix { get; private set; }
         public Matrix projectionMatrix { get; private set; }
 
-        public Vector2 Pos { get; internal set; } // позиция камеры
+        private Vector2 pos;
+        public Vector2 Pos 
+        {
+            get => pos;
+            set
+            {
+                Vector2 offset = value - pos;
+                pos = value;
+                worldMatrix *= Matrix.CreateTranslation(offset.X, offset.Y, 0);
+            }
+        }
         private float speed; // скорость перемещения в пикселях
 
 
@@ -42,7 +52,6 @@ namespace SandCoreCSharp.Core
 
             Hero hero = SandCore.hero;
 
-
             base.Update(gameTime);
         }
 
@@ -55,25 +64,13 @@ namespace SandCoreCSharp.Core
                 return;
 
             if (ks.IsKeyDown(Keys.W))
-            {
-                worldMatrix *= Matrix.CreateTranslation(0, -speed, 0);
                 Pos += new Vector2(0, -speed);
-            }
             if (ks.IsKeyDown(Keys.S))
-            {
-                worldMatrix *= Matrix.CreateTranslation(0, speed, 0);
                 Pos += new Vector2(0, speed);
-            }
             if (ks.IsKeyDown(Keys.D))
-            {
-                worldMatrix *= Matrix.CreateTranslation(-speed, 0, 0);
                 Pos += new Vector2(-speed, 0);
-            }
             if (ks.IsKeyDown(Keys.A))
-            {
-                worldMatrix *= Matrix.CreateTranslation(speed, 0, 0);
                 Pos += new Vector2(speed, 0);
-            }
         }
     }
 }

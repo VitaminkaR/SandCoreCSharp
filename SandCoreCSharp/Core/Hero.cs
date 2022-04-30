@@ -109,24 +109,17 @@ namespace SandCoreCSharp.Core
             else
                 speed = 0.005f;
 
-            PlayerInWater();
-
             //  движение
             if (ks.IsKeyDown(Keys.W) && CheckCollison(new Vector2(0, -speed)))
                 Pos += new Vector2(0, -speed);
             if (ks.IsKeyDown(Keys.S) && CheckCollison(new Vector2(0, speed)))
                 Pos += new Vector2(0, speed);
-            if (ks.IsKeyDown(Keys.D) && CheckCollison(new Vector2(speed, 0)))
-                Pos += new Vector2(speed, 0);
-            if (ks.IsKeyDown(Keys.A) && CheckCollison(new Vector2(-speed, 0)))
+            if (ks.IsKeyDown(Keys.D) && CheckCollison(new Vector2(-speed, 0)))
                 Pos += new Vector2(-speed, 0);
-        }
+            if (ks.IsKeyDown(Keys.A) && CheckCollison(new Vector2(speed, 0)))
+                Pos += new Vector2(speed, 0);
 
-        // проверка на воду
-        private void PlayerInWater()
-        {
-            if (BlockId == 4)
-                speed -= 2;
+            camera.Pos = Pos;
         }
 
         // проверка на столкновения true - если столкновений нет
@@ -177,8 +170,8 @@ namespace SandCoreCSharp.Core
                         if (line == null)
                             break;
 
-                        int x = Convert.ToInt32(line.Split('|')[0]);
-                        int y = Convert.ToInt32(line.Split('|')[1]);
+                        float x = Convert.ToInt64(line.Split('|')[0].Split(',')[0]);
+                        float y = Convert.ToInt64(line.Split('|')[1].Split(',')[0]);
                         Pos = new Vector2(x, y);
                     }
                 }
