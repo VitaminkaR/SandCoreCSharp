@@ -77,39 +77,49 @@ namespace SandCoreCSharp.Core
             Vector2 CamPos = SandCore.camera.Pos; // берем позицию камеры
 
             //генерация
-            //if (Chunks.Count < 17)
+            if (Chunks.Count < 16)
             {
-                int ofx = (int)(CamPos.X / CHUNK_SIZE );
-                int ofy = (int)(CamPos.Y / CHUNK_SIZE);
-                if (CamPos.X < 0) ofx--;
-                if (CamPos.Y < 0) ofy--;
-                for (int i = -2; i < 3; i++)
-                {
-                    for (int j = -1; j < 2; j++)
-                    {
-                        Generate((ofx + i) * CHUNK_SIZE, (ofy + j) * CHUNK_SIZE, ofx + i, ofy + j);
-                    }
-                }
+                PredGenerate();
             }
 
             // проверка на видимость 
-            Rectangle CameraBorders = new Rectangle(CamPos.ToPoint(), new Point(SandCore.WIDTH, SandCore.HEIGHT));
+            Vector2 ca = CamPos - new Vector2(2, 2);
+            bool removes = false;
             for (int i = 0; i < Chunks.Count; i++)
             {
                 Chunk chunk = Chunks[i];
-                Rectangle ChunkBorders = new Rectangle((chunk.Pos - new Vector2(512, 512)).ToPoint(), new Point(1536, 1536));
+                Vector2 pos = chunk.Pos;
                 // проверяем входит ли чанк в границы камеры, если нет, то удаляем его из отрисовываемых
-                if (!CameraBorders.Intersects(ChunkBorders))
+                if (!(pos.X >= ca.X && pos.X <= ca.X + 4 && pos.Y >= ca.Y && pos.Y <= ca.Y + 4))
                 {
                     Block.UnloadChunk(chunk);
+                    removes = true;
                     Chunks.Remove(chunk);
                 }
             }
+            if (removes)
+                DeleteVertex();
 
             base.Update(gameTime);
         }
 
 
+
+        private void PredGenerate()
+        {
+            Vector2 CamPos = SandCore.camera.Pos; // берем позицию камеры
+            int ofx = (int)(CamPos.X / CHUNK_SIZE);
+            int ofy = (int)(CamPos.Y / CHUNK_SIZE);
+            if (CamPos.X < 0) ofx--;
+            if (CamPos.Y < 0) ofy--;
+            for (int i = -2; i < 3; i++)
+            {
+                for (int j = -2; j < 3; j++)
+                {
+                    Generate((ofx + i) * CHUNK_SIZE, (ofy + j) * CHUNK_SIZE, ofx + i, ofy + j);
+                }
+            }
+        }
 
         // generate chunk
         public void Generate(float _x, float _y, int px, int py)
@@ -166,7 +176,7 @@ namespace SandCoreCSharp.Core
             }
         }
 
-        public void GenerateVertex(Chunk chunk)
+        private void GenerateVertex(Chunk chunk)
         {
             int x = (int)(chunk.Pos.X / CHUNK_SIZE);
             int y = (int)(chunk.Pos.Y / CHUNK_SIZE);
@@ -220,6 +230,21 @@ namespace SandCoreCSharp.Core
 
             graphics.Indices.Add(graphics.Vertices.Count - 4);
             graphics.Indices.Add(-1);
+        }
+
+        private void DeleteVertex()
+        {
+            //graphics.Vertices.RemoveAll((VertexPositionColor vertex) =>
+            //vertex.Position.X >= chunk.Pos.X
+            //&& vertex.Position.X <= chunk.Pos.X + CHUNK_SIZE
+            //&& vertex.Position.Y >= chunk.Pos.Y
+            //&& vertex.Position.Y <= chunk.Pos.Y + CHUNK_SIZE);
+
+            graphics.Vertices = new List<VertexPositionColor>();
+            graphics.Indices = new List<int>();
+            Chunks = new List<Chunk>();
+
+            PredGenerate();
         }
 
 
