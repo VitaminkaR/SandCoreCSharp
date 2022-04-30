@@ -14,6 +14,9 @@ namespace SandCoreCSharp.Core
     // класс, генерирующий и отрисовывающий чанки
     public class Terrain : DrawableGameComponent
     {
+        const float TILE_SIZE = 0.04f;
+        const float CHUNK_SIZE = TILE_SIZE * 16;
+
         private ContentManager content;
         private SpriteBatch spriteBatch;
 
@@ -74,18 +77,17 @@ namespace SandCoreCSharp.Core
             Vector2 CamPos = SandCore.camera.Pos; // берем позицию камеры
 
             //генерация
-            if (Chunks.Count < 17)
+            //if (Chunks.Count < 17)
             {
-                Vector2 CenterCameraPos = CamPos + new Vector2(SandCore.WIDTH / 2, SandCore.HEIGHT / 2);
-                int ofx = (int)(CenterCameraPos.X / 512);
-                int ofy = (int)(CenterCameraPos.Y / 512);
-                if (CenterCameraPos.X < 0) ofx--;
-                if (CenterCameraPos.Y < 0) ofy--;
+                int ofx = (int)(CamPos.X / CHUNK_SIZE );
+                int ofy = (int)(CamPos.Y / CHUNK_SIZE);
+                if (CamPos.X < 0) ofx--;
+                if (CamPos.Y < 0) ofy--;
                 for (int i = -2; i < 3; i++)
                 {
                     for (int j = -1; j < 2; j++)
                     {
-                        Generate((ofx + i) * 512, (ofy + j) * 512, ofx + i, ofy + j);
+                        Generate((ofx + i) * CHUNK_SIZE, (ofy + j) * CHUNK_SIZE, ofx + i, ofy + j);
                     }
                 }
             }
@@ -166,8 +168,8 @@ namespace SandCoreCSharp.Core
 
         public void GenerateVertex(Chunk chunk)
         {
-            int x = (int)(chunk.Pos.X / 512);
-            int y = (int)(chunk.Pos.Y / 512);
+            int x = (int)(chunk.Pos.X / CHUNK_SIZE);
+            int y = (int)(chunk.Pos.Y / CHUNK_SIZE);
             for (int i = 0; i < 16; i++)
             {
                 for (int j = 0; j < 16; j++)
@@ -200,7 +202,7 @@ namespace SandCoreCSharp.Core
 
                     color = new Color(color.R + height * 5, color.G + height * 5, color.B + height * 5);
 
-                    DrawRect((float)(i + x * 16) / 20, (float)(j + y * 16) / 20, color);
+                    DrawRect((float)(i + x * 16) / (1 / TILE_SIZE), (float)(j + y * 16) / (1 / TILE_SIZE), color);
                 }
             }
         }
@@ -209,11 +211,11 @@ namespace SandCoreCSharp.Core
         {
             graphics.Vertices.Add(new VertexPositionColor(new Vector3(x, y, 0), color));
             graphics.Indices.Add(graphics.Vertices.Count - 1);
-            graphics.Vertices.Add(new VertexPositionColor(new Vector3(x + 0.05f, y, 0), color));
+            graphics.Vertices.Add(new VertexPositionColor(new Vector3(x + TILE_SIZE, y, 0), color));
             graphics.Indices.Add(graphics.Vertices.Count - 1);
-            graphics.Vertices.Add(new VertexPositionColor(new Vector3(x + 0.05f, y - 0.05f, 0), color));
+            graphics.Vertices.Add(new VertexPositionColor(new Vector3(x + TILE_SIZE, y - TILE_SIZE, 0), color));
             graphics.Indices.Add(graphics.Vertices.Count - 1);
-            graphics.Vertices.Add(new VertexPositionColor(new Vector3(x, y - 0.05f, 0), color));
+            graphics.Vertices.Add(new VertexPositionColor(new Vector3(x, y - TILE_SIZE, 0), color));
             graphics.Indices.Add(graphics.Vertices.Count - 1);
 
             graphics.Indices.Add(graphics.Vertices.Count - 4);

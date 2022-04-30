@@ -110,14 +110,14 @@ namespace SandCoreCSharp.Core
                 speed = 0.005f;
 
             //  движение
-            if (ks.IsKeyDown(Keys.W) && CheckCollison(new Vector2(0, -speed)))
-                Pos += new Vector2(0, -speed);
-            if (ks.IsKeyDown(Keys.S) && CheckCollison(new Vector2(0, speed)))
+            if (ks.IsKeyDown(Keys.W) && CheckCollison(new Vector2(0, speed)))
                 Pos += new Vector2(0, speed);
-            if (ks.IsKeyDown(Keys.D) && CheckCollison(new Vector2(-speed, 0)))
-                Pos += new Vector2(-speed, 0);
-            if (ks.IsKeyDown(Keys.A) && CheckCollison(new Vector2(speed, 0)))
+            if (ks.IsKeyDown(Keys.S) && CheckCollison(new Vector2(0, -speed)))
+                Pos += new Vector2(0, -speed);
+            if (ks.IsKeyDown(Keys.D) && CheckCollison(new Vector2(speed, 0)))
                 Pos += new Vector2(speed, 0);
+            if (ks.IsKeyDown(Keys.A) && CheckCollison(new Vector2(-speed, 0)))
+                Pos += new Vector2(-speed, 0);
 
             camera.Pos = Pos;
         }

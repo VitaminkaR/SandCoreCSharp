@@ -15,7 +15,7 @@ namespace SandCoreCSharp.Core
             get => pos;
             set
             {
-                Vector2 offset = value - pos;
+                Vector2 offset = pos - value;
                 pos = value;
                 worldMatrix *= Matrix.CreateTranslation(offset.X, offset.Y, 0);
             }
