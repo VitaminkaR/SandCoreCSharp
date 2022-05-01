@@ -148,12 +148,12 @@ namespace SandCoreCSharp.Core
                 float x = @new.Pos.X + rand.Next(16) * TILE_SIZE;
                 float y = @new.Pos.Y + rand.Next(16) * TILE_SIZE;
                 Vector2 pos = new Vector2(x, y);
-                //if (GetTile(pos).ID == 2)
-                    //Block.CreateBlock("wood", pos, true);
+                if (GetTile(pos).ID == 2)
+                    Block.CreateBlock("wood", pos, true);
             } // загрука блоков
             else
             {
-                //Block.LoadChunks(@new);
+                Block.LoadChunks(@new);
             }
         }
 
@@ -225,7 +225,7 @@ namespace SandCoreCSharp.Core
             graphics.Indices.Add(graphics.Vertices.Count - 4);
             graphics.Indices.Add(-1);
         }
-        
+
         // удаляет графику чанков (перерисовка чанков)
         private void DeleteVertex()
         {
@@ -242,17 +242,20 @@ namespace SandCoreCSharp.Core
 
 
         // методы для получения чанков или тайлов
-
         // найти чанк по позиции
-        public Chunk GetChunk(Vector2 pos) => 
+        public Chunk GetChunk(Vector2 pos) =>
             Chunks.Find((Chunk chunk) => chunk.Pos.X <= pos.X && chunk.Pos.X + CHUNK_SIZE >= pos.X && chunk.Pos.Y <= pos.Y && chunk.Pos.Y + CHUNK_SIZE >= pos.Y);
 
         // найти тайл по позиции
         public Tile GetTile(Vector2 pos)
         {
             Chunk chunk = GetChunk(pos);
+            if (chunk == null)
+                return new Tile();
+
             int x = 0;
             int y = 0;
+            int z = 0;
             for (int i = 0; i < 16; i++)
             {
                 for (int j = 0; j < 16; j++)
@@ -260,14 +263,24 @@ namespace SandCoreCSharp.Core
                     float tx = i * TILE_SIZE;
                     float ty = j * TILE_SIZE;
                     Vector2 tp = new Vector2(tx, ty) + chunk.Pos;
-                    if(tp.X <= pos.X && tp.X + TILE_SIZE >= pos.X && tp.Y <= pos.Y && tp.Y + TILE_SIZE >= pos.Y)
+                    if (tp.X <= pos.X && tp.X + TILE_SIZE >= pos.X && tp.Y <= pos.Y && tp.Y + TILE_SIZE >= pos.Y)
                     {
                         x = i;
                         y = j;
                     }
                 }
             }
-            return new Tile(x, y, chunk, 0);
+
+            for (int i = 15; i > -1; i--)
+            {
+                if (chunk.Tiles[x, y, i] != 0)
+                {
+                    z = i;
+                    break;
+                }
+            }
+
+            return new Tile(x, y, chunk, chunk.Tiles[x, y, z]);
         }
     }
 }

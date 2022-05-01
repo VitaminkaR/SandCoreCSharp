@@ -47,7 +47,6 @@ namespace SandCoreCSharp.Core
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
             Pos = new Vector2(x, y);
             camera = _camera;
-            DrawOrder = 1;
             graphics = new Graphics(game.GraphicsDevice);
         }
 
@@ -126,32 +125,49 @@ namespace SandCoreCSharp.Core
                 speed = 0.005f;
 
             //  движение
-            if (ks.IsKeyDown(Keys.W) && CheckCollison(new Vector2(0, speed)))
+            if (ks.IsKeyDown(Keys.W) && CheckCollisonWithBlocks(new Vector2(0, speed)))
                 Pos += new Vector2(0, speed);
-            if (ks.IsKeyDown(Keys.S) && CheckCollison(new Vector2(0, -speed)))
+            if (ks.IsKeyDown(Keys.S) && CheckCollisonWithBlocks(new Vector2(0, -speed)))
                 Pos += new Vector2(0, -speed);
-            if (ks.IsKeyDown(Keys.D) && CheckCollison(new Vector2(speed, 0)))
+            if (ks.IsKeyDown(Keys.D) && CheckCollisonWithBlocks(new Vector2(speed, 0)))
                 Pos += new Vector2(speed, 0);
-            if (ks.IsKeyDown(Keys.A) && CheckCollison(new Vector2(-speed, 0)))
+            if (ks.IsKeyDown(Keys.A) && CheckCollisonWithBlocks(new Vector2(-speed, 0)))
                 Pos += new Vector2(-speed, 0);
 
             camera.Pos = Pos;
         }
 
         // проверка на столкновения true - если столкновений нет
-        private bool CheckCollison(Vector2 direction)
+        private bool CheckCollisonWithBlocks(Vector2 direction)
         {
             for (int i = 0; i < Block.Blocks.Count; i++)
             {
                 Block block = Block.Blocks[i];
                 Vector2 pos = Pos + direction;
-                if (pos.X >= block.Pos.X && pos.X <= block.Pos.X + PLAYER_SIZE && pos.Y <= block.Pos.Y && pos.Y >= block.Pos.Y + PLAYER_SIZE && block.IsSolid)
+                if (pos.X >= block.Pos.X && pos.X <= block.Pos.X + PLAYER_SIZE && pos.Y >= block.Pos.Y && pos.Y <= block.Pos.Y + PLAYER_SIZE ||
+                    pos.X + PLAYER_SIZE >= block.Pos.X && pos.X + PLAYER_SIZE <= block.Pos.X + PLAYER_SIZE && pos.Y + PLAYER_SIZE >= block.Pos.Y && pos.Y + PLAYER_SIZE <= block.Pos.Y + PLAYER_SIZE ||
+                    pos.X >= block.Pos.X && pos.X <= block.Pos.X + PLAYER_SIZE && pos.Y + PLAYER_SIZE >= block.Pos.Y && pos.Y + PLAYER_SIZE <= block.Pos.Y + PLAYER_SIZE ||
+                    pos.X + PLAYER_SIZE >= block.Pos.X && pos.X + PLAYER_SIZE <= block.Pos.X + PLAYER_SIZE && pos.Y >= block.Pos.Y && pos.Y <= block.Pos.Y + PLAYER_SIZE &&
+                    block.IsSolid)
                 {
                     block.CollidePlayer(this);
                     return false;
                 }
             }
             return true;
+        }
+
+        // проверяет на столкновение
+        public bool Collision(Vector2 _pos)
+        {
+            if (Pos.X >= _pos.X && Pos.X <= _pos.X + PLAYER_SIZE && Pos.Y >= _pos.Y && Pos.Y <= _pos.Y + PLAYER_SIZE ||
+                    Pos.X + PLAYER_SIZE >= _pos.X && Pos.X + PLAYER_SIZE <= _pos.X + PLAYER_SIZE && Pos.Y + PLAYER_SIZE >= _pos.Y && Pos.Y + PLAYER_SIZE <= _pos.Y + PLAYER_SIZE ||
+                    Pos.X >= _pos.X && Pos.X <= _pos.X + PLAYER_SIZE && Pos.Y + PLAYER_SIZE >= _pos.Y && Pos.Y + PLAYER_SIZE <= _pos.Y + PLAYER_SIZE ||
+                    Pos.X + PLAYER_SIZE >= _pos.X && Pos.X + PLAYER_SIZE <= _pos.X + PLAYER_SIZE && Pos.Y >= _pos.Y && Pos.Y <= _pos.Y + PLAYER_SIZE)
+            {
+                return true;
+            }
+            return false;
         }
 
         // при загрузке карты

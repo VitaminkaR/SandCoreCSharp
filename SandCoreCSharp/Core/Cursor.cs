@@ -59,9 +59,14 @@ namespace SandCoreCSharp.Core
             Terrain terrain = SandCore.terrain;
             MouseState state = Mouse.GetState();
 
-            Vector2 pos = camera.Pos - (state.Position.ToVector2() / 10000);
-
-            
+            Vector3 pos = Game.GraphicsDevice.Viewport.Unproject(new Vector3(state.Position.ToVector2(), 0), camera.projectionMatrix, camera.viewMatrix, camera.worldMatrix);
+            Tile tile = terrain.GetTile(new Vector2(pos.X, pos.Y + Terrain.TILE_SIZE));
+            if (tile.Chunk != null)
+            {
+                Pos = tile.Chunk.Pos + new Vector2((tile.Position[0] * Terrain.TILE_SIZE), (tile.Position[1] * Terrain.TILE_SIZE));
+                Chunk = tile.Chunk;
+                Tile = tile;
+            }
 
 
             if (state.LeftButton == ButtonState.Pressed && !mouseBlock && Active)
@@ -105,14 +110,15 @@ namespace SandCoreCSharp.Core
         {
             graphics.Vertices = new List<VertexPositionColorTexture>();
             graphics.Indices = new List<int>();
+            Color color = new Color(0, 128, 0, 50);
 
-            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x, y, 0), Color.Green, new Vector2(0, 0)));
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x, y, 0), color, new Vector2(0, 0)));
             graphics.Indices.Add(graphics.Vertices.Count - 1);
-            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x + CURSOR_SIZE, y, 0), Color.Green, new Vector2(1, 0)));
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x + CURSOR_SIZE, y, 0), color, new Vector2(1, 0)));
             graphics.Indices.Add(graphics.Vertices.Count - 1);
-            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x + CURSOR_SIZE, y - CURSOR_SIZE, 0), Color.Green, new Vector2(1, 1)));
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x + CURSOR_SIZE, y - CURSOR_SIZE, 0), color, new Vector2(1, 1)));
             graphics.Indices.Add(graphics.Vertices.Count - 1);
-            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x, y - CURSOR_SIZE, 0), Color.Green, new Vector2(0, 1)));
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x, y - CURSOR_SIZE, 0), color, new Vector2(0, 1)));
             graphics.Indices.Add(graphics.Vertices.Count - 1);
 
             graphics.Indices.Add(graphics.Vertices.Count - 4);
@@ -122,7 +128,7 @@ namespace SandCoreCSharp.Core
         // нажатие на левую кнопку мыши
         private void Break()
         {
-            Vector2 positionBlockCursor = new Vector2(Tile.Position[0] * 32, Tile.Position[1] * 32) + Chunk.Pos;
+            Vector2 positionBlockCursor = new Vector2(Tile.Position[0] * Terrain.TILE_SIZE, Tile.Position[1] * Terrain.TILE_SIZE) + Chunk.Pos;
             for (int i = 0; i < Game.Components.Count; i++) // проход по всем блокам
             {
                 Block block = (Game.Components[i] as Block);
@@ -190,12 +196,12 @@ namespace SandCoreCSharp.Core
             Resources resources = SandCore.resources;
             Hero hero = SandCore.hero;
 
-            Vector2 BlockPosition = new Vector2(Tile.Position[0] * 32, Tile.Position[1] * 32) + Chunk.Pos;
+            Vector2 BlockPosition = new Vector2(Tile.Position[0] * Terrain.TILE_SIZE, Tile.Position[1] * Terrain.TILE_SIZE) + Chunk.Pos;
             Rectangle collider = GetCollider();
             string block = inventory.choosenBlock;
 
             // чтобы блок не заспавнился в игроке
-            if(block != null && resources.Resource[block] != 0 && block != "" && !collider.Intersects(new Rectangle(hero.Pos.ToPoint(), new Point(32, 32))))
+            if(block != null && resources.Resource[block] != 0 && block != "" && !hero.Collision(BlockPosition))
             {
                 // если есть мотыга и тайл - земля
                 if (Tile.ID == 2 && block == "hoe")
@@ -206,8 +212,6 @@ namespace SandCoreCSharp.Core
 
                 Block.CreateBlock(block, BlockPosition);
             }
-
-            
         }
 
         // ломание блока

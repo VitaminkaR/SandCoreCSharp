@@ -6,6 +6,7 @@ using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SandCoreCSharp.Core
 {
@@ -95,6 +96,8 @@ namespace SandCoreCSharp.Core
 
         public override void Update(GameTime gameTime)
         {
+            thisChunk = terrain.GetChunk(Pos);
+
             // если нажата правая кнопка на блоке
             Vector2 CursorCollider = SandCore.cursor.Pos;
             if (Pos == CursorCollider && Mouse.GetState().RightButton == ButtonState.Pressed)
@@ -213,10 +216,7 @@ namespace SandCoreCSharp.Core
         // запускается когда выгружается чанк, для сохранения блоков в этом чанке
         static public void UnloadChunk(Chunk chunk)
         {
-            List<Block> blocks = new List<Block>();
-            for (int i = 0; i < Blocks.Count; i++)
-                if (Blocks[i].thisChunk == chunk)
-                    blocks.Add(Blocks[i]);
+            List<Block> blocks = Blocks.FindAll((Block block) => block.thisChunk == chunk);
 
             string data = "";
             for (int i = 0; i < blocks.Count; i++)
