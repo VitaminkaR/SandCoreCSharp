@@ -79,7 +79,7 @@ namespace SandCoreCSharp.Core
             collider = new Rectangle(Pos.ToPoint(), new Point(32, 32));
 
             // находим index чанка
-            thisChunk = terrain.GetChunk(Pos.X, Pos.Y);
+
 
             DrawRect(pos.X, pos.Y);
         }
@@ -139,9 +139,6 @@ namespace SandCoreCSharp.Core
         // столкновение с игроком
         public virtual void CollidePlayer(Hero player)
         { }
-
-        // чанк в котором блок
-        public Chunk GetChunk() => SandCore.terrain.GetChunk(Pos.X, Pos.Y);
 
         // раньше было методом break, но этот метод един для всех блоков
         public void Unload()

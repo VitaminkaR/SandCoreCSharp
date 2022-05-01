@@ -62,20 +62,18 @@ namespace SandCoreCSharp.Core
             Vector2 CamPos = SandCore.camera.Pos; // берем позицию камеры
 
             //генерация
-            if (Chunks.Count < 25)
-            {
+            if (Chunks.Count < 40)
                 PredGenerate();
-            }
 
             // проверка на видимость 
-            Vector2 ca = CamPos - new Vector2(2, 2);
+            Vector2 ca = CamPos - new Vector2(2.5f, 2.5f);
             bool removes = false;
             for (int i = 0; i < Chunks.Count; i++)
             {
                 Chunk chunk = Chunks[i];
                 Vector2 pos = chunk.Pos;
                 // проверяем входит ли чанк в границы камеры, если нет, то удаляем его из отрисовываемых
-                if (!(pos.X >= ca.X && pos.X <= ca.X + 4 && pos.Y >= ca.Y && pos.Y <= ca.Y + 4))
+                if (!(pos.X >= ca.X && pos.X <= ca.X + 5 && pos.Y >= ca.Y && pos.Y <= ca.Y + 5))
                 {
                     Block.UnloadChunk(chunk);
                     removes = true;
@@ -155,14 +153,23 @@ namespace SandCoreCSharp.Core
             } // загрука блоков
             else
             {
-                Block.LoadChunks(@new);
+                //Block.LoadChunks(@new);
             }
         }
 
+        // отрисовывает чанк
         private void GenerateVertex(Chunk chunk)
         {
             float x = chunk.Pos.X / CHUNK_SIZE;
             float y = chunk.Pos.Y / CHUNK_SIZE;
+
+            Color bdColor = Color.Black;
+            if (SandCore.debugChunks)
+            {
+                Random r = new Random();
+                bdColor = new Color(r.Next(0, 256), r.Next(0, 256), r.Next(0, 256));
+            }
+
             for (int i = 0; i < 16; i++)
             {
                 for (int j = 0; j < 16; j++)
@@ -191,15 +198,19 @@ namespace SandCoreCSharp.Core
                     if (id == 5)
                         color = Color.Yellow;
 
+                    // затемнение
                     color = new Color(color.R - 100, color.G - 100, color.B - 100);
-
                     color = new Color(color.R + height * 5, color.G + height * 5, color.B + height * 5);
+
+                    if (SandCore.debugChunks)
+                        color = bdColor;
 
                     DrawRect((float)(i + x * 16) / (1 / TILE_SIZE), (float)(j + y * 16) / (1 / TILE_SIZE), color);
                 }
             }
         }
 
+        // рисует квадрат
         private void DrawRect(float x, float y, Color color)
         {
             graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x, y, 0), color, new Vector2(0, 0)));
@@ -214,89 +225,49 @@ namespace SandCoreCSharp.Core
             graphics.Indices.Add(graphics.Vertices.Count - 4);
             graphics.Indices.Add(-1);
         }
-
+        
+        // удаляет графику чанков (перерисовка чанков)
         private void DeleteVertex()
         {
-            //graphics.Vertices.RemoveAll((VertexPositionColor vertex) =>
-            //vertex.Position.X >= chunk.Pos.X
-            //&& vertex.Position.X <= chunk.Pos.X + CHUNK_SIZE
-            //&& vertex.Position.Y >= chunk.Pos.Y
-            //&& vertex.Position.Y <= chunk.Pos.Y + CHUNK_SIZE);
-
             graphics.Vertices = new List<VertexPositionColorTexture>();
             graphics.Indices = new List<int>();
-            Chunks = new List<Chunk>();
 
-            PredGenerate();
-        }
-
-
-
-
-        // возвращает чанк по координате
-        public Chunk GetChunk(float x, float y)
-        {
-            int ix = (int)(x / CHUNK_SIZE);
-            int iy = (int)(y / CHUNK_SIZE);
             for (int i = 0; i < Chunks.Count; i++)
             {
-                if (Chunks[i].Pos == new Vector2(ix * CHUNK_SIZE, iy * CHUNK_SIZE))
-                    return Chunks[i];
+                GenerateVertex(Chunks[i]);
             }
-
-            return Chunks[0];
         }
 
-        // возвращает чанк в котором игрок
-        public Chunk GetChunkExistPlayer() => GetChunk(SandCore.hero.Pos.X, SandCore.hero.Pos.Y);
 
-        // возвращает блок на котором стоит игрок
-        public int[] GetChunkPosPlayer()
-        {
-            Tile tile = GetTile(SandCore.hero.Pos);
 
-            int oz = 0;
 
-            for (int i = 15; i > -1; i--)
-            {
-                if (tile.Chunk.Tiles[tile.Position[0], tile.Position[1], i] != 0)
-                {
-                    oz = i;
-                    break;
-                }
-            }
+        // методы для получения чанков или тайлов
 
-            return new int[] { tile.Position[0], tile.Position[1], oz };
-        }
+        // найти чанк по позиции
+        public Chunk GetChunk(Vector2 pos) => 
+            Chunks.Find((Chunk chunk) => chunk.Pos.X <= pos.X && chunk.Pos.X + CHUNK_SIZE >= pos.X && chunk.Pos.Y <= pos.Y && chunk.Pos.Y + CHUNK_SIZE >= pos.Y);
 
-        // возвращает плитку
+        // найти тайл по позиции
         public Tile GetTile(Vector2 pos)
         {
-            // ищем чанк
-            Chunk chunk = GetChunk(pos.X, pos.Y);
-            // находим координаты относительно чанка
-            Vector2 p1 = pos - chunk.Pos - new Vector2(1, 1);
-            // находим индексы тайла
-            int x = (int)(MathF.Abs(p1.X / TILE_SIZE));
-            int y = (int)(MathF.Abs(p1.Y / TILE_SIZE));
-
-            if (x > 15 || y > 15)
-                return new Tile(0, 0, chunk, 0);
-
-            // ищем верхний блок
-            int z = 0;
+            Chunk chunk = GetChunk(pos);
+            int x = 0;
+            int y = 0;
             for (int i = 0; i < 16; i++)
             {
-                if (chunk.Tiles[x, y, i] == 0)
-                    continue;
-                else
-                    z = i;
+                for (int j = 0; j < 16; j++)
+                {
+                    float tx = i * TILE_SIZE;
+                    float ty = j * TILE_SIZE;
+                    Vector2 tp = new Vector2(tx, ty) + chunk.Pos;
+                    if(tp.X <= pos.X && tp.X + TILE_SIZE >= pos.X && tp.Y <= pos.Y && tp.Y + TILE_SIZE >= pos.Y)
+                    {
+                        x = i;
+                        y = j;
+                    }
+                }
             }
-
-            return new Tile(x, y, chunk, chunk.Tiles[x, y, z]);
+            return new Tile(x, y, chunk, 0);
         }
-
-        // возвращает  id блока на котором стоит игрок
-        public byte GetBlockIdPlayerPlace(Chunk chunk, int[] pos) => chunk.Tiles[pos[0], pos[1], pos[2]];
     }
 }

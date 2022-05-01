@@ -25,12 +25,10 @@ namespace SandCoreCSharp.Core
 
         // камера
         Camera camera;
-        // офсет для камеры
-        Vector2 offset;
 
         // мировые параметры
-        // блок на котором стоит персонаж
-        public byte BlockId { get; private set; }
+        // тайл на котором стоит персонаж
+        public Tile Tile { get; private set; }
         // позиция в чанке
         public int[] ChunkPos { get; private set; }
         // сам чанк
@@ -55,12 +53,8 @@ namespace SandCoreCSharp.Core
 
         public override void Initialize()
         {
-            speed = 3;
-            offset = Pos;
             Health = 100;
-
             Load();
-
             base.Initialize();
         }
 
@@ -75,24 +69,20 @@ namespace SandCoreCSharp.Core
         public override void Update(GameTime gameTime)
         {
             Control();
-
-            Terrain terrain = SandCore.terrain;
-            Chunk = terrain.GetChunkExistPlayer();
-            ChunkPos = terrain.GetChunkPosPlayer();
-            BlockId = terrain.GetBlockIdPlayerPlace(Chunk, ChunkPos);
-
-            DrawRect(Pos.X, Pos.Y);
-
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin(); // отрисовываем относительно камеры
+            Terrain terrain = SandCore.terrain;
+            Tile = terrain.GetTile(Pos);
+            Chunk = Tile.Chunk;
 
+            DrawRect(Pos.X, Pos.Y);
             graphics.Drawing();
 
             // ui
+            spriteBatch.Begin();
             spriteBatch.DrawString(SandCore.font, Health.ToString(), new Vector2(32, SandCore.HEIGHT - 64), Color.DarkRed, 0, Vector2.Zero, 2, SpriteEffects.None, 0);
             spriteBatch.End();
 
@@ -154,7 +144,8 @@ namespace SandCoreCSharp.Core
             for (int i = 0; i < Block.Blocks.Count; i++)
             {
                 Block block = Block.Blocks[i];
-                if (Pos.X >= block.Pos.X && Pos.X <= block.Pos.X + PLAYER_SIZE && Pos.Y <= block.Pos.Y && Pos.Y >= block.Pos.Y + PLAYER_SIZE && block.IsSolid)
+                Vector2 pos = Pos + direction;
+                if (pos.X >= block.Pos.X && pos.X <= block.Pos.X + PLAYER_SIZE && pos.Y <= block.Pos.Y && pos.Y >= block.Pos.Y + PLAYER_SIZE && block.IsSolid)
                 {
                     block.CollidePlayer(this);
                     return false;
@@ -195,8 +186,8 @@ namespace SandCoreCSharp.Core
                         if (line == null)
                             break;
 
-                        float x = Convert.ToInt64(line.Split('|')[0].Split(',')[0]);
-                        float y = Convert.ToInt64(line.Split('|')[1].Split(',')[0]);
+                        float x = (float)Convert.ToDouble(line.Split('|')[0]);
+                        float y = (float)Convert.ToDouble(line.Split('|')[1]);
                         Pos = new Vector2(x, y);
                     }
                 }

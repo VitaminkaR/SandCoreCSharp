@@ -59,17 +59,9 @@ namespace SandCoreCSharp.Core
             Terrain terrain = SandCore.terrain;
             MouseState state = Mouse.GetState();
 
-            Vector2 pos = camera.Pos + state.Position.ToVector2();
+            Vector2 pos = camera.Pos - (state.Position.ToVector2() / 10000);
 
-            // ищем на какой блок навестись
-            Chunk chunk = terrain.GetChunk(pos.X, pos.Y);
-            if (chunk != null)
-            {
-                this.Chunk = chunk;
-                // ищем блок
-                Tile = terrain.GetTile(pos);
-                Pos = (new Vector2(Tile.Position[0] * 32, Tile.Position[1] * 32) + Chunk.Pos);
-            }
+            
 
 
             if (state.LeftButton == ButtonState.Pressed && !mouseBlock && Active)
@@ -103,6 +95,7 @@ namespace SandCoreCSharp.Core
 
         public override void Draw(GameTime gameTime)
         {
+            DrawRect(Pos.X, Pos.Y);
             graphics.Drawing();
 
             base.Draw(gameTime);

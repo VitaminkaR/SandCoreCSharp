@@ -66,7 +66,7 @@ namespace SandCoreCSharp
             terrain = new Terrain(this);
             camera = new Camera(this);
             hero = new Hero(this, 0, 0, camera);
-            cursor = new Cursor(this, hero);
+            //cursor = new Cursor(this, hero);
             resources = new Resources(this);
             inventory = new Inventory(this);
             craftManager = new CraftManager(this);
@@ -122,12 +122,8 @@ namespace SandCoreCSharp
                     $"FPS: {1 / gameTime.ElapsedGameTime.TotalSeconds}\n\n" +
                     $"Player Position: [{hero.Pos.X};{hero.Pos.Y};{hero.Height}]\n" +
                     $"Camera Position: [{camera.Pos.X};{camera.Pos.Y}]\n\n" +
-                    $"Player Chunk: {(int)(hero.Pos.X / Terrain.CHUNK_SIZE)} ; {(int)(hero.Pos.Y / Terrain.CHUNK_SIZE)}\n" +
-                    $"Player Position In Chunk: [{hero.ChunkPos[0]};{hero.ChunkPos[1]};{hero.ChunkPos[2]}]\n" +
-                    $"Player Block Place: {hero.BlockId}\n\n" +
-                    $"Mouse Chunk: {cursor.Chunk.GetName()}\n" +
-                    $"Mouse Tile ID: {cursor.Tile.ID}\n" +
-                    $"Mouse Block: {cursor.Tile.Position[0]}; {cursor.Tile.Position[1]}\n\n" +
+                    $"Player Chunk: [{hero.Chunk?.GetName()}]\n" +
+                    $"PlayerTile: [{hero.Tile.Position[0]};{hero.Tile.Position[1]}]" +
                     $"Chunks: {terrain.Chunks.Count}\n";
                 _spriteBatch.Begin();
                 _spriteBatch.DrawString(font, info, new Vector2(0, 0), Color.White);
