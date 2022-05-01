@@ -79,9 +79,6 @@ namespace SandCoreCSharp.Core
 
             collider = new Rectangle(Pos.ToPoint(), new Point(32, 32));
 
-            // находим index чанка
-
-
             DrawRect(pos.X, pos.Y);
         }
 
@@ -89,8 +86,6 @@ namespace SandCoreCSharp.Core
         protected override void LoadContent()
         {
             sprite = Sprites[Type];
-            graphics.Texture = sprite;
-
             base.LoadContent();
         }
 
@@ -109,6 +104,7 @@ namespace SandCoreCSharp.Core
         // отрисовка спрайта в позиции
         public override void Draw(GameTime gameTime)
         {
+            graphics.Texture = sprite;
             graphics.Drawing();
 
             base.Draw(gameTime);

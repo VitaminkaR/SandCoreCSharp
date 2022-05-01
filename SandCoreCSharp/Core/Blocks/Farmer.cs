@@ -23,12 +23,12 @@ namespace SandCoreCSharp.Core.Blocks
                 for (int j = -3; j < 4; j++)
                 {
                     // создаем блок
-                    Block block = CreateBlock("land", Pos + new Vector2(i * 32, j * 32));
+                    Block block = CreateBlock("land", Pos + new Vector2(i * Terrain.TILE_SIZE, j * Terrain.TILE_SIZE));
                     if (block != null) 
                         lands.Add((Land)block);
                     else
                     { // если блок там уже есть, то находим его и проверяем грядка ли это, если да, то тоже кидаем в массив
-                        Block block_other = FindBlock(Pos + new Vector2(i * 32, j * 32));
+                        Block block_other = FindBlock(Pos + new Vector2(i * Terrain.TILE_SIZE, j * Terrain.TILE_SIZE));
                         if(block_other.GetType() == typeof(Land))
                             lands.Add((Land)block_other);
                     } 

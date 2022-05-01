@@ -282,5 +282,15 @@ namespace SandCoreCSharp.Core
 
             return new Tile(x, y, chunk, chunk.Tiles[x, y, z]);
         }
+
+
+
+        protected override void Dispose(bool disposing)
+        {
+            foreach (Chunk chunk in Chunks)
+                Block.UnloadChunk(chunk);
+
+            base.Dispose(disposing);
+        }
     }
 }

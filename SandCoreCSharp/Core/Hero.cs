@@ -144,10 +144,10 @@ namespace SandCoreCSharp.Core
             {
                 Block block = Block.Blocks[i];
                 Vector2 pos = Pos + direction;
-                if (pos.X >= block.Pos.X && pos.X <= block.Pos.X + PLAYER_SIZE && pos.Y >= block.Pos.Y && pos.Y <= block.Pos.Y + PLAYER_SIZE ||
+                if ((pos.X >= block.Pos.X && pos.X <= block.Pos.X + PLAYER_SIZE && pos.Y >= block.Pos.Y && pos.Y <= block.Pos.Y + PLAYER_SIZE ||
                     pos.X + PLAYER_SIZE >= block.Pos.X && pos.X + PLAYER_SIZE <= block.Pos.X + PLAYER_SIZE && pos.Y + PLAYER_SIZE >= block.Pos.Y && pos.Y + PLAYER_SIZE <= block.Pos.Y + PLAYER_SIZE ||
                     pos.X >= block.Pos.X && pos.X <= block.Pos.X + PLAYER_SIZE && pos.Y + PLAYER_SIZE >= block.Pos.Y && pos.Y + PLAYER_SIZE <= block.Pos.Y + PLAYER_SIZE ||
-                    pos.X + PLAYER_SIZE >= block.Pos.X && pos.X + PLAYER_SIZE <= block.Pos.X + PLAYER_SIZE && pos.Y >= block.Pos.Y && pos.Y <= block.Pos.Y + PLAYER_SIZE &&
+                    pos.X + PLAYER_SIZE >= block.Pos.X && pos.X + PLAYER_SIZE <= block.Pos.X + PLAYER_SIZE && pos.Y >= block.Pos.Y && pos.Y <= block.Pos.Y + PLAYER_SIZE) &&
                     block.IsSolid)
                 {
                     block.CollidePlayer(this);
