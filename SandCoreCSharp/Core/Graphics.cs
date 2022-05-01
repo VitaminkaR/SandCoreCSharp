@@ -8,7 +8,7 @@ using System.Text;
 
 namespace SandCoreCSharp.Core
 {
-    class Graphics
+    public class Graphics
     {
         public List<VertexPositionColorTexture> Vertices { get; set; }
         public List<int> Indices { get; set; }

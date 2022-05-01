@@ -14,11 +14,10 @@ namespace SandCoreCSharp.Core
     // класс, генерирующий и отрисовывающий чанки
     public class Terrain : DrawableGameComponent
     {
-        const float TILE_SIZE = 0.04f;
+        public const float TILE_SIZE = 0.04f;
         public const float CHUNK_SIZE = TILE_SIZE * 16;
 
         private ContentManager content;
-        private SpriteBatch spriteBatch;
 
         // view chunks
         public List<Chunk> Chunks { get; private set; }
@@ -31,7 +30,6 @@ namespace SandCoreCSharp.Core
         {
             game.Components.Add(this);
             content = game.Content;
-            spriteBatch = new SpriteBatch(game.GraphicsDevice);
             graphics = new Graphics(game.GraphicsDevice);
         }
 
@@ -149,11 +147,11 @@ namespace SandCoreCSharp.Core
             bool exist = new FileInfo($"maps\\{SandCore.map}\\blocks\\" + chunkName).Exists;
             if (!exist)
             {
-                float x = @new.Pos.X + rand.Next(16) * 32;
-                float y = @new.Pos.Y + rand.Next(16) * 32;
+                float x = @new.Pos.X + rand.Next(16) * TILE_SIZE;
+                float y = @new.Pos.Y + rand.Next(16) * TILE_SIZE;
                 Vector2 pos = new Vector2(x, y);
-                if (GetTile(pos).ID == 2)
-                    Block.CreateBlock("wood", pos);
+                //if (GetTile(pos).ID == 2)
+                    //Block.CreateBlock("wood", pos, true);
             } // загрука блоков
             else
             {
@@ -238,13 +236,11 @@ namespace SandCoreCSharp.Core
         // возвращает чанк по координате
         public Chunk GetChunk(float x, float y)
         {
-            int ix = (int)(x / 512);
-            int iy = (int)(y / 512);
-            if (x < 0) ix--;
-            if (y < 0) iy--;
+            int ix = (int)(x / CHUNK_SIZE);
+            int iy = (int)(y / CHUNK_SIZE);
             for (int i = 0; i < Chunks.Count; i++)
             {
-                if (Chunks[i].Pos == new Vector2(ix * 512, iy * 512))
+                if (Chunks[i].Pos == new Vector2(ix * CHUNK_SIZE, iy * CHUNK_SIZE))
                     return Chunks[i];
             }
 
@@ -281,8 +277,8 @@ namespace SandCoreCSharp.Core
             // находим координаты относительно чанка
             Vector2 p1 = pos - chunk.Pos - new Vector2(1, 1);
             // находим индексы тайла
-            int x = (int)(MathF.Abs(p1.X / 32));
-            int y = (int)(MathF.Abs(p1.Y / 32));
+            int x = (int)(MathF.Abs(p1.X / TILE_SIZE));
+            int y = (int)(MathF.Abs(p1.Y / TILE_SIZE));
 
             if (x > 15 || y > 15)
                 return new Tile(0, 0, chunk, 0);

@@ -26,6 +26,6 @@ namespace SandCoreCSharp.Core
 
 
         // возвращает имя чанка
-        public string GetName() => "C=" + (int)(Pos.X / 512) + ";" + (int)(Pos.Y / 512);
+        public string GetName() => "C=" + (int)(Pos.X / Terrain.CHUNK_SIZE) + ";" + (int)(Pos.Y / Terrain.CHUNK_SIZE);
     }
 }

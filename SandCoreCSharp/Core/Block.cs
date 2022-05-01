@@ -11,6 +11,8 @@ namespace SandCoreCSharp.Core
 {
     public class Block : DrawableGameComponent
     {
+        public const float BLOCK_SIZE = Terrain.TILE_SIZE;
+
         // все блоки
         public static List<Block> Blocks { get; private set; } = new List<Block>();
         // спрайты блоков
@@ -20,10 +22,10 @@ namespace SandCoreCSharp.Core
         public Vector2 Pos { get; protected set; }
 
         protected ContentManager content;
-        protected SpriteBatch spriteBatch;
 
         // спрайты
         protected Texture2D sprite;
+        protected Graphics graphics;
 
         // взаимодействия
         protected Hero player;
@@ -64,9 +66,9 @@ namespace SandCoreCSharp.Core
             Type = this.GetType().Name.ToLower();
 
             content = Game.Content;
-            spriteBatch = new SpriteBatch(game.GraphicsDevice);
+            graphics = new Graphics(game.GraphicsDevice);
             Game.Components.Add(this);
-            Blocks.Add(this);
+            Blocks.Add(this);  
 
             player = SandCore.hero;
             camera = SandCore.camera;
@@ -78,12 +80,15 @@ namespace SandCoreCSharp.Core
 
             // находим index чанка
             thisChunk = terrain.GetChunk(Pos.X, Pos.Y);
+
+            DrawRect(pos.X, pos.Y);
         }
 
 
         protected override void LoadContent()
         {
             sprite = Sprites[Type];
+            graphics.Texture = sprite;
 
             base.LoadContent();
         }
@@ -101,26 +106,24 @@ namespace SandCoreCSharp.Core
         // отрисовка спрайта в позиции
         public override void Draw(GameTime gameTime)
         {
-            Color color = Color.White;
-
-            Cursor cursor = SandCore.cursor;
-            // добыча блока
-            if (cursor.Pos == Pos)
-                color = Color.Green;
-            // если игрок не может сломать
-            if (cursor.Pos == Pos && Mouse.GetState().LeftButton == ButtonState.Pressed)
-                color = Color.Black;
-            // добыча блока
-            if (cursor.Pos == Pos && cursor.breaking)
-                color = Color.Red;
-
-            spriteBatch.Begin();
-            Vector2 pos = Pos - camera.Pos;
-            if (sprite != null)
-                spriteBatch.Draw(sprite, pos, color);
-            spriteBatch.End();
+            graphics.Drawing();
 
             base.Draw(gameTime);
+        }
+
+        private void DrawRect(float x, float y)
+        {
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x, y, 0), Color.White, new Vector2(0, 0)));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x + BLOCK_SIZE, y, 0), Color.White, new Vector2(1, 0)));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x + BLOCK_SIZE, y - BLOCK_SIZE, 0), Color.White, new Vector2(1, 1)));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x, y - BLOCK_SIZE, 0), Color.White, new Vector2(0, 1)));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+
+            graphics.Indices.Add(graphics.Vertices.Count - 4);
+            graphics.Indices.Add(-1);
         }
 
         // когда блок ломается
@@ -254,7 +257,7 @@ namespace SandCoreCSharp.Core
                 string[] info = data[i].Split('|');
                 if(data[i] != "")
                 {
-                    Block block = fabric.Create(info[0], new Vector2(Convert.ToInt32(info[1]), Convert.ToInt32(info[2])));
+                    Block block = fabric.Create(info[0], new Vector2((float)Convert.ToDouble(info[1]), (float)Convert.ToDouble(info[2])));
                     // загружаем тэги
                     block.Tags = (string[])JsonSerializer.Deserialize(info[3], typeof(string[]));
                 } 

@@ -10,6 +10,8 @@ namespace SandCoreCSharp.Core
 {
     public class Hero : DrawableGameComponent
     {
+        const float PLAYER_SIZE = Terrain.TILE_SIZE;
+
         // позиция игрока
         public Vector2 Pos { get; private set; }
         public int Height { get; private set; }
@@ -19,6 +21,7 @@ namespace SandCoreCSharp.Core
 
         // спрайт игрока
         private Texture2D texture;
+        private Graphics graphics;
 
         // камера
         Camera camera;
@@ -47,6 +50,7 @@ namespace SandCoreCSharp.Core
             Pos = new Vector2(x, y);
             camera = _camera;
             DrawOrder = 1;
+            graphics = new Graphics(game.GraphicsDevice);
         }
 
         public override void Initialize()
@@ -62,7 +66,8 @@ namespace SandCoreCSharp.Core
 
         protected override void LoadContent()
         {
-            texture = content.Load<Texture2D>("Hero");
+            texture = content.Load<Texture2D>("tile");
+            graphics.Texture = texture;
 
             base.LoadContent();
         }
@@ -76,19 +81,40 @@ namespace SandCoreCSharp.Core
             ChunkPos = terrain.GetChunkPosPlayer();
             BlockId = terrain.GetBlockIdPlayerPlace(Chunk, ChunkPos);
 
+            DrawRect(Pos.X, Pos.Y);
+
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
-            spriteBatch.Draw(texture, -camera.Pos + Pos, new Color(40 + Height * 13, 40 + Height * 13, 40 + Height * 13)); // отрисовываем относительно камеры
+            spriteBatch.Begin(); // отрисовываем относительно камеры
+
+            graphics.Drawing();
 
             // ui
             spriteBatch.DrawString(SandCore.font, Health.ToString(), new Vector2(32, SandCore.HEIGHT - 64), Color.DarkRed, 0, Vector2.Zero, 2, SpriteEffects.None, 0);
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void DrawRect(float x, float y)
+        {
+            graphics.Vertices = new List<VertexPositionColorTexture>();
+            graphics.Indices = new List<int>();
+
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x, y, 0), Color.Red, new Vector2(0, 0)));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x + PLAYER_SIZE, y, 0), Color.Red, new Vector2(1, 0)));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x + PLAYER_SIZE, y - PLAYER_SIZE, 0), Color.Red, new Vector2(1, 1)));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x, y - PLAYER_SIZE, 0), Color.Red, new Vector2(0, 1)));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+
+            graphics.Indices.Add(graphics.Vertices.Count - 4);
+            graphics.Indices.Add(-1);
         }
 
         // управление игроком
@@ -125,11 +151,10 @@ namespace SandCoreCSharp.Core
         // проверка на столкновения true - если столкновений нет
         private bool CheckCollison(Vector2 direction)
         {
-            Rectangle collider = new Rectangle((Pos + direction).ToPoint(), new Point(32, 32));
             for (int i = 0; i < Block.Blocks.Count; i++)
             {
                 Block block = Block.Blocks[i];
-                if (collider.Intersects(block.collider) && block.IsSolid)
+                if (Pos.X >= block.Pos.X && Pos.X <= block.Pos.X + PLAYER_SIZE && Pos.Y <= block.Pos.Y && Pos.Y >= block.Pos.Y + PLAYER_SIZE && block.IsSolid)
                 {
                     block.CollidePlayer(this);
                     return false;

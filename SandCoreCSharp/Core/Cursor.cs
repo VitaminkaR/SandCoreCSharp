@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -10,6 +11,8 @@ namespace SandCoreCSharp.Core
     // этот класс позволяет игроку взаимодействовать с блоками 
     class Cursor : ViewGameObject
     {
+        const float CURSOR_SIZE = Terrain.TILE_SIZE;
+
         private Hero player; // для взаимодействия
 
         public bool Active { get; private set; } // активный ли курсор
@@ -25,6 +28,8 @@ namespace SandCoreCSharp.Core
         // для ломания блока
         public bool breaking;
 
+        private Graphics graphics;
+
 
         public Cursor(Game game, Hero hero) : base(game)
         {
@@ -35,13 +40,15 @@ namespace SandCoreCSharp.Core
         public override void Initialize()
         {
             Pos = new Vector2();
+            graphics = new Graphics(Game.GraphicsDevice);
 
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            texture = content.Load<Texture2D>("Cursor");
+            texture = content.Load<Texture2D>("tile");
+            graphics.Texture = texture;
 
             base.LoadContent();
         }
@@ -96,14 +103,27 @@ namespace SandCoreCSharp.Core
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
-            if (Active)
-                spriteBatch.Draw(texture, Pos - SandCore.camera.Pos, Color.White);
-            else
-                spriteBatch.Draw(texture, Pos - SandCore.camera.Pos, Color.Black);
-            spriteBatch.End();
+            graphics.Drawing();
 
             base.Draw(gameTime);
+        }
+
+        private void DrawRect(float x, float y)
+        {
+            graphics.Vertices = new List<VertexPositionColorTexture>();
+            graphics.Indices = new List<int>();
+
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x, y, 0), Color.Green, new Vector2(0, 0)));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x + CURSOR_SIZE, y, 0), Color.Green, new Vector2(1, 0)));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x + CURSOR_SIZE, y - CURSOR_SIZE, 0), Color.Green, new Vector2(1, 1)));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+            graphics.Vertices.Add(new VertexPositionColorTexture(new Vector3(x, y - CURSOR_SIZE, 0), Color.Green, new Vector2(0, 1)));
+            graphics.Indices.Add(graphics.Vertices.Count - 1);
+
+            graphics.Indices.Add(graphics.Vertices.Count - 4);
+            graphics.Indices.Add(-1);
         }
 
         // нажатие на левую кнопку мыши
