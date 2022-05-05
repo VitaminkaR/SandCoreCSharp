@@ -137,21 +137,7 @@ namespace SandCoreCSharp.Core
                     // блок в курсоре и есть инструмент, который может его добыть
                     if (block.Pos == positionBlockCursor)
                     {
-                        if (block.Instrument != "" && block.Instrument != null)
-                        {
-                            if (SandCore.resources.Resource[block.Instrument] > 0)
-                            {
-                                SimpleTimer timer = new SimpleTimer(block.Hardness * 1000, Breaking, block); // ломает блок n секунд
-                                breaking = true;
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            SimpleTimer timer = new SimpleTimer(block.Hardness * 1000, Breaking, block); // ломает блок n секунд
-                            breaking = true;
-                            return;
-                        }
+                        block.Break();
                     }
                 }
             }
@@ -212,31 +198,6 @@ namespace SandCoreCSharp.Core
 
                 Block.CreateBlock(block, BlockPosition);
             }
-        }
-
-        // ломание блока
-        private void Breaking(object obj)
-        {
-            if (breaking)
-            {
-                breaking = false;
-                Block block = (obj as Block);
-                block.Break();
-            }
-        }
-
-
-
-        // позволяет блоку получить инфу на него ли наведена мышь
-        static public bool FocusOnBlock(Vector2 position)
-        {
-            Cursor cursor = SandCore.cursor;
-            Rectangle collider = GetCollider();
-            Rectangle colliderBlock = new Rectangle(position.ToPoint(), new Point(32, 32));
-            if (collider.Intersects(colliderBlock))
-                return true;
-            else
-                return false;
         }
 
         static public Rectangle GetCollider() => new Rectangle(SandCore.cursor.Pos.ToPoint(), new Point(32, 32));

@@ -28,8 +28,8 @@ namespace SandCoreCSharp.Core
                 block = new InductionFurnace(SandCore.game, pos);
             if (type == "land")
                 block = new Land(SandCore.game, pos);
-            if (type == "farmer")
-                block = new Farmer(SandCore.game, pos);
+            //if (type == "farmer")
+                //block = new Farmer(SandCore.game, pos);
 
             return block;
         }
